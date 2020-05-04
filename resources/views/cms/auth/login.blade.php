@@ -3,8 +3,8 @@
 @section('content')
     <div class="middle-box text-center loginscreen animated fadeInDown">
         <div>
-            <div><h1 class="logo-name">IYL</h1></div>
-            <h3>Benvenuto nel CMS Inyourlife</h3>
+            <div><h1 class="logo-name" style="font-size:140px">DIYL</h1></div>
+            <h3>Benvenuto su Delivery Inyourlife</h3>
 
             <form class="m-t" role="form" method="POST" action="{{ route('cms.login') }}">
                 {{ csrf_field() }}
@@ -33,7 +33,7 @@
                 <a class="btn btn-sm btn-white btn-block" href="{{ route('cms.register') }}">Crea un account</a>
             </form>
             <p class="m-t">
-                <small>Cms InYourLife &copy; {{ date('Y') }}</small>
+                <small>InYourLife &copy; {{ date('Y') }}</small>
             </p>
         </div>
     </div>
