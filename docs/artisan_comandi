@@ -1,0 +1,16 @@
+Creare un crontroller:
+php artisan make:controller TaskController
+
+php artisan make:controller TaskController --resource
+
+php artisan make:model Task -m
+
+per inserire i dati fake nel db
+php artisan db:seed
+
+php artisan route:list
+
+per creare le classiche route e viste per l'autorizzazione
+php artisan make:auth
+
+php artisan make:controller UserController --resource --model=User

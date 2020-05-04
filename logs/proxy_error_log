@@ -1,0 +1,2 @@
+2020/04/30 09:22:21 [error] 5414#0: *4180078 peer closed connection in SSL handshake (104: Connection reset by peer) while SSL handshaking to upstream, client: 77.32.34.4, server: inyourlifetest.com, request: "GET / HTTP/2.0", upstream: "https://31.193.138.134:7081/", host: "inyourlifetest.com"
+2020/04/30 09:22:21 [error] 5414#0: *4180078 connect() failed (111: Connection refused) while connecting to upstream, client: 77.32.34.4, server: inyourlifetest.com, request: "GET /favicon.ico HTTP/2.0", upstream: "https://31.193.138.134:7081/favicon.ico", host: "inyourlifetest.com"

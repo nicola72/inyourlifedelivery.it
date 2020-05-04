@@ -1,0 +1,19 @@
+To install the most recent version, run the following command.
+
+php composer.phar require intervention/image
+
+In the $providers array add the service providers for this package.
+
+
+
+
+    Intervention\Image\ImageServiceProvider::class
+
+Add the facade of this package to the $aliases array.
+
+
+
+
+    'Image' => Intervention\Image\Facades\Image::class
+
+Now the Image Class will be auto-loaded by Laravel.

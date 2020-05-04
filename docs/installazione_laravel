@@ -1,0 +1,17 @@
+Creare Nuovo Progetto:
+File->NewProject->FromComposer
+install : laravel/laravel RICORDARSI DI METTERE IL NOME DEL PROGETTO
+
+Installo i suggerimenti per laravel:
+Tools->Composer->ManageComposerDependencies: barryvdh/laravel-ide-helper
+Aggiungere in config/app.php nei Providers: Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+Poi Lanciare il comando: php artisan ide-helper:generate.
+
+Aggiungo GIT:
+VCS->Enable Version Control Integration
+Rimuovi la cartella .idea e vendor da GIT
+Commit del progetto.
+
+Aggiungo GITHUB:
+devo aver creato prima il repository su Github con lo stesso nome del progetto.
+Tasto destro sul progetto Git-Push e inserisco l'url del repository
