@@ -9,9 +9,18 @@
                 {{ csrf_field() }}
 
                 <div class="form-group">
-                    <select name="role_id" class="form-control" required autofocus>
+                    <select name="role_id" class="form-control" required autofocus onchange="toggleShop()">
                         @foreach($roles as $role)
                             <option value="{{$role->id}}">{{$role->description}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div id="shop_select" style="display: none" class="form-group">
+                    <label>NEGOZIO</label>
+                    <select name="shop_id" id="shop_id" class="form-control" autofocus>
+                        @foreach($shops as $shop)
+                            <option value="{{$shop->id}}">{{$shop->ragione_sociale}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -52,3 +61,19 @@
         </div>
     </div>
 @endsection
+@section('js_script')
+    <script>
+        function toggleShop()
+        {
+            role = $('#shop_id').val();
+            if(role === 1)
+            {
+                $('#shop_select').fadeOut();
+            }
+            else
+            {
+                $('#shop_select').fadeIn();
+            }
+        }
+    </script>
+@stop

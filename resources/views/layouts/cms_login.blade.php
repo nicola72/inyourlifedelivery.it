@@ -31,9 +31,11 @@
 
 <body class="gray-bg">
 @yield('content')
-
 @section('scripts')
+    <script src="/cms_assets/js/jquery-3.1.1.min.js"></script>
 @show
+    @yield('js_script')
+
 @stack('body')
 </body>
 

@@ -8,9 +8,17 @@
                     <!-- header del box -->
                     <div class="ibox-title">
 
-                        <!-- NUOVO Materiale -->
-                        <a href="javascript:void(0)" onclick="get_modal('{{url('cms/material/create')}}')" class="btn btn-w-m btn-primary">Aggiungi</a>
+                        <!-- NUOVO NEGOZIO -->
+                        <a href="javascript:void(0)" onclick="get_modal('{{url('cms/shops/create')}}')" class="btn btn-w-m btn-primary">Aggiungi</a>
                         <!-- fine pulsante nuovo -->
+
+                        <!-- Registra nuovo utente -->
+                        <a href="{{ route('cms.register') }}" class="btn btn-w-m btn-primary">Registra</a>
+                        <!--  -->
+
+                        <!-- Registra utenti -->
+                        <a href="{{ url('cms/shops/users') }}" class="btn btn-w-m btn-primary">Utenti Shop</a>
+                        <!--  -->
 
                         <div class="ibox-tools">
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -19,32 +27,35 @@
                     <!-- fine header -->
 
                     <div class="ibox-content">
-                        <table id="table-categories" style="font-size:12px" class="table table-striped table-bordered">
+                        <table id="table-shops" style="font-size:12px" class="table table-striped table-bordered">
                             <thead>
                             <tr>
-                                <th>Nome</th>
-                                <th>Per</th>
+                                <th>R.Sociale</th>
+                                <th>Dominio</th>
+                                <th>P.via</th>
+                                <th>Email</th>
                                 <th>Stato</th>
-                                <th>Ordine</th>
-                                <th data-orderable="false">Sposta</th>
                                 <th data-orderable="false">Azioni</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($materials as $material)
+                            @foreach($shops as $shop)
                                 <tr>
-                                    <td>{{$material->nome_it}}</td>
-                                    <td>{{$material->per}}</td>
-                                    <td>
+                                    <td>{{$shop->ragione_sociale}}</td>
+                                    <td>{{$shop->domain}}</td>
+                                    <td>{{$shop->p_iva}}</td>
+                                    <td>{{$shop->email}}</td>
+
+                                    <td data-orderable="false">
 
                                         <!-- Pulsante Switch Stato -->
                                         <div class="switch">
                                             <div class="onoffswitch">
-                                                <input type="checkbox" id="switch_{{$material->id}}"
-                                                       data-id="{{$material->id}}"
+                                                <input type="checkbox" id="switch_{{$shop->id}}"
+                                                       data-id="{{$shop->id}}"
                                                        class="onoffswitch-checkbox"
-                                                        {{ ($material->stato == 1) ? "checked" : "" }} />
-                                                <label class="onoffswitch-label" for="switch_{{$material->id}}">
+                                                        {{ ($shop->stato == 1) ? "checked" : "" }} />
+                                                <label class="onoffswitch-label" for="switch_{{$shop->id}}">
                                                     <span class="onoffswitch-inner"></span>
                                                     <span class="onoffswitch-switch"></span>
                                                 </label>
@@ -53,29 +64,15 @@
                                         <!-- -->
 
                                     </td>
-                                    <td>{{$material->order}}</td>
-                                    <td data-orderable="false">
-                                        <!-- Pulsante per ordinare in su -->
-                                        <a class="azioni-table"  href="{{url('/cms/material/move_up',[$material->id])}}">
-                                            <i class="fa fa-arrow-circle-up fa-2x"></i>
-                                        </a>
-                                        <!-- -->
-
-                                        <!-- Pulsante per ordinare in giù -->
-                                        <a class="azioni-table pl-1"  href="{{url('/cms/material/move_down',[$material->id])}}">
-                                            <i class="fa fa-arrow-circle-down fa-2x"></i>
-                                        </a>
-                                        <!-- -->
-                                    </td>
                                     <td data-orderable="false">
                                         <!-- Pulsante per modificare -->
-                                        <a class="azioni-table" onclick="get_modal('{{route('material.edit',['id'=>$material->id])}}')"  href="javascript:void(0)">
+                                        <a class="azioni-table" onclick="get_modal('{{url('cms/shops/edit',['id'=>$shop->id])}}')"  href="javascript:void(0)">
                                             <i class="fa fa-edit fa-2x"></i>
                                         </a>
                                         <!-- -->
 
                                         <!-- pulsante per eliminare -->
-                                        <a class="azioni-table azione-red elimina pl-1"  href="{{url('/cms/material/destroy',[$material->id])}}">
+                                        <a class="azioni-table azione-red elimina pl-1"  href="{{url('/cms/shops/destroy',[$shop->id])}}">
                                             <i class="fa fa-trash fa-2x"></i>
                                         </a>
                                         <!-- -->
@@ -95,7 +92,7 @@
     <script>
         $(document).ready(function ()
         {
-            $('#table-categories').DataTable({
+            $('#table-shops').DataTable({
                 responsive: true,
                 pageLength: 100,
                 order: [[ 4, "asc" ]], //order in base a order
@@ -135,7 +132,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "/cms/material/switch_stato",
+                url: "/cms/shops/switch_stato",
                 data: {id: $(this).attr('data-id'), stato : stato},
                 dataType: "json",
                 success: function (data){ alert(data.msg);},

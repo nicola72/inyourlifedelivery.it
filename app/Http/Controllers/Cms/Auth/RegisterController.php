@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Cms\Auth;
 
+use App\Model\Cms\ClearcmsPassword;
 use App\Model\Cms\RoleCms;
 use App\Model\Cms\UserCms;
 use App\Http\Controllers\Controller;
+use App\Model\Shop;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -40,8 +42,6 @@ class RegisterController extends Controller
     {
         //se la richiesta non viene da un IP autorizzato esco
         $this->middleware('cms.isipauth');
-
-        $this->middleware('guest');
     }
 
     /**
@@ -52,7 +52,8 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $roles = RoleCms::all();
-        return view('cms.auth.register',['roles'=> $roles]);
+        $shops = Shop::all();
+        return view('cms.auth.register',['roles'=> $roles,'shops'=>$shops]);
     }
 
     /**
@@ -74,15 +75,27 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return \App\Model\Cms\UserCms|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     protected function create(array $data)
     {
-        return UserCms::create([
-            'role_id'  => $data['role_id'],
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $shop_id = (isset($data['shop_id'])) ? $data['shop_id'] : null;
+
+        $userCms = new UserCms();
+        $userCms->role_id = $data['role_id'];
+        $userCms->shop_id = $shop_id;
+        $userCms->name = $data['name'];
+        $userCms->email = $data['email'];
+        $userCms->password = Hash::make($data['password']);
+        $userCms->save();
+
+        $user_id = $userCms->id;
+
+        $clear_pwd = new ClearcmsPassword();
+        $clear_pwd->user_cms_id = $user_id;
+        $clear_pwd->password = $data['password'];
+        $clear_pwd->save();
+
+        return $userCms;
     }
 }

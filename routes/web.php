@@ -46,36 +46,19 @@ Route::group(['prefix' => 'cms'], function ()
         Route::post('/settings/update_config_module/{id}','Cms\SettingsController@update_config_module');
         Route::post('/settings/store_copy_config_module','Cms\SettingsController@store_copy_config_module');
 
-        Route::get('/sync', 'Cms\SyncController@index')->name('cms.sync');
-        Route::get('/sync/sync_categorie','Cms\SyncController@sync_categorie');
-        Route::get('/sync/sync_url_categorie','Cms\SyncController@sync_url_categorie');
-        Route::get('/sync/sync_prodotti','Cms\SyncController@sync_prodotti');
-        Route::get('/sync/sync_file_prodotti','Cms\SyncController@sync_file_prodotti');
-        Route::get('/sync/sync_url_prodotti','Cms\SyncController@sync_url_prodotti');
-        Route::get('/sync/sync_abbinamenti','Cms\SyncController@sync_abbinamenti');
-        Route::get('/sync/sync_file_abbinamenti','Cms\SyncController@sync_file_abbinamenti');
-        Route::get('/sync/sync_url_abbinamenti','Cms\SyncController@sync_url_abbinamenti');
-        Route::get('/sync/create_thumbs/{page?}','Cms\SyncController@create_thumbs');
-        Route::get('/sync/create_watermarks/{page?}','Cms\SyncController@create_watermarks');
-        Route::get('/sync/create_watermarks_ital/{page?}','Cms\SyncController@create_watermarks_ital');
+        Route::get('/shops','Cms\ShopsController@index')->name('cms.shops');
+        Route::get('/shops/create','Cms\ShopsController@create');
+        Route::get('/shops/edit/{id}','Cms\ShopsController@edit');
+        Route::get('/shops/users','Cms\ShopsController@users');
+        Route::get('/shops/edit_user/{id}','Cms\ShopsController@edit_user');
+        Route::get('/shops/destroy_user/{id}','Cms\ShopsController@destroy_user');
+        Route::post('/shops/update_user/{id}','Cms\ShopsController@update_user');
+        Route::post('/shops/store','Cms\ShopsController@store');
+        Route::post('/shops/update/{id}','Cms\ShopsController@update');
+        Route::get('/shops/destroy/{id}','Cms\ShopsController@destroy');
 
-
-        Route::get('/seo/switch_homepage','Cms\SeoController@switch_homepage');
-        Route::get('/seo/associa_url/{id}','Cms\SeoController@associa_url');
-        Route::get('/seo/associa_model/{id}','Cms\SeoController@associa_model');
-        Route::get('/seo/delete_associazione_url/{id}','Cms\SeoController@delete_associazione_url');
-        Route::get('/seo/delete_associazione_model/{id}','Cms\SeoController@delete_associazione_model');
-        Route::get('/seo/get_urls_by_type','Cms\SeoController@get_urls_by_type');
-        Route::post('/seo/store_associazione_url','Cms\SeoController@store_associazione_url');
-        Route::post('/seo/store_associazione_model','Cms\SeoController@store_associazione_model');
-        Route::resource('/seo','Cms\SeoController');
-        Route::get('/seo/destroy/{id}', 'Cms\SeoController@destroy');
-        Route::get('/seo', 'Cms\SeoController@index')->name('cms.seo');
-
-        Route::get('/sliders/switch_visibility','Cms\SlidersController@switch_visibility');
-        Route::post('/sliders/upload_images', 'Cms\SlidersController@upload_images');
-        Route::get('/sliders/images/{id}', 'Cms\SlidersController@images');
-        Route::get('/sliders', 'Cms\SlidersController@index')->name('cms.sliders');
+        Route::get('/configurations','Cms\ConfigurationsController@index')->name('cms.configurazioni');
+        Route::get('/configurations/edit_logo/{id}','Cms\ConfigurationsController@edit_logo');
 
 
         Route::get('/macrocategory/switch_stato','Cms\MacrocategoryController@switch_stato');
@@ -97,14 +80,6 @@ Route::group(['prefix' => 'cms'], function ()
         Route::get('/category/destroy/{id}', 'Cms\CategoryController@destroy');
         Route::get('/category', 'Cms\CategoryController@index')->name('cms.categorie');
 
-        Route::get('/material/switch_stato','Cms\MaterialController@switch_stato');
-        Route::resource('/material','Cms\MaterialController');
-        Route::get('/material/move_up/{id}', 'Cms\MaterialController@move_up');
-        Route::get('/material/move_down/{id}', 'Cms\MaterialController@move_down');
-        Route::get('/material/destroy/{id}', 'Cms\MaterialController@destroy');
-        Route::get('/material/images/{id}', 'Cms\MaterialController@images');
-        Route::get('/material', 'Cms\MaterialController@index')->name('cms.materiali');
-
         Route::get('/product/switch_visibility','Cms\ProductController@switch_visibility');
         Route::get('/product/switch_visibility_italfama','Cms\ProductController@switch_visibility_italfama');
         Route::get('/product/switch_offerta','Cms\ProductController@switch_offerta');
@@ -114,34 +89,6 @@ Route::group(['prefix' => 'cms'], function ()
         Route::get('/product/images/{id}', 'Cms\ProductController@images');
         Route::get('/product/destroy/{id}', 'Cms\ProductController@destroy');
         Route::get('/product','Cms\ProductController@index')->name('cms.prodotti');
-
-        Route::get('/pairing/switch_visibility','Cms\PairingController@switch_visibility');
-        Route::get('/pairing/switch_visibility_italfama','Cms\PairingController@switch_visibility_italfama');
-        Route::get('/pairing/switch_offerta','Cms\PairingController@switch_offerta');
-        Route::resource('/pairing','Cms\PairingController');
-        Route::post('/pairing/upload_images', 'Cms\PairingController@upload_images');
-        Route::get('/pairing/images/{id}', 'Cms\PairingController@images');
-        Route::get('/pairing/destroy/{id}', 'Cms\PairingController@destroy');
-        Route::get('/pairing','Cms\PairingController@index')->name('cms.abbinamenti');
-
-        Route::get('/news/switch_visibility','Cms\NewsController@switch_visibility');
-        Route::get('/news/switch_popup','Cms\NewsController@switch_popup');
-        Route::get('/news/move_up/{id}', 'Cms\NewsController@move_up');
-        Route::get('/news/move_down/{id}', 'Cms\NewsController@move_down');
-        Route::post('/news/upload_images', 'Cms\NewsController@upload_images');
-        Route::get('/news/images/{id}', 'Cms\NewsController@images');
-        Route::get('/news/destroy/{id}', 'Cms\NewsController@destroy');
-        Route::resource('/news','Cms\NewsController');
-        Route::get('/news', 'Cms\NewsController@index')->name('cms.news');
-
-        Route::resource('/offerte','Cms\OfferteController');
-        Route::get('/offerte', 'Cms\OfferteController@index')->name('cms.offerte');
-
-        Route::resource('/fotogallery','Cms\FotogalleryController');
-        Route::get('/fotogallery', 'Cms\FotogalleryController@index')->name('cms.fotogallery');
-
-        Route::resource('/eventi','Cms\EventiController');
-        Route::get('/eventi', 'Cms\EventiController@index')->name('cms.eventi');
 
         Route::post('/file/sort_images', 'Cms\FileController@sort_images');
         Route::get('/file','Cms\FileController@index')->name('cms.file');

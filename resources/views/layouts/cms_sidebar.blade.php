@@ -37,19 +37,19 @@
             </li>
 
             @if(Auth::user()->role->id == 1)
-            <li class="{{ (Route::currentRouteName() == 'cms.settings') ? "active" : "" }}">
-                <a href="{{route('cms.settings')}}">
-                    <i class="fa fa-cogs"></i>
-                    <span class="nav-label">IMPOSTAZIONI</span>
-                </a>
-            </li>
+                <li class="{{ (Route::currentRouteName() == 'cms.settings') ? "active" : "" }}">
+                    <a href="{{route('cms.settings')}}">
+                        <i class="fa fa-cogs"></i>
+                        <span class="nav-label">MODULI</span>
+                    </a>
+                </li>
             @endif
 
             @if(Auth::user()->role->id == 1)
-                <li class="{{ (Route::currentRouteName() == 'cms.sync') ? "active" : "" }}">
-                    <a href="{{route('cms.sync')}}">
+                <li class="{{ (Route::currentRouteName() == 'cms.shops') ? "active" : "" }}">
+                    <a href="{{route('cms.shops')}}">
                         <i class="fa fa-cogs"></i>
-                        <span class="nav-label">SINCRONIZZAZIONE</span>
+                        <span class="nav-label">SHOPS</span>
                     </a>
                 </li>
             @endif

@@ -17,7 +17,7 @@ class UserCms extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['role_id','name', 'email', 'password'];
+    protected $fillable = ['role_id','shop_id','name', 'email', 'password'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -37,6 +37,16 @@ class UserCms extends Authenticatable
     public function role()
     {
         return $this->belongsTo('App\Model\Cms\RoleCms');
+    }
+
+    public function shop()
+    {
+        return $this->belongsTo('App\Model\Shop');
+    }
+
+    public function clear_pwd()
+    {
+        return $this->hasOne('App\Model\Cms\ClearcmsPassword');
     }
 
 

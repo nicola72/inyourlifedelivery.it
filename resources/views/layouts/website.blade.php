@@ -37,10 +37,6 @@
         <![endif]-->
         <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
-        @include('layouts.website_google_analytics')
-        @include('layouts.website_fb_script')
-        @include('layouts.website_twitter_script')
-
         @stack('head')
     </head>
     <body>
