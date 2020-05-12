@@ -192,7 +192,7 @@
                 dictInvalidFileType: "Questo tipo di file non può essere caricato",
                 dictMaxFilesExceeded:"Hai superato il limite max di file da cricare",
                 acceptedFiles:"{{$extensions}}",
-                error:function(error,msg){alert(msg);},
+                error:function(error,msg){alert(msg);return},
 
                 queuecomplete: function(){showPreloader();location.reload();}
             };

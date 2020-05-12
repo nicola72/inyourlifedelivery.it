@@ -58,7 +58,21 @@ Route::group(['prefix' => 'cms'], function ()
         Route::get('/shops/destroy/{id}','Cms\ShopsController@destroy');
 
         Route::get('/configurations','Cms\ConfigurationsController@index')->name('cms.configurazioni');
+        Route::get('/configurations/edit_comuni/{id}','Cms\ConfigurationsController@edit_comuni');
+        Route::get('/configurations/edit_hours/{id}','Cms\ConfigurationsController@edit_hours');
+        Route::get('/configurations/edit_open_days/{id}','Cms\ConfigurationsController@edit_open_days');
         Route::get('/configurations/edit_logo/{id}','Cms\ConfigurationsController@edit_logo');
+        Route::post('/configurations/upload_logo', 'Cms\ConfigurationsController@upload_logo');
+        Route::post('/configurations/update_comuni/{id}', 'Cms\ConfigurationsController@update_comuni');
+        Route::post('/configurations/update_hours/{id}', 'Cms\ConfigurationsController@update_hours');
+        Route::post('/configurations/update_step/{id}', 'Cms\ConfigurationsController@update_step');
+        Route::post('/configurations/update_min/{id}', 'Cms\ConfigurationsController@update_min');
+        Route::post('/configurations/update_shipping_cost/{id}', 'Cms\ConfigurationsController@update_shipping_cost');
+        Route::post('/configurations/update_open_days/{id}', 'Cms\ConfigurationsController@update_open_days');
+        Route::post('/configurations/update_time/{id}', 'Cms\ConfigurationsController@update_time');
+        Route::post('/configurations/update_maxqty/{id}', 'Cms\ConfigurationsController@update_maxqty');
+        Route::post('/configurations/update_desc/{id}', 'Cms\ConfigurationsController@update_desc');
+        Route::post('/configurations/update_paypal/{id}', 'Cms\ConfigurationsController@update_paypal');
 
 
         Route::get('/macrocategory/switch_stato','Cms\MacrocategoryController@switch_stato');
