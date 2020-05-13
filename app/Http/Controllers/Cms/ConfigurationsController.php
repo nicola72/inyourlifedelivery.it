@@ -79,6 +79,19 @@ class ConfigurationsController extends Controller
     public function update_time(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $old_times = DeliveryAvailableTime::where('shop_id',$shop->id)->get();
 
         if($old_times->count() > 0)
@@ -111,6 +124,18 @@ class ConfigurationsController extends Controller
     public function update_maxqty(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $old_qty = DeliveryMaxQuantity::where('shop_id',$shop->id)->get();
 
         if($old_qty->count() > 0)
@@ -143,6 +168,18 @@ class ConfigurationsController extends Controller
     public function update_desc(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $old_desc = DeliveryDescription::where('shop_id',$shop->id)->get();
 
         if($old_desc->count() > 0)
@@ -175,6 +212,18 @@ class ConfigurationsController extends Controller
     public function update_paypal(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $olds = DeliveryPaypal::where('shop_id',$shop->id)->get();
 
         if($olds->count() > 0)
@@ -207,6 +256,17 @@ class ConfigurationsController extends Controller
     {
         $shop = Shop::find($id);
 
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $old_days = DeliveryOpenDay::where('shop_id',$shop->id)->first();
 
         $params = [
@@ -223,6 +283,16 @@ class ConfigurationsController extends Controller
     {
         $shop = Shop::find($id);
 
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
 
         $old_days = DeliveryMin::where('shop_id',$shop->id)->get();
 
@@ -266,6 +336,17 @@ class ConfigurationsController extends Controller
     public function update_shipping_cost(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
 
         $cost = trim(str_replace(",",".",$request->input('delivery_ship_cost',null)));
         $to = trim(str_replace(",",".",$request->input('delivery_ship_to',null)));
@@ -321,6 +402,17 @@ class ConfigurationsController extends Controller
     {
         $shop = Shop::find($id);
 
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $min = trim(str_replace(",",".",$request->input('delivery_min',null)));
 
         if($min == null)
@@ -362,6 +454,18 @@ class ConfigurationsController extends Controller
     public function update_step(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $old_steps = DeliveryStep::where('shop_id',$shop->id)->get();
 
         if($old_steps->count() > 0)
@@ -395,6 +499,17 @@ class ConfigurationsController extends Controller
     {
         $shop = Shop::find($id);
 
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $old_hours = DeliveryHour::where('shop_id',$shop->id)->first();
 
         $params = [
@@ -411,6 +526,18 @@ class ConfigurationsController extends Controller
     public function update_hours(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $start_morning = $request->start_morning;
         $end_morning = $request->end_morning;
         $start_afternoon = $request->start_afternoon;
@@ -468,6 +595,18 @@ class ConfigurationsController extends Controller
     public function edit_comuni(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $old_comuni = DeliveryMunic::where('shop_id',$shop->id)->get();
         $selected = [];
         if($old_comuni->count() > 0)
@@ -498,6 +637,18 @@ class ConfigurationsController extends Controller
     public function update_comuni(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
         $comuni = $request->comuni;
 
         //prima di tutti elimino eventuali comuni vecchi impostati
@@ -533,6 +684,17 @@ class ConfigurationsController extends Controller
     public function edit_logo(Request $request,$id)
     {
         $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
 
         $logo = File::where('fileable_id',$id)->where('fileable_type','App\Model\Shop')->first();
 

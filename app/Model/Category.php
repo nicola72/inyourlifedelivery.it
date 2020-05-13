@@ -17,6 +17,7 @@ class Category extends Model implements Sortable
 
     protected $fillable = [
         'id',
+        'shop_id',
         'macrocategory_id',
         'nome_it',
         'nome_en',
@@ -66,6 +67,11 @@ class Category extends Model implements Sortable
     public function materials()
     {
         return $this->belongsToMany('App\Model\Material', 'category_material');
+    }
+
+    public function shop()
+    {
+        return $this->belongsTo('App\Model\Shop');
     }
 
 }

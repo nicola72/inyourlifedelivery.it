@@ -8,6 +8,7 @@ use App\Model\File;
 use App\Model\Macrocategory;
 use App\Model\Pairing;
 use App\Model\Product;
+use App\Model\Shop;
 use App\Model\Url;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -22,11 +23,29 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categorie = Category::orderBy('order', 'desc')->get();
-        $params = [
-            'title_page' => 'Categorie',
-            'categorie' => $categorie,
-        ];
+        $user = \Auth::user('cms');
+
+        if($user->role_id == 1)
+        {
+            $categorie = Category::orderBy('order', 'desc')->get();
+            $params = [
+                'title_page' => 'Categorie',
+                'categorie' => $categorie,
+                'user' => $user
+            ];
+        }
+        else
+        {
+            $shop = Shop::find($user->shop_id);
+
+            $categorie = Category::where('shop_id',$shop->id)->orderBy('order', 'desc')->get();
+            $params = [
+                'title_page' => 'Categorie',
+                'categorie' => $categorie,
+                'user' => $user
+            ];
+        }
+
         return view('cms.category.index',$params);
     }
 
@@ -37,11 +56,24 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $macros = Macrocategory::all();
+        $user = \Auth::user('cms');
+        if($user->role_id == 1)
+        {
+            return redirect('/cms/category');
+        }
+
+        $shop = Shop::find($user->shop_id);
+        if(!$shop)
+        {
+            return redirect('/cms/category');
+        }
+
+        $macro = Macrocategory::all()->first();
 
         $params = [
             'form_name' => 'form_create_category',
-            'macros' => $macros
+            'macro' => $macro,
+            'shop' => $shop,
         ];
         return view('cms.category.create',$params);
     }
@@ -49,10 +81,23 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        $user = \Auth::user('cms');
+        if($user->role_id == 1)
+        {
+            return redirect('/cms/category');
+        }
+
+        $shop = Shop::find($user->shop_id);
+        if($shop->id != $request->shop_id)
+        {
+            return redirect('/cms/category');
+        }
+
         $langs = \Config::get('langs');
 
         try{
             $categoria = new Category();
+            $categoria->shop_id = $request->shop_id;
             $categoria->macrocategory_id = $request->macrocategory_id;
             foreach ($langs as $lang)
             {
@@ -127,7 +172,20 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
+        $user = \Auth::user('cms');
+        if($user->role_id == 1)
+        {
+            return redirect('/cms/category');
+        }
+
         $categoria = Category::find($id);
+
+        $user_shop = Shop::find($user->shop_id);
+        if($user_shop->id != $categoria->shop_id)
+        {
+            return redirect('/cms/category');
+        }
+
         $params = [
             'categoria' => $categoria,
             'form_name' => 'form_edit_categoria'
@@ -170,16 +228,22 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
+        $user = \Auth::user('cms');
+        if($user->role_id == 1)
+        {
+            return back()->with('error','Non hai il permesso di eseguire questa operazione!');
+        }
+
         //return back()->with('error','Devo fare controllo prodotti presenti!');
         $categoria = Category::find($id);
-        $categoria->delete();
 
-        //elimino anche le url associate alla macro
-        $urls = Url::where('urlable_id',$categoria->id)->where('urlable_type','App\Model\Category')->get();
-        foreach ($urls as $url)
+        $user_shop = Shop::find($user->shop_id);
+        if($user_shop->id != $categoria->shop_id)
         {
-            $url->delete();
+            return back()->with('error','Non hai il permesso di eseguire questa operazione!');
         }
+
+        $categoria->delete();
 
         return back()->with('success','Elemento cancellato!');
     }

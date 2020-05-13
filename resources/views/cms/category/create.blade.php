@@ -9,14 +9,8 @@
         <div class="modal-body">
             <form action="" method="POST" id="{{ $form_name }}">
                 {{ csrf_field() }}
-                <div class="form-group">
-                    <select name="macrocategory_id" id="macrocategory_id" class="form-control">
-                        <option value="">seleziona</option>
-                        @foreach($macros as $macro)
-                            <option value="{{$macro->id}}">{{$macro->nome_it}}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <input type="hidden" name="macrocategory_id" id="macrocategory_id" value="{{$macro->id}}" />
+                <input type="hidden" name="shop_id" id="shop_id" value="{{$shop->id}}" />
                 <div class="form-group">
                     @foreach($langs as $lang)
                         <label class="d-block">

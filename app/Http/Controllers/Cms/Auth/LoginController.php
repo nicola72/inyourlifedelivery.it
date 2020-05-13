@@ -33,6 +33,8 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+        //se la richiesta non viene arriva dal giusto dominio
+        $this->middleware('cms.iscmsdomain');
     }
 
     /**

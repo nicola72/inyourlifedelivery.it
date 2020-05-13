@@ -8,9 +8,12 @@
                     <!-- header del box -->
                     <div class="ibox-title">
 
+                        <!-- solo l'Editore può inserire una nuova categoria -->
+                        @if($user->role_id != 1)
                         <!-- NUOVA CATEGORIA -->
                         <a href="javascript:void(0)" onclick="get_modal('{{url('cms/category/create')}}')" class="btn btn-w-m btn-primary">Aggiungi</a>
                         <!-- fine pulsante nuovo -->
+                        @endif
 
                         <div class="ibox-tools">
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -23,7 +26,7 @@
                             <thead>
                             <tr>
                                 <th>Nome</th>
-                                <th>Macro</th>
+                                <th>Shop</th>
                                 <th>Descrizione</th>
                                 <th>Stato</th>
                                 <th>Ordine</th>
@@ -35,7 +38,7 @@
                             @foreach($categorie as $cat)
                                 <tr>
                                     <td>{{$cat->nome_it}}</td>
-                                    <td>{{$cat->macrocategory->nome_it}}</td>
+                                    <td>{{$cat->shop->insegna}}</td>
                                     <td>{{$cat->desc_it}}</td>
 
                                     <td data-orderable="false">
