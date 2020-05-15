@@ -28,7 +28,7 @@ class ConfigurationsController extends Controller
         {
             $shops = Shop::all();
             $params = [
-                'title_page' => 'Configurazioni negozio',
+                'title_page' => 'Attività',
                 'shops' => $shops
             ];
 
@@ -76,6 +76,58 @@ class ConfigurationsController extends Controller
         }
     }
 
+    public function shop_config(Request $request,$id)
+    {
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            return redirect('cms/configurations');
+        }
+
+        $shop = Shop::find($id);
+        if(!$shop)
+        {
+            return back()->with('error','Errore! Negozio non trovato');
+        }
+        $logo = File::where('fileable_id',$shop->id)->where('fileable_type','App\Model\Shop')->first();
+        $comuni = DeliveryMunic::where('shop_id',$shop->id)->get();
+        $hours = DeliveryHour::where('shop_id',$shop->id)->first();
+        $step = DeliveryStep::where('shop_id',$shop->id)->first();
+        $min = DeliveryMin::where('shop_id',$shop->id)->first();
+        $ship_cost = DeliveryShippingCost::where('shop_id',$shop->id)->first();
+        $opendays = DeliveryOpenDay::where('shop_id',$shop->id)->first();
+        $availabletime = DeliveryAvailableTime::where('shop_id',$shop->id)->first();
+        $description = DeliveryDescription::where('shop_id',$shop->id)->first();
+        $maxqty = DeliveryMaxQuantity::where('shop_id',$shop->id)->first();
+        $paypal = DeliveryPaypal::where('shop_id',$shop->id)->first();
+
+        $params = [
+            'title_page' => 'Configurazioni '.$shop->insegna,
+            'logo' => $logo,
+            'comuni' => $comuni,
+            'hours' => $hours,
+            'shop' => $shop,
+            'step' => $step,
+            'form_step' => 'form_step',
+            'min' => $min,
+            'form_minimo' => 'form_minimo',
+            'ship_cost' => $ship_cost,
+            'form_ship' => 'form_ship',
+            'opendays' => $opendays,
+            'availabletime' => $availabletime,
+            'form_time' => 'form_time',
+            'description' => $description,
+            'form_description' => 'form_description',
+            'maxqty' => $maxqty,
+            'form_maxqty' => 'form_maxqty',
+            'paypal'=> $paypal,
+            'form_paypal' => 'form_paypal',
+        ];
+
+        return view('cms.configurations.index',$params);
+
+    }
+
     public function update_time(Request $request,$id)
     {
         $shop = Shop::find($id);
@@ -116,7 +168,14 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Tempo richiesto aggiornato con successo!','url'=> $url];
 
     }
@@ -160,7 +219,14 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Max quantità ordinabile aggiornata con successo!','url'=> $url];
 
     }
@@ -204,7 +270,14 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Descrizione aggiornata con successo!','url'=> $url];
 
     }
@@ -248,7 +321,14 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Email paypal aggiornata con successo!','url'=> $url];
     }
 
@@ -329,7 +409,14 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Giorni apertura chiusura aggiornati con successo!','url'=> $url];
     }
 
@@ -361,14 +448,13 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => 'valore formato non valido'];
         }
 
-        if($to == null)
+        if($to == '')
         {
-            return ['result' => 0,'msg' => 'valore non valido'];
+            $to = null;
         }
-
-        if(!is_float($to) && !is_numeric($to))
+        if($to != null && !is_float($to) && !is_numeric($to))
         {
-            return ['result' => 0,'msg' => 'valore formato non valido'];
+            return ['result' => 0,'msg' => 'valore -fino a- formato non valido'];
         }
 
         $old_costs = DeliveryShippingCost::where('shop_id',$shop->id)->get();
@@ -394,7 +480,14 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Costi spedizione aggiornati con successo!','url'=> $url];
     }
 
@@ -447,7 +540,14 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Step aggiornato con successo!','url'=> $url];
     }
 
@@ -490,7 +590,14 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Step aggiornato con successo!','url'=> $url];
 
     }
@@ -513,7 +620,7 @@ class ConfigurationsController extends Controller
         $old_hours = DeliveryHour::where('shop_id',$shop->id)->first();
 
         $params = [
-            'title_page' => 'Configura gli intervalli orario in cui il servizio è aperto',
+            'title_page' => 'Configura gli intervalli orario si effettuano le consegne',
             'old_hours' => $old_hours,
             'shop' => $shop,
             'form_name' => 'form_edit_hours',
@@ -588,7 +695,14 @@ class ConfigurationsController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Orari aggiornati con successo!','url'=> $url];
     }
 
@@ -628,6 +742,7 @@ class ConfigurationsController extends Controller
             'selected' => $selected,
             'comuni' => $comuni,
             'shop' => $shop,
+            'user' => $user,
             'form_name' => 'form_edit_comuni',
         ];
 
@@ -677,7 +792,14 @@ class ConfigurationsController extends Controller
 
         }
 
-        $url = url('cms/configurations');
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
         return ['result' => 1,'msg' => 'Comuni aggiornati con successo!','url'=> $url];
     }
 
@@ -700,6 +822,7 @@ class ConfigurationsController extends Controller
 
         $params = [
             'title_page' => 'Logo per '.$shop->ragione_sociale,
+            'user' => $user,
             'logo' => $logo,
             'shop' => $shop,
             'max_file_size' => '2',

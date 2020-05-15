@@ -17,14 +17,14 @@ class Product extends Model implements Sortable
 
     protected $fillable = [
         'id',
+        'shop_id',
         'category_id',
         'codice',
+        'omaggio',
         'prezzo',
         'prezzo_scontato',
-        'acquistabile',
-        'acquistabile_italfama',
+        'iva',
         'stock',
-        'availability_id',
         'nome_it',
         'nome_en',
         'nome_de',
@@ -37,26 +37,16 @@ class Product extends Model implements Sortable
         'desc_fr',
         'desc_es',
         'desc_ru',
-        'desc_breve_it',
-        'desc_breve_en',
-        'desc_breve_de',
-        'desc_breve_fr',
-        'desc_breve_es',
-        'desc_breve_ru',
-        'misure_it',
-        'misure_en',
-        'misure_de',
-        'misure_fr',
-        'misure_es',
-        'misure_ru',
-        'peso',
         'visibile',
-        'italfama',
-        'offerta',
         'novita',
         'order',
         'stato'
     ];
+
+    public function shop()
+    {
+        return $this->belongsTo('App\Model\Shop');
+    }
 
     public function urls()
     {
@@ -77,9 +67,14 @@ class Product extends Model implements Sortable
         return $this->belongsTo('App\Model\Category');
     }
 
-    public function availability()
+    public function ingredients()
     {
-        return $this->belongsTo('App\Model\Availability');
+        return $this->belongsToMany('App\Model\Ingredient','ingredient_product');
+    }
+
+    public function variants()
+    {
+        return $this->belongsToMany('App\Model\Variant','variant_product');
     }
 
     public function images()
@@ -102,8 +97,24 @@ class Product extends Model implements Sortable
         if($images)
         {
             $images = $images->orderBy('order');
-            return $images->first()->path;
+            $prima_img = $images->first();
+            if(is_object($prima_img))
+            {
+                return $images->first()->path;
+            }
         }
+
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop = Shop::find($user->shop_id);
+            $logo = File::where('fileable_id',$shop->id)->where('fileable_type','App\Model\Shop')->first();
+            if(is_object($logo))
+            {
+                return $logo->path;
+            }
+        }
+
         return 'default.jpg';
     }
 

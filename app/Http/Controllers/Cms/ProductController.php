@@ -6,12 +6,16 @@ use App\Model\Availability;
 use App\Model\Category;
 use App\Model\Domain;
 use App\Model\File;
+use App\Model\Ingredient;
 use App\Model\Module;
 use App\Model\ModuleConfig;
 use App\Model\Product;
+use App\Model\Shop;
 use App\Model\Url;
+use App\Model\Variant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\View;
 use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
@@ -23,11 +27,30 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
-        $params = [
-            'title_page' => 'Prodotti',
-            'products' => $products,
-        ];
+        $user = \Auth::user('cms');
+
+        if($user->role_id == 1)
+        {
+            $products = Product::all();
+            $params = [
+                'title_page' => 'Prodotti',
+                'products' => $products,
+                'user' => $user
+            ];
+
+            return view('cms.product.all_index',$params);
+        }
+        else
+        {
+            $shop = Shop::find($user->shop_id);
+            $products = Product::where('shop_id',$shop->id)->get();
+            $params = [
+                'title_page' => 'Prodotti '.$shop->insegna,
+                'products' => $products,
+                'user' => $user
+            ];
+        }
+
         return view('cms.product.index',$params);
     }
 
@@ -38,48 +61,115 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $user = \Auth::user('cms');
+        if($user->role_id == 1)
+        {
+            return redirect('/cms/product');
+        }
+
+        $shop = Shop::find($user->shop_id);
+        if(!$shop)
+        {
+            return redirect('/cms/product');
+        }
         $categorie = Category::all();
-        $availabilities = Availability::all();
+
         $params = [
             'form_name' => 'form_create_product',
             'title_page'=> 'Nuovo Prodotto',
+            'shop' => $shop,
             'categorie' => $categorie,
-            'availabilities' => $availabilities,
         ];
         return view('cms.product.create',$params);
+    }
+
+    public function ingredients_and_variants(Request $request)
+    {
+        $user = \Auth::user('cms');
+        if($user->role_id == 1)
+        {
+            return ['result' => 0,'msg' => 'Errore'];
+        }
+
+        $shop = Shop::find($user->shop_id);
+        if(!$shop)
+        {
+            return ['result' => 0,'msg' => 'Errore'];
+        }
+
+        $category_id = $request->query('category_id');
+
+        $ingredients = Ingredient::where('shop_id',$shop->id)->where('category_id',$category_id)->orderBy('nome_it')->get();
+        $variants = Variant::where('shop_id',$shop->id)->where('category_id',$category_id)->orderBy('nome_it')->get();
+
+        $html = View::make('cms.variant.ingredients_variants_select',['ingredients' => $ingredients,'variants' => $variants]);
+        return ['result' => 1,'msg' => "$html"];
     }
 
 
     public function store(Request $request)
     {
+        $user = \Auth::user('cms');
+        if($user->role_id == 1)
+        {
+            return redirect('/cms/product');
+        }
+
+        $shop = Shop::find($user->shop_id);
+        if($shop->id != $request->shop_id)
+        {
+            return redirect('/cms/product');
+        }
         $langs = \Config::get('langs');
         $prezzo_scontato = ($request->prezzo_scontato != '') ? $request->prezzo_scontato : 0;
 
+        $ingredients = $request->ingredients;
+        $variants = $request->variants;
+
         try{
             $product = new Product();
+            $product->shop_id = $shop->id;
             $product->category_id = $request->category_id;
-            $product->availability_id = $request->availability_id;
             $product->codice = $request->codice;
             $product->prezzo = str_replace(',','.',$request->prezzo);
             $product->prezzo_scontato = str_replace(',','.',$prezzo_scontato);
-            $product->acquistabile = $request->acquistabile;
-            $product->acquistabile_italfama = $request->acquistabile_italfama;
-            $product->peso = $request->peso;
-            $product->stock = $request->stock;
             $product->novita = $request->novita;
-            $product->offerta = $request->offerta;
             $product->visibile = $request->visibile;
-            $product->italfama = $request->italfama;
+            $product->omaggio = $request->omaggio;
             foreach ($langs as $lang)
             {
                 $product->{'nome_'.$lang} = $request->{'nome_'.$lang};
                 $product->{'desc_'.$lang} = $request->{'desc_'.$lang};
-                $product->{'desc_breve_'.$lang} = $request->{'desc_breve_'.$lang};
-                $product->{'misure_'.$lang} = $request->{'misure_'.$lang};
 
             }
             $product->save();
-            $product_id = $product->id;
+
+            //faccio gli agganci per gli ingredienti e le varianti
+            if(is_array($ingredients) && count($ingredients) > 0)
+            {
+                foreach($ingredients as $item)
+                {
+                    $ingredient = Ingredient::find($item);
+                    if($ingredient)
+                    {
+                        $product->ingredients()->attach($ingredient->id);
+                    }
+
+                }
+            }
+
+            if(is_array($variants) && count($variants) > 0)
+            {
+                foreach ($variants as $item)
+                {
+                    $variant = Variant::find($item);
+                    if($variant)
+                    {
+                        $product->variants()->attach($variant->id);
+                    }
+
+                }
+            }
 
         }
         catch(\Exception $e){
@@ -87,25 +177,6 @@ class ProductController extends Controller
             return ['result' => 0,'msg' => $e->getMessage()];
         }
 
-        //1# Creo una url di default per ogni lingua
-        foreach ($langs as $lang)
-        {
-            $domain = Domain::where('locale',$lang)->first();
-            try{
-                $url = new Url();
-                $url->domain_id = $domain->id;
-                $url->locale = $lang;
-                $url->slug = trans('msg.dettaglio',[],$lang).'-'.$product_id;
-                $url->urlable_id = $product_id;
-                $url->urlable_type = 'App\Model\Product';
-                $url->save();
-            }
-            catch(\Exception $e)
-            {
-                return ['result' => 0,'msg' => $e->getMessage()];
-            }
-        }
-        //1# Fine
 
         $url = route('cms.prodotti');
         return ['result' => 1,'msg' => 'Elemento creato con successo!','url' => $url];
@@ -128,18 +199,57 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
-        $categorie = Category::all();
-        $availabilities = Availability::all();
+        $user = \Auth::user('cms');
+        if($user->role_id == 1)
+        {
+            return redirect('/cms/product');
+        }
 
+        $shop = Shop::find($user->shop_id);
         $product = Product::find($id);
+
+        if($shop->id != $product->shop_id)
+        {
+            return redirect('/cms/product');
+        }
+
+        $categorie = Category::all();
+        $ingredients = Ingredient::where('shop_id',$shop->id)->where('category_id',$product->category_id)->orderBy('nome_it')->get();
+        $variants = Variant::where('shop_id',$shop->id)->where('category_id',$product->category_id)->orderBy('nome_it')->get();
+
+        $ings = $product->ingredients;
+        $ing_selected = [];
+
+        if($ings->count() > 0)
+        {
+            foreach($ings as $item)
+            {
+                $ing_selected[] = $item->id;
+            }
+        }
+
+        $vars = $product->variants;
+        $var_selected = [];
+
+        if($vars->count() > 0)
+        {
+            foreach ($vars as $item)
+            {
+                $var_selected[] = $item->id;
+            }
+        }
+
         $params = [
             'title_page' => 'Modifica Prodotto '.$product->codice,
             'product' => $product,
             'categorie' => $categorie,
-            'availabilities' => $availabilities,
-            'form_name' => 'form_edit_product'
+            'ingredients' => $ingredients,
+            'variants' => $variants,
+            'form_name' => 'form_edit_product',
+            'var_selected' => $var_selected,
+            'ing_selected' => $ing_selected,
         ];
 
         return view('cms.product.edit',$params);
@@ -149,29 +259,69 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = Product::find($id);
+
+        $user = \Auth::user('cms');
+        if($user->role_id == 1)
+        {
+            return ['result' => 0,'msg' => 'Errore db'];
+        }
+
+        $shop = Shop::find($user->shop_id);
+        if($product->shop_id != $shop->id)
+        {
+            return ['result' => 0,'msg' => 'Errore'];
+        }
+
         $prezzo_scontato = ($request->prezzo_scontato != '') ? $request->prezzo_scontato : 0;
 
         $langs = \Config::get('langs');
 
+        //prima elimino gli agganci con le varianti e gli ingredienti
+        $product->variants()->detach();
+        $product->ingredients()->detach();
+
+        $ingredients = $request->ingredients;
+        $variants = $request->variants;
+
         try{
 
             $product->category_id = $request->category_id;
-            $product->availability_id = $request->availability_id;
             $product->codice = $request->codice;
             $product->prezzo = str_replace(',','.',$request->prezzo);
             $product->prezzo_scontato = str_replace(',','.',$prezzo_scontato);
-            $product->acquistabile = $request->acquistabile;
-            $product->acquistabile_italfama = $request->acquistabile_italfama;
-            $product->peso = $request->peso;
-            $product->stock = $request->stock;
             foreach ($langs as $lang)
             {
                 $product->{'nome_'.$lang} = $request->{'nome_'.$lang};
                 $product->{'desc_'.$lang} = $request->{'desc_'.$lang};
-                $product->{'desc_breve_'.$lang} = $request->{'desc_breve_'.$lang};
-                $product->{'misure_'.$lang} = $request->{'misure_'.$lang};
             }
             $product->save();
+
+            //faccio gli agganci per gli ingredienti e le varianti
+            if(is_array($ingredients) && count($ingredients) > 0)
+            {
+                foreach($ingredients as $item)
+                {
+                    $ingredient = Ingredient::find($item);
+                    if($ingredient)
+                    {
+                        $product->ingredients()->attach($ingredient->id);
+                    }
+
+                }
+            }
+
+            if(is_array($variants) && count($variants) > 0)
+            {
+                foreach ($variants as $item)
+                {
+                    $variant = Variant::find($item);
+                    if($variant)
+                    {
+                        $product->variants()->attach($variant->id);
+                    }
+
+                }
+            }
 
         }
         catch(\Exception $e){
@@ -192,14 +342,10 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::find($id);
+        $product->variants()->detach();
+        $product->ingredients()->detach();
         $product->delete();
 
-        //elimino anche le url associate al prodotto
-        $urls = Url::where('urlable_id',$product->id)->where('urlable_type','App\Model\Product')->get();
-        foreach ($urls as $url)
-        {
-            $url->delete();
-        }
 
         //elimino anche i file associati al prodotto
         $files = File::where('fileable_id',$product->id)->where('fileable_type','App\Model\Product')->get();
@@ -297,21 +443,6 @@ class ProductController extends Controller
             $img->resize($big, null, function ($constraint) {$constraint->aspectRatio();});
             $img->save($path);
 
-            //creo anche le watermarks per chess
-            $img = Image::make($_SERVER['DOCUMENT_ROOT'].'/file/small/'.$filename);
-            $img->insert($_SERVER['DOCUMENT_ROOT'].'/img/watermark2_small.png', 'bottom-right', 50, 50);
-            $img->save($_SERVER['DOCUMENT_ROOT'].'/file/wmi/small/'.$filename);
-            $img = Image::make($_SERVER['DOCUMENT_ROOT'].'/file/big/'.$filename);
-            $img->insert($_SERVER['DOCUMENT_ROOT'].'/img/watermark2_small.png', 'bottom-right', 50, 50);
-            $img->save($_SERVER['DOCUMENT_ROOT'].'/file/wmi/big/'.$filename);
-
-            //crea anche le watermarks per italfama
-            $img = Image::make($_SERVER['DOCUMENT_ROOT'].'/file/small/'.$filename);
-            $img->insert($_SERVER['DOCUMENT_ROOT'].'/img/watermark_small.png', 'bottom-right', 50, 50);
-            $img->save($_SERVER['DOCUMENT_ROOT'].'/file/wmc/small/'.$filename);
-            $img = Image::make($_SERVER['DOCUMENT_ROOT'].'/file/big/'.$filename);
-            $img->insert($_SERVER['DOCUMENT_ROOT'].'/img/watermark_small.png', 'bottom-right', 50, 50);
-            $img->save($_SERVER['DOCUMENT_ROOT'].'/file/wmc/big/'.$filename);
         }
         //---//
 
@@ -369,32 +500,15 @@ class ProductController extends Controller
 
     }
 
-    public function switch_visibility_italfama(Request $request)
+
+    public function switch_omaggio(Request $request)
     {
         $id = $request->id;
         $stato = $request->stato;
 
         try{
             $item = Product::find($id);
-            $item->italfama = $stato;
-            $item->save();
-        }
-        catch(\Exception $e){
-
-            return ['result' => 0,'msg' => $e->getMessage()];
-        }
-        return ['result' => 1,'msg' => 'Elemento aggiornato con successo!'];
-
-    }
-
-    public function switch_offerta(Request $request)
-    {
-        $id = $request->id;
-        $stato = $request->stato;
-
-        try{
-            $item = Product::find($id);
-            $item->offerta = $stato;
+            $item->omaggio = $stato;
             $item->save();
         }
         catch(\Exception $e){

@@ -153,11 +153,16 @@
                             </div>
 
                             <div class="form-group">
-                                <span>* campi obbligatori</span>
-                                <br><br>
-                                <button class="btn btn-primary btn-lg w-100" type="submit">
-                                    <i class="fa fa-dot-circle-o"></i> SALVA
-                                </button>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <span>* campi obbligatori</span>
+                                        <br><br>
+                                        <button class="btn btn-primary btn-lg w-100" type="submit">
+                                            <i class="fa fa-dot-circle-o"></i> SALVA
+                                        </button>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </form>

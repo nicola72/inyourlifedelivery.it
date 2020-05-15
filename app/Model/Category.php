@@ -64,14 +64,45 @@ class Category extends Model implements Sortable
         return $this->hasMany('App\Model\Product');
     }
 
-    public function materials()
+    public function variants()
     {
-        return $this->belongsToMany('App\Model\Material', 'category_material');
+        return $this->hasMany('App\Model\Variant');
+    }
+
+    public function ingredients()
+    {
+        return $this->hasMany('App\Model\Ingredient');
     }
 
     public function shop()
     {
         return $this->belongsTo('App\Model\Shop');
+    }
+
+    public function cover()
+    {
+        $images = $this->morphMany('App\Model\File','fileable');
+        if($images)
+        {
+            $images = $images->orderBy('order');
+            $prima_img = $images->first();
+            if(is_object($prima_img))
+            {
+                return $images->first()->path;
+            }
+        }
+
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop = Shop::find($user->shop_id);
+            $logo = File::where('fileable_id',$shop->id)->where('fileable_type','App\Model\Shop')->first();
+            if(is_object($logo))
+            {
+                return $logo->path;
+            }
+        }
+        return 'default.jpg';
     }
 
 }

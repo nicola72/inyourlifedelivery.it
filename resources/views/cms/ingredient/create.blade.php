@@ -9,7 +9,7 @@
                     <div class="ibox-title">
 
                         <!-- Indietro -->
-                        <a href="{{url('cms/product')}}" class="btn btn-w-m btn-primary">Prodotti</a>
+                        <a href="{{url('cms/ingredient')}}" class="btn btn-w-m btn-primary">Ingredienti</a>
                         <!-- fine pulsante nuovo -->
 
                         <div class="ibox-tools">
@@ -26,8 +26,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Categoria*</label>
-                                        <select name="category_id" id="category_id" class="form-control" onchange="get_ingredients_and_variants()">
-                                            <option value="" selected>seleziona</option>
+                                        <select name="category_id" id="category_id" class="form-control">
+                                            <option value="">seleziona</option>
                                             @foreach($categorie as $cat)
                                                 <option value="{{$cat->id}}">{{$cat->nome_it}}</option>
                                             @endforeach
@@ -49,28 +49,9 @@
                             </div>
                             <div class="form-group">
                                 <div class="row">
-                                @foreach($langs as $lang)
                                     <div class="col-md-6">
-                                        <label class="d-block">
-                                            <img class="lang-icon" src="/img/cms/{{$lang}}.png" alt=""> Descrizione {{$lang}}
-                                        </label>
-                                        <textarea id="desc_{{$lang}}" style="min-height: 100px;" name="desc_{{$lang}}" class="form-control summernote mb-2"  ></textarea>
-                                    </div>
-                                @endforeach
-                                </div>
-                            </div>
-                            <div id="ingredients_and_variants">
-
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Prezzo*</label>
-                                        <input type="text" name="prezzo" id="prezzo" class="form-control mb-2" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Prezzo scontato (lasciare vuoto se non è scontato)</label>
-                                        <input type="text" name="prezzo_scontato" id="prezzo_scontato" class="form-control mb-2" />
+                                        <label>Prezzo <small>(non compilare o mettere 0 se gratis)</small></label>
+                                        <input type="text" name="prezzo" id="prezzo" value="0" class="form-control mb-2" />
                                     </div>
                                 </div>
                             </div>
@@ -81,25 +62,20 @@
                                         <label class="radio-inline"><input type="radio" name="visibile" value="1" checked>Si</label>
                                         <label class="radio-inline"><input type="radio" name="visibile" value="0">No</label>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label class="d-block">Omaggio</label>
-                                        <label class="radio-inline"><input type="radio" name="omaggio" value="1">Si</label>
-                                        <label class="radio-inline"><input type="radio" name="omaggio" value="0" checked>No</label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="d-block">Novità</label>
-                                        <label class="radio-inline"><input type="radio" name="novita" value="1">Si</label>
-                                        <label class="radio-inline"><input type="radio" name="novita" value="0" checked>No</label>
-                                    </div>
 
                                 </div>
                             </div>
                             <div class="form-group">
-                                <span>* campi obbligatori</span>
-                                <br><br>
-                                <button class="btn btn-primary btn-lg w-100" type="submit">
-                                    <i class="fa fa-dot-circle-o"></i> SALVA
-                                </button>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <span>* campi obbligatori</span>
+                                        <br><br>
+                                        <button class="btn btn-primary btn-lg w-100" type="submit">
+                                            <i class="fa fa-dot-circle-o"></i> SALVA
+                                        </button>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </form>
@@ -112,36 +88,6 @@
 @endsection
 @section('js_script')
     <script>
-        $(document).ready(function(){
-            let category_id = $('#category_id').val();
-            if(category_id != '')
-            {
-                get_ingredients_and_variants();
-            }
-        });
-
-        //ajax per prendere le varianti e gli ingredienti della categoria selezionata
-        function get_ingredients_and_variants()
-        {
-            let category_id = $('#category_id').val();
-
-            $.ajax({
-                type :"GET",
-                url: "{{url('cms/product/ingredients_and_variants')}}",
-                data:{'category_id':category_id },
-                dataType: "json",
-                success: function (data)
-                {
-                    if (data.result === 1)
-                    {
-                        $('#ingredients_and_variants').html(data.msg);
-                    }
-                    else{ alert( data.msg ); }
-                },
-                error: function (){ alert("Si è verificato un errore! Riprova!"); }
-            });
-        }
-
         $("#{{$form_name}}").validate({
             rules: {
                 @foreach($langs as $lang)
@@ -161,7 +107,7 @@
             {
                 $.ajax({
                     type: "POST",
-                    url: "{{url('cms/product')}}",
+                    url: "{{url('cms/ingredient/store')}}",
                     data: $("#{{$form_name}}").serialize(),
                     dataType: "json",
                     success: function (data)

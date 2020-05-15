@@ -20,14 +20,6 @@
                     @endforeach
                 </div>
                 <div class="form-group">
-                    @foreach($langs as $lang)
-                        <label class="d-block">
-                            <img class="lang-icon" src="/img/cms/{{$lang}}.png" alt=""> Descrizione {{$lang}}
-                        </label>
-                        <textarea id="desc_{{$lang}}" style="min-height: 100px;" name="desc_{{$lang}}" class="form-control summernote mb-2"  ></textarea>
-                    @endforeach
-                </div>
-                <div class="form-group">
                     <span>* campi obbligatori</span>
                     <br><br>
                     <button class="btn btn-primary btn-lg w-100" type="submit">

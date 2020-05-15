@@ -23,29 +23,25 @@
                             <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Codice</th>
                                 <th>Nome</th>
                                 <th>Categoria</th>
                                 <th>Prezzo</th>
                                 <th>Scontato</th>
-                                <th>Disp.</th>
                                 <th data-orderable="false">Visibile</th>
-                                <th data-orderable="false">Italfama</th>
-                                <th data-orderable="false">Offerta</th>
+                                <th data-orderable="false">Omaggio</th>
                                 <th data-orderable="false">Novità</th>
                                 <th data-orderable="false">Azioni</th>
+                                <th data-orderable="false">Foto</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($products as $product)
                                 <tr>
                                     <td>{{$product->id}}</td>
-                                    <td>{{$product->codice}}</td>
                                     <td>{{$product->nome_it}}</td>
                                     <td>{{$product->category->nome_it}}</td>
                                     <td>@money($product->prezzo)</td>
                                     <td>@money($product->prezzo_scontato)</td>
-                                    <td>{{$product->availability->nome_it}}</td>
 
                                     <td>
                                         <!-- Pulsante Switch Visibilita -->
@@ -65,14 +61,14 @@
                                     </td>
 
                                     <td>
-                                        <!-- Pulsante Switch Visibilita Italfama -->
+                                        <!-- Pulsante Switch Omaggio -->
                                         <div class="switch">
                                             <div class="onoffswitch">
-                                                <input type="checkbox" id="switch_ital_{{$product->id}}"
+                                                <input type="checkbox" id="switch_omag_{{$product->id}}"
                                                        data-id="{{$product->id}}"
-                                                       class="onoffswitch-checkbox ital-check"
-                                                        {{ ($product->italfama == 1) ? "checked" : "" }} />
-                                                <label class="onoffswitch-label" for="switch_ital_{{$product->id}}">
+                                                       class="onoffswitch-checkbox omag-check"
+                                                        {{ ($product->omaggio == 1) ? "checked" : "" }} />
+                                                <label class="onoffswitch-label" for="switch_omag_{{$product->id}}">
                                                     <span class="onoffswitch-inner"></span>
                                                     <span class="onoffswitch-switch"></span>
                                                 </label>
@@ -80,22 +76,6 @@
                                         </div>
                                         <!-- -->
 
-                                    </td>
-                                    <td>
-                                        <!-- Pulsante Switch Offerta-->
-                                        <div class="switch">
-                                            <div class="onoffswitch">
-                                                <input type="checkbox" id="switch_offer_{{$product->id}}"
-                                                       data-id="{{$product->id}}"
-                                                       class="onoffswitch-checkbox offer-check"
-                                                        {{ ($product->offerta == 1) ? "checked" : "" }} />
-                                                <label class="onoffswitch-label" for="switch_offer_{{$product->id}}">
-                                                    <span class="onoffswitch-inner"></span>
-                                                    <span class="onoffswitch-switch"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <!-- -->
                                     </td>
                                     <td>
                                         <!-- Pulsante Switch Novita-->
@@ -133,7 +113,11 @@
                                         </a>
                                         <!-- -->
                                     </td>
-
+                                    <td>
+                                        @if($product->cover())
+                                        <img src="/file/{{$product->cover()}}" alt="" class="img-fluid" style="max-width:100px"/>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -200,29 +184,13 @@
         //Fine
 
         //Switch per VISIBILITA ITALFAMA
-        $('.ital-check').change(function ()
+        $('.omag-check').change(function ()
         {
             let stato = $(this).is(':checked') ? "1" : "0";
 
             $.ajax({
                 type: "GET",
-                url: "/cms/product/switch_visibility_italfama",
-                data: {id: $(this).attr('data-id'), stato : stato},
-                dataType: "json",
-                success: function (data){ alert(data.msg);},
-                error: function (){ alert("Si è verificato un errore! Riprova!");}
-            });
-        });
-        //Fine
-
-        //Switch per OFFERTA
-        $('.offer-check').change(function ()
-        {
-            let stato = $(this).is(':checked') ? "1" : "0";
-
-            $.ajax({
-                type: "GET",
-                url: "/cms/product/switch_offerta",
+                url: "/cms/product/switch_omaggio",
                 data: {id: $(this).attr('data-id'), stato : stato},
                 dataType: "json",
                 success: function (data){ alert(data.msg);},

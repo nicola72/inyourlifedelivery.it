@@ -62,6 +62,7 @@ Route::group(['prefix' => 'cms'], function ()
         Route::get('/configurations/edit_hours/{id}','Cms\ConfigurationsController@edit_hours');
         Route::get('/configurations/edit_open_days/{id}','Cms\ConfigurationsController@edit_open_days');
         Route::get('/configurations/edit_logo/{id}','Cms\ConfigurationsController@edit_logo');
+        Route::get('/configurations/shop_config/{id}', 'Cms\ConfigurationsController@shop_config');
         Route::post('/configurations/upload_logo', 'Cms\ConfigurationsController@upload_logo');
         Route::post('/configurations/update_comuni/{id}', 'Cms\ConfigurationsController@update_comuni');
         Route::post('/configurations/update_hours/{id}', 'Cms\ConfigurationsController@update_hours');
@@ -75,6 +76,7 @@ Route::group(['prefix' => 'cms'], function ()
         Route::post('/configurations/update_paypal/{id}', 'Cms\ConfigurationsController@update_paypal');
 
 
+
         Route::get('/macrocategory/switch_stato','Cms\MacrocategoryController@switch_stato');
         Route::resource('/macrocategory','Cms\MacrocategoryController');
         Route::get('/macrocategory/move_up/{id}', 'Cms\MacrocategoryController@move_up');
@@ -83,26 +85,40 @@ Route::group(['prefix' => 'cms'], function ()
         Route::get('/macrocategory', 'Cms\MacrocategoryController@index')->name('cms.macrocategorie');
 
 
-        Route::get('/category/sync_prodotti', 'Cms\CategoryController@sync_prodotti');
-        Route::get('/category/sync_file_prodotti', 'Cms\CategoryController@sync_file_prodotti');
-        Route::get('/category/sync_abbinamenti', 'Cms\CategoryController@sync_abbinamenti');
-        Route::get('/category/sync_file_abbinamenti', 'Cms\CategoryController@sync_file_abbinamenti');
         Route::get('/category/switch_stato','Cms\CategoryController@switch_stato');
         Route::resource('/category','Cms\CategoryController');
         Route::get('/category/move_up/{id}', 'Cms\CategoryController@move_up');
         Route::get('/category/move_down/{id}', 'Cms\CategoryController@move_down');
         Route::get('/category/destroy/{id}', 'Cms\CategoryController@destroy');
+        Route::post('/category/upload_images', 'Cms\CategoryController@upload_images');
+        Route::get('/category/images/{id}', 'Cms\CategoryController@images');
         Route::get('/category', 'Cms\CategoryController@index')->name('cms.categorie');
 
         Route::get('/product/switch_visibility','Cms\ProductController@switch_visibility');
-        Route::get('/product/switch_visibility_italfama','Cms\ProductController@switch_visibility_italfama');
-        Route::get('/product/switch_offerta','Cms\ProductController@switch_offerta');
+        Route::get('/product/switch_omaggio','Cms\ProductController@switch_omaggio');
         Route::get('/product/switch_novita','Cms\ProductController@switch_novita');
+        Route::get('/product/ingredients_and_variants','Cms\ProductController@ingredients_and_variants');
         Route::resource('/product','Cms\ProductController');
         Route::post('/product/upload_images', 'Cms\ProductController@upload_images');
         Route::get('/product/images/{id}', 'Cms\ProductController@images');
         Route::get('/product/destroy/{id}', 'Cms\ProductController@destroy');
         Route::get('/product','Cms\ProductController@index')->name('cms.prodotti');
+
+        Route::get('/ingredient/switch_visibility','Cms\IngredientController@switch_visibility');
+        Route::get('/ingredient/destroy/{id}', 'Cms\IngredientController@destroy');
+        Route::get('/ingredient/create','Cms\IngredientController@create');
+        Route::get('/ingredient/edit/{id}','Cms\IngredientController@edit');
+        Route::post('/ingredient/store','Cms\IngredientController@store');
+        Route::post('/ingredient/update/{id}','Cms\IngredientController@update');
+        Route::get('/ingredient','Cms\IngredientController@index')->name('cms.ingredienti');
+
+        Route::get('/variant/switch_visibility','Cms\VariantController@switch_visibility');
+        Route::get('/variant/destroy/{id}', 'Cms\VariantController@destroy');
+        Route::get('/variant/create','Cms\VariantController@create');
+        Route::get('/variant/edit/{id}','Cms\VariantController@edit');
+        Route::post('/variant/store','Cms\VariantController@store');
+        Route::post('/variant/update/{id}','Cms\VariantController@update');
+        Route::get('/variant','Cms\VariantController@index')->name('cms.varianti');
 
         Route::post('/file/sort_images', 'Cms\FileController@sort_images');
         Route::get('/file','Cms\FileController@index')->name('cms.file');

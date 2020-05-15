@@ -8,7 +8,7 @@
                     <div class="ibox-title">
 
                         <!-- Indietro -->
-                        <a href="{{url('cms/product')}}" class="btn btn-w-m btn-primary">Prodotti</a>
+                        <a href="{{url('cms/category')}}" class="btn btn-w-m btn-primary">Categorie</a>
                         <!-- fine pulsante nuovo -->
 
                         <div class="ibox-tools">
@@ -45,9 +45,9 @@
                             </div>
 
                             <!-- DROPZONE per upload immagini -->
-                            <form action="{{url('cms/product/upload_images')}}" class="dropzone" id="dropzoneForm">
+                            <form action="{{url('cms/category/upload_images')}}" class="dropzone" id="dropzoneForm">
                                 {{ csrf_field() }}
-                                <input type="hidden" name="fileable_id" id="fileable_id" value="{{$product->id}}" />
+                                <input type="hidden" name="fileable_id" id="fileable_id" value="{{$category->id}}" />
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div>
@@ -103,7 +103,6 @@
                                 <div  class="file-name">
                                     <div class="collapse" id="file-name-{{$img->id}}">
                                         <small class="mb-2">Inserito il: {{$img->created_at->format('d/m/Y')}}</small>
-
                                     </div>
 
                                     <!-- pulsante per eliminare file -->

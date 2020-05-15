@@ -8,7 +8,11 @@
                     <div class="ibox-title">
 
                         <!-- Indietro -->
+                        @if($user->role_id != 1)
                         <a href="{{url('cms/configurations')}}" class="btn btn-w-m btn-primary">Indietro</a>
+                        @else
+                            <a href="{{url('cms/configurations/shop_config',$shop->id)}}" class="btn btn-w-m btn-primary">Indietro</a>
+                        @endif
                         <!-- fine pulsante nuovo -->
 
                         <div class="ibox-tools">

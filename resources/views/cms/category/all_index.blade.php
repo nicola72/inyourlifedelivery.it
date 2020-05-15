@@ -7,7 +7,6 @@
 
                     <!-- header del box -->
                     <div class="ibox-title">
-
                         <div class="ibox-tools">
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </div>
@@ -15,28 +14,25 @@
                     <!-- fine header -->
 
                     <div class="ibox-content">
-                        <table id="table-shops" style="font-size:12px" class="table table-striped table-bordered">
+                        <table id="table-categories" style="font-size:12px" class="table table-striped table-bordered">
                             <thead>
                             <tr>
-                                <th>R.Sociale</th>
-                                <th>Dominio</th>
-                                <th>Email</th>
-                                <th data-orderable="false">Azioni</th>
+                                <th>Nome</th>
+                                <th>Shop</th>
+                                <th>Ordine</th>
+                                <th data-orderable="false">Foto</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($shops as $shop)
+                            @foreach($categorie as $cat)
                                 <tr>
-                                    <td>{{$shop->ragione_sociale}}</td>
-                                    <td>{{$shop->domain}}</td>
-                                    <td>{{$shop->email}}</td>
-                                    <td data-orderable="false">
-                                        <!-- Pulsante per le configurazioni -->
-                                        <a class="azioni-table"  href="{{url('cms/configurations/shop_config',['id'=>$shop->id])}}">
-                                            <i class="fa fa-cogs fa-2x"></i>
-                                        </a>
-                                        <!-- -->
-
+                                    <td>{{$cat->nome_it}}</td>
+                                    <td>{{$cat->shop->insegna}}</td>
+                                    <td>{{$cat->order}}</td>
+                                    <td>
+                                        @if($cat->cover())
+                                            <img src="/file/{{$cat->cover()}}" alt="" class="img-fluid" style="max-width:100px"/>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -53,10 +49,10 @@
     <script>
         $(document).ready(function ()
         {
-            $('#table-shops').DataTable({
+            $('#table-categories').DataTable({
                 responsive: true,
                 pageLength: 100,
-                order: [[ 4, "asc" ]], //order in base a order
+                order: [[ 1, "asc" ]], //order in base a order
                 language:{ "url": "/cms_assets/js/plugins/dataTables/dataTable.ita.lang.json" }
             });
 
@@ -93,7 +89,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "/cms/shops/switch_stato",
+                url: "/cms/category/switch_stato",
                 data: {id: $(this).attr('data-id'), stato : stato},
                 dataType: "json",
                 success: function (data){ alert(data.msg);},

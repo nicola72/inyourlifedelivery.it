@@ -25,7 +25,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Categoria*</label>
-                                        <select name="category_id" id="category_id" class="form-control">
+                                        <select name="category_id" id="category_id" class="form-control" onchange="get_ingredients_and_variants()">
                                             <option value="">seleziona</option>
                                             @foreach($categorie as $cat)
                                                 @if($cat->id == $product->category_id)
@@ -35,10 +35,6 @@
                                                 @endif
                                             @endforeach
                                         </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Codice</label>
-                                        <input value="{{$product->codice}}" type="text" name="codice" id="codice" class="form-control mb-2" />
                                     </div>
                                 </div>
                             </div>
@@ -66,28 +62,38 @@
                                     @endforeach
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    @foreach($langs as $lang)
-                                        <div class="col-md-6">
-                                            <label class="d-block">
-                                                <img class="lang-icon" src="/img/cms/{{$lang}}.png" alt=""> Descrizione Breve {{$lang}}
-                                            </label>
-                                            <textarea id="desc_breve_{{$lang}}" style="min-height: 100px;" name="desc_breve_{{$lang}}" class="form-control summernote mb-2"  >{{$product->{'desc_breve_'.$lang} }}</textarea>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    @foreach($langs as $lang)
-                                        <div class="col-md-6">
-                                            <label class="d-block">
-                                                <img class="lang-icon" src="/img/cms/{{$lang}}.png" alt=""> Misure {{$lang}}
-                                            </label>
-                                            <textarea id="misure_{{$lang}}" style="min-height: 100px;" name="misure_{{$lang}}" class="form-control summernote mb-2"  >{{$product->{'misure_'.$lang} }}</textarea>
-                                        </div>
-                                    @endforeach
+                            <div id="ingredients_and_variants">
+                                <div class="form-group">
+                                    <div class="row">
+                                        @if($ingredients->count() > 0)
+                                            <div class="col-md-6">
+                                                <label>Ingredienti <small>(quelli già presenti nel prodotto)</small></label>
+                                                <select name="ingredients[]" id="ingredients" class="chosen-select" data-placeholder="Seleziona" multiple style="width:350px;">
+                                                    @foreach($ingredients as $ingredient)
+                                                        @if(in_array($ingredient->id,$ing_selected))
+                                                            <option value="{{$ingredient->id}}" selected>{{$ingredient->nome_it}}</option>
+                                                        @else
+                                                            <option value="{{$ingredient->id}}">{{$ingredient->nome_it}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @endif
+                                        @if($variants->count() > 0)
+                                            <div class="col-md-4">
+                                                <label>Varianti <small>(stabilisci le varianti da poter scegliere)</small></label>
+                                                <select name="variants[]" id="variants" class="chosen-select" data-placeholder="Seleziona" multiple style="width:350px;">
+                                                    @foreach($variants as $variant)
+                                                        @if(in_array($variant->id,$var_selected))
+                                                            <option value="{{$variant->id}}" selected>{{$variant->nome_it}}</option>
+                                                        @else
+                                                            <option value="{{$variant->id}}">{{$variant->nome_it}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -100,58 +106,6 @@
                                         <label>Prezzo scontato</label>
                                         <input value="{{$product->prezzo_scontato}}" type="text" name="prezzo_scontato" id="prezzo_scontato" class="form-control mb-2" />
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label>Disponibilità</label>
-                                        <select name="availability_id" id="availability_id" class="form-control" >
-                                            @foreach($availabilities as $av)
-                                                @if($av->id == $product->availabily_id)
-                                                    <option value="{{$av->id}}" selected>{{$av->nome_it}}</option>
-                                                @else
-                                                    <option value="{{$av->id}}">{{$av->nome_it}}</option>
-                                                @endif
-
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Peso</label>
-                                        <input value="{{$product->peso}}" type="number" name="peso" id="peso" class="form-control mb-2" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Stock</label>
-                                        <input value="{{$product->stock}}" type="number" value="1000" name="stock" id="stock" class="form-control mb-2" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <label class="d-block">Acquistabile</label>
-                                        @if($product->acquistabile == 1)
-                                            <label class="radio-inline"><input type="radio" name="acquistabile" value="1" checked>Si</label>
-                                            <label class="radio-inline"><input type="radio" name="acquistabile" value="0">No</label>
-                                        @else
-                                            <label class="radio-inline"><input type="radio" name="acquistabile" value="1" >Si</label>
-                                            <label class="radio-inline"><input type="radio" name="acquistabile" value="0" checked>No</label>
-                                        @endif
-
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="d-block">Acquistabile Italfama</label>
-                                        @if($product->acquistabile_italfama == 1)
-                                            <label class="radio-inline"><input type="radio" name="acquistabile_italfama" value="1" checked>Si</label>
-                                            <label class="radio-inline"><input type="radio" name="acquistabile_italfama" value="0">No</label>
-                                        @else
-                                            <label class="radio-inline"><input type="radio" name="acquistabile_italfama" value="1" >Si</label>
-                                            <label class="radio-inline"><input type="radio" name="acquistabile_italfama" value="0" checked>No</label>
-                                        @endif
-
-                                    </div>
-
                                 </div>
                             </div>
                             <div class="form-group">
@@ -172,6 +126,31 @@
 @endsection
 @section('js_script')
     <script>
+        //per la multiselect
+        $('.chosen-select').chosen({width: "100%"});
+
+        //ajax per prendere le varianti e gli ingredienti della categoria selezionata
+        function get_ingredients_and_variants()
+        {
+            let category_id = $('#category_id').val();
+
+            $.ajax({
+                type :"GET",
+                url: "{{url('cms/product/ingredients_and_variants')}}",
+                data:{'category_id':category_id },
+                dataType: "json",
+                success: function (data)
+                {
+                    if (data.result === 1)
+                    {
+                        $('#ingredients_and_variants').html(data.msg);
+                    }
+                    else{ alert( data.msg ); }
+                },
+                error: function (){ alert("Si è verificato un errore! Riprova!"); }
+            });
+        }
+
         $("#{{$form_name}}").validate({
             rules: {
                 @foreach($langs as $lang)

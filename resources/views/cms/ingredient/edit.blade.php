@@ -9,11 +9,7 @@
                     <div class="ibox-title">
 
                         <!-- Indietro -->
-                        @if($user->role_id != 1)
-                            <a href="{{url('cms/configurations')}}" class="btn btn-w-m btn-primary">Indietro</a>
-                        @else
-                            <a href="{{url('cms/configurations/shop_config',$shop->id)}}" class="btn btn-w-m btn-primary">Indietro</a>
-                        @endif
+                        <a href="{{url('cms/ingredient')}}" class="btn btn-w-m btn-primary">Ingredienti</a>
                         <!-- fine pulsante nuovo -->
 
                         <div class="ibox-tools">
@@ -24,25 +20,45 @@
 
                     <div class="ibox-content">
                         <form action="" method="POST" id="{{ $form_name }}">
+                            <input type="hidden" name="shop_id" id="shop_id" value="{{$shop->id}}" />
                             {{ csrf_field() }}
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label>Comuni*</label>
-                                        <select name="comuni[]" id="comuni" class="chosen-select" data-placeholder="Seleziona" multiple style="width:350px;">
-                                            @foreach($comuni as $comune)
-                                                @if(in_array($comune['comune'],$selected))
-                                                    <option value="{{$comune['comune']}}" selected>{{$comune['comune']}}</option>
+                                        <label>Categoria*</label>
+                                        <select name="category_id" id="category_id" class="form-control">
+                                            <option value="">seleziona</option>
+                                            @foreach($categorie as $cat)
+                                                @if($cat->id == $ingredient->category_id)
+                                                    <option value="{{$cat->id}}" selected>{{$cat->nome_it}}</option>
                                                 @else
-                                                    <option value="{{$comune['comune']}}">{{$comune['comune']}}</option>
+                                                    <option value="{{$cat->id}}">{{$cat->nome_it}}</option>
                                                 @endif
-
                                             @endforeach
                                         </select>
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="form-group">
+                                <div class="row">
+                                    @foreach($langs as $lang)
+                                        <div class="col-md-6">
+                                            <label class="d-block">
+                                                <img class="lang-icon" src="/img/cms/{{$lang}}.png" alt=""> Nome {{$lang}}*
+                                            </label>
+                                            <input value="{{$ingredient->{'nome_'.$lang} }}" type="text" name="nome_{{$lang}}" id="nome_{{$lang}}" class="form-control mb-2" />
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Prezzo</label>
+                                        <input value="{{$ingredient->prezzo}}" type="text" name="prezzo" id="prezzo" class="form-control mb-2" />
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -53,7 +69,6 @@
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
 
                         </form>
@@ -66,19 +81,26 @@
 @endsection
 @section('js_script')
     <script>
-        //per la multiselect
-        $('.chosen-select').chosen({width: "100%"});
-
         $("#{{$form_name}}").validate({
             rules: {
+                @foreach($langs as $lang)
+                nome_{{$lang}}:{required:true},
+                @endforeach
+                category_id:{required:true},
+                prezzo:{required:true},
             },
             messages: {
+                @foreach($langs as $lang)
+                nome_{{$lang}}:{required:'Questo campo è obbligatorio'},
+                @endforeach
+                category_id:{required:'Questo campo è obbligatorio'},
+                prezzo:{required:'Questo campo è obbligatorio'},
             },
             submitHandler: function (form)
             {
                 $.ajax({
                     type: "POST",
-                    url: "{{url('cms/configurations/update_comuni',[$shop->id])}}",
+                    url: "{{url('cms/ingredient/update',[$ingredient->id])}}",
                     data: $("#{{$form_name}}").serialize(),
                     dataType: "json",
                     success: function (data)

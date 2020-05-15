@@ -8,12 +8,9 @@
                     <!-- header del box -->
                     <div class="ibox-title">
 
-                        <!-- solo l'Editore può inserire una nuova categoria -->
-                        @if($user->role_id != 1)
-                        <!-- NUOVA CATEGORIA -->
-                        <a href="javascript:void(0)" onclick="get_modal('{{url('cms/category/create')}}')" class="btn btn-w-m btn-primary">Aggiungi</a>
+                        <!-- NUOVO -->
+                        <a href="{{url('cms/ingredient/create')}}" class="btn btn-w-m btn-primary">Aggiungi</a>
                         <!-- fine pulsante nuovo -->
-                        @endif
 
                         <div class="ibox-tools">
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -22,80 +19,57 @@
                     <!-- fine header -->
 
                     <div class="ibox-content">
-                        <table id="table-categories" style="font-size:12px" class="table table-striped table-bordered">
+                        <table id="table-products" style="font-size:12px" class="table table-striped table-bordered">
                             <thead>
                             <tr>
+                                <th>Id</th>
                                 <th>Nome</th>
-                                <th>Shop</th>
-                                <th>Stato</th>
-                                <th>Ordine</th>
-                                <th data-orderable="false">Sposta</th>
+                                <th>Categoria</th>
+                                <th>Prezzo</th>
+                                <th data-orderable="false">Visibile</th>
                                 <th data-orderable="false">Azioni</th>
-                                <th data-orderable="false">Foto</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($categorie as $cat)
+                            @foreach($ingredients as $ingredient)
                                 <tr>
-                                    <td>{{$cat->nome_it}}</td>
-                                    <td>{{$cat->shop->insegna}}</td>
+                                    <td>{{$ingredient->id}}</td>
+                                    <td>{{$ingredient->nome_it}}</td>
+                                    <td>{{$ingredient->category->nome_it}}</td>
+                                    <td>@money($ingredient->prezzo)</td>
 
-                                    <td data-orderable="false">
-
-                                        <!-- Pulsante Switch Stato -->
+                                    <td>
+                                        <!-- Pulsante Switch Visibilita -->
                                         <div class="switch">
                                             <div class="onoffswitch">
-                                                <input type="checkbox" id="switch_{{$cat->id}}"
-                                                       data-id="{{$cat->id}}"
-                                                       class="onoffswitch-checkbox"
-                                                        {{ ($cat->stato == 1) ? "checked" : "" }} />
-                                                <label class="onoffswitch-label" for="switch_{{$cat->id}}">
+                                                <input type="checkbox" id="switch_vis_{{$ingredient->id}}"
+                                                       data-id="{{$ingredient->id}}"
+                                                       class="onoffswitch-checkbox vis-check"
+                                                        {{ ($ingredient->visibile == 1) ? "checked" : "" }} />
+                                                <label class="onoffswitch-label" for="switch_vis_{{$ingredient->id}}">
                                                     <span class="onoffswitch-inner"></span>
                                                     <span class="onoffswitch-switch"></span>
                                                 </label>
                                             </div>
                                         </div>
                                         <!-- -->
-
                                     </td>
-                                    <td>{{$cat->order}}</td>
-                                    <td data-orderable="false">
-                                        <!-- Pulsante per ordinare in su -->
-                                        <a class="azioni-table"  href="{{url('/cms/category/move_up',[$cat->id])}}">
-                                            <i class="fa fa-arrow-circle-up fa-2x"></i>
-                                        </a>
-                                        <!-- -->
 
-                                        <!-- Pulsante per ordinare in giù -->
-                                        <a class="azioni-table pl-1"  href="{{url('/cms/category/move_down',[$cat->id])}}">
-                                            <i class="fa fa-arrow-circle-down fa-2x"></i>
-                                        </a>
-                                        <!-- -->
-                                    </td>
                                     <td data-orderable="false">
+
                                         <!-- Pulsante per modificare -->
-                                        <a class="azioni-table" onclick="get_modal('{{route('category.edit',['id'=>$cat->id])}}')"  href="javascript:void(0)">
+                                        <a class="azioni-table pl-1"  href="{{url('/cms/ingredient/edit',[$ingredient->id])}}" title="modifica">
                                             <i class="fa fa-edit fa-2x"></i>
                                         </a>
                                         <!-- -->
 
-                                        <!-- Pulsante per le immagini -->
-                                        <a class="azioni-table pl-1"  href="{{url('/cms/category/images',['id'=>$cat->id])}}" title="immagini">
-                                            <i class="fa fa-camera fa-2x"></i>
-                                        </a>
-                                        <!-- -->
-
                                         <!-- pulsante per eliminare -->
-                                        <a class="azioni-table azione-red elimina pl-1"  href="{{url('/cms/category/destroy',[$cat->id])}}">
+                                        <a class="azioni-table azione-red elimina pl-1"  href="{{url('/cms/ingredient/destroy',[$ingredient->id])}}" title="elimina">
                                             <i class="fa fa-trash fa-2x"></i>
                                         </a>
                                         <!-- -->
                                     </td>
-                                    <td>
-                                        @if($cat->cover())
-                                            <img src="/file/{{$cat->cover()}}" alt="" class="img-fluid" style="max-width:100px"/>
-                                        @endif
-                                    </td>
+
                                 </tr>
                             @endforeach
                             </tbody>
@@ -111,10 +85,10 @@
     <script>
         $(document).ready(function ()
         {
-            $('#table-categories').DataTable({
+            $('#table-products').DataTable({
                 responsive: true,
                 pageLength: 100,
-                order: [[ 4, "asc" ]], //order in base a order
+                order: [[ 1, "asc" ]], //order in base a order
                 language:{ "url": "/cms_assets/js/plugins/dataTables/dataTable.ita.lang.json" }
             });
 
@@ -145,18 +119,22 @@
         });
         //Fine Pulsante ELIMINA
 
-        $('.onoffswitch-checkbox').change(function ()
+        //Switch per VISIBILITA
+        $('.vis-check').change(function ()
         {
             let stato = $(this).is(':checked') ? "1" : "0";
 
             $.ajax({
                 type: "GET",
-                url: "/cms/category/switch_stato",
+                url: "/cms/ingredient/switch_visibility",
                 data: {id: $(this).attr('data-id'), stato : stato},
                 dataType: "json",
                 success: function (data){ alert(data.msg);},
                 error: function (){ alert("Si è verificato un errore! Riprova!");}
             });
         });
+        //Fine
+
+
     </script>
 @stop
