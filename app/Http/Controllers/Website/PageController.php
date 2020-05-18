@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Website;
 
 use App\Mail\Contact;
+use App\Model\Cart;
+use App\Model\Category;
 use App\Model\Domain;
 use App\Model\File;
+use App\Model\Ingredient;
 use App\Model\Macrocategory;
 use App\Model\Newsitem;
 use App\Model\Page;
@@ -13,6 +16,7 @@ use App\Model\Product;
 use App\Model\Seo;
 use App\Model\Shop;
 use App\Model\Slider;
+use App\Model\Variant;
 use Illuminate\Http\Request;
 use App\Model\Url;
 use App\Http\Controllers\Controller;
@@ -41,11 +45,143 @@ class PageController extends Controller
             return view('website.page.dominio_sbagliato');
         }
 
+        $categories = Category::where('shop_id',$this->shop->id)->where('stato',1)->orderBy('order')->get();
+
+        $first_cat = $categories->first();
+        $products = Product::where('category_id',$first_cat->id)->where('visibile',1)->where('omaggio',0)->where('shop_id',$this->shop->id)->get();
+        $ingredients = Ingredient::where('category_id',$first_cat->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
+        $variants = Variant::where('category_id',$first_cat->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
 
         $params = [
             'shop' => $this->shop,
+            'categories' => $categories,
+            'products' => $products,
+            'ingredients' => $ingredients,
+            'variants' => $variants,
         ];
         return view('website.page.index',$params);
+    }
+
+    public function add_to_cart(Request $request)
+    {
+        $product_id = decrypt($request->input('product_id',null));
+        $shop_id = decrypt($request->input('shop_id',null));
+
+        \Log::debug('add_to_cart product_id='.$product_id.' shop_id='.$shop_id);
+
+        if($product_id == null || $shop_id == null)
+        {
+            \Log::error('fallito add_to_cart  con product_id='.$product_id.' e shop_id='.$shop_id);
+            return ['result' => 0, 'msg' => 'Errore'];
+        }
+
+        $shop = Shop::find($shop_id);
+        if(!$shop)
+        {
+            \Log::error('fallito add_to_cart  non trovato il negozio con id='.$shop_id);
+            return ['result' => 0, 'msg' => 'Errore'];
+        }
+
+        $product = Product::find($product_id);
+        if(!$product)
+        {
+            \Log::error('fallito add_to_cart  non trovato il prodotto con id='.$shop_id);
+            return ['result' => 0, 'msg' => 'Errore'];
+        }
+
+        $prezzo = $product->prezzo_vendita();
+        $qty = $request->input('qty',1);
+
+        //controllo gli ingredienti eliminati
+        $ingredienti_eliminati = "";
+
+        if($product->ingredients->count() > 0)
+        {
+            foreach($product->ingredients as $ing)
+            {
+                if(!$request->has('ingredient_'.$ing->id))
+                {
+                    $ingredienti_eliminati .= $ing->nome_it.",";
+                }
+            }
+            //elimino l'ultima virgola
+            if($ingredienti_eliminati != '')
+            {
+                $ingredienti_eliminati = substr($ingredienti_eliminati, 0, strlen($ingredienti_eliminati) - 1);
+            }
+        }
+
+        //controllo gli ingredienti aggiunti
+        $ingredienti_aggiunti = "";
+
+        if($product->ingredienti_da_aggiungere()->count() > 0)
+        {
+            foreach($product->ingredienti_da_aggiungere() as $ing)
+            {
+                if($request->has('ingredient_'.$ing->id))
+                {
+                    $ingredienti_aggiunti .= $ing->nome_it.",";
+                    $prezzo = $prezzo + $ing->prezzo;
+                }
+            }
+            //elimino l'ultima virgola
+            if($ingredienti_aggiunti != '')
+            {
+                $ingredienti_aggiunti = substr($ingredienti_aggiunti, 0, strlen($ingredienti_aggiunti) - 1);
+            }
+        }
+
+
+        //controllo se c'è la variante
+        $variante = "";
+
+        if($product->variants->count() > 0)
+        {
+            foreach ($product->variants as $variant)
+            {
+                if($request->has('variante'))
+                {
+                    $variant_id = $request->input('variante');
+                    $var = Variant::find($variant_id);
+                    if($var)
+                    {
+                        $variante = $var->nome_it;
+                        if($var->type == '+')
+                        {
+                            $prezzo = $prezzo + $var->prezzo;
+                        }
+                        else
+                        {
+                            $prezzo = $prezzo - $var->prezzo;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        try
+        {
+            $cart = new Cart();
+            $cart->product_id = $product_id;
+            $cart->shop_id = $shop_id;
+            $cart->nome_prodotto = $product->nome_it;
+            $cart->ingredienti_aggiunti = $ingredienti_aggiunti;
+            $cart->ingredienti_eliminati = $ingredienti_eliminati;
+            $cart->variante = $variante;
+            $cart->session_id = \Session::getId();
+            $cart->qta = $qty;
+            $cart->prezzo = $prezzo;
+            $cart->totale = $prezzo * $qty;
+            $cart->save();
+        }
+        catch (\Exception $e)
+        {
+            \Log::error('fallito add_to_cart  errore inserimento '.$e->getMessage() );
+            return ['result' => 0,'msg' => 'Errore! impossibile inserire il prodotto selezionato'];
+        }
+
+        return ['result' => 1, 'msg' => 'Successo! Prodotto inserito nel carrello'];
     }
 
     public function invia_formcontatti(Request $request)
@@ -76,112 +212,4 @@ class PageController extends Controller
     }
 
 
-    public function page(Request $request)
-    {
-        $slug = $request->segment(2);
-
-        //prendo la url con quello slug e con la lingua
-        $url = Url::where('slug',$slug)->first();
-
-        if($url)
-        {
-            //se non siamo sul dominio giusto faccio il redirect
-            if($url->domain->nome != $_SERVER['HTTP_HOST'] && "www.".$url->domain->nome != $_SERVER['HTTP_HOST'])
-            {
-                header("HTTP/1.1 301 Moved Permanently");
-                header("Location: https://www.".$url->domain->nome."/".$url->locale."/".$url->slug);
-                exit();
-            }
-
-            switch ($url->urlable_type) {
-                case 'App\Model\Page':
-                    return $this->simplePage($request,$url);
-                    break;
-                case 'App\Model\Category':
-                    return $this->categoryPage($request,$url);
-                    break;
-                case 'App\Model\Product':
-                    return $this->productPage($request,$url);
-                    break;
-                case 'App\Model\Pairing':
-                    return $this->pairingPage($request,$url);
-                    break;
-                default:
-                    return view('website.errors.404');
-            }
-        }
-        else
-        {
-            return view('website.errors.404');
-        }
-    }
-
-    protected function simplePage(Request $request,$url)
-    {
-        $page = Page::find($url->urlable_id);
-        if(method_exists($this,$page->nome))
-        {
-            return $this->{$page->nome}($request,$url);
-        }
-        else
-        {
-            return view('website.errors.not_found_method',['method'=>$page->nome]);
-        }
-    }
-
-    protected function categoryPage(Request $request,$url)
-    {
-
-    }
-
-    protected function productPage(Request $request,$url)
-    {
-
-    }
-
-    protected function pairingPage(Request $request,$url)
-    {
-
-    }
-
-    protected function azienda(Request $request,$url)
-    {
-        $seo = $url->seo;
-        $macrocategorie = Macrocategory::where('stato',1)->orderBy('order')->get();
-
-        $params = [
-            'seo' => $seo,
-            'macrocategorie' => $macrocategorie,
-            'macro_request' => null, //paramtero necessario per stabilire il collapse del menu a sinistra
-        ];
-        return view('website.page.azienda',$params);
-    }
-
-    protected function dove_siamo(Request $request,$url)
-    {
-        $seo = $url->seo;
-        $macrocategorie = Macrocategory::where('stato',1)->orderBy('order')->get();
-
-        $params = [
-            'seo' => $seo,
-            'macrocategorie' => $macrocategorie,
-            'macro_request' => null, //paramtero necessario per stabilire il collapse del menu a sinistra
-        ];
-        return view('website.page.dove_siamo',$params);
-    }
-
-    protected function contatti(Request $request,$url)
-    {
-        $seo = $url->seo;
-        $macrocategorie = Macrocategory::where('stato',1)->orderBy('order')->get();
-
-        $params = [
-            'seo' => $seo,
-            'macrocategorie' => $macrocategorie,
-            'form_action' => route('invia_formcontatti',app()->getLocale()),
-            'form_name' => 'form_contatti',
-            'macro_request' => null, //paramtero necessario per stabilire il collapse del menu a sinistra
-        ];
-        return view('website.page.contatti',$params);
-    }
 }

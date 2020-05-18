@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{App::getLocale()}}">
     <head>
-        <title></title>
+        <title>{{$shop->insegna}}</title>
         <meta charset="utf-8">
         <meta name="Keywords" content="" />
         <meta name="Description" content="" />

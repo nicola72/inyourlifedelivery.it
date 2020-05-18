@@ -868,13 +868,13 @@ class ConfigurationsController extends Controller
 
         //la small
         $img = Image::make($_SERVER['DOCUMENT_ROOT'].'/file/'.$filename);
-        $path = $_SERVER['DOCUMENT_ROOT'].'/file/'.$filename;
+        $path = $_SERVER['DOCUMENT_ROOT'].'/file/small/'.$filename;
         $img->resize($small, null, function ($constraint) {$constraint->aspectRatio();});
         $img->save($path);
 
         //la big
         $img = Image::make($_SERVER['DOCUMENT_ROOT'].'/file/'.$filename);
-        $path = $_SERVER['DOCUMENT_ROOT'].'/file/'.$filename;
+        $path = $_SERVER['DOCUMENT_ROOT'].'/file/big/'.$filename;
         $img->resize($big, null, function ($constraint) {$constraint->aspectRatio();});
         $img->save($path);
 

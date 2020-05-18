@@ -72,6 +72,23 @@ class Product extends Model implements Sortable
         return $this->belongsToMany('App\Model\Ingredient','ingredient_product');
     }
 
+    //metodo che serve per reperire tutti gli ingredienti della categoria prodotto esclusi quelli già del prodotto
+    //quindi che eventualmente si possono aggiungere
+    public function ingredienti_da_aggiungere()
+    {
+        $default_ingredients = $this->belongsToMany('App\Model\Ingredient','ingredient_product')->get();
+
+        $id_arr = [];
+        foreach ($default_ingredients as $ing)
+        {
+            $id_arr[] = $ing->id;
+        }
+
+        $cat_ingredients = Ingredient::whereNotIn('id',$id_arr)->where('visibile',1)->where('category_id',$this->category_id)->where('shop_id',$this->shop_id)->get();
+
+        return $cat_ingredients;
+    }
+
     public function variants()
     {
         return $this->belongsToMany('App\Model\Variant','variant_product');
@@ -91,7 +108,7 @@ class Product extends Model implements Sortable
         return false;
     }
 
-    public function cover()
+    public function cover($shop_id)
     {
         $images = $this->morphMany('App\Model\File','fileable');
         if($images)
@@ -104,15 +121,12 @@ class Product extends Model implements Sortable
             }
         }
 
-        $user = \Auth::user('cms');
-        if($user->role_id != 1)
+
+        $shop = Shop::find($shop_id);
+        $logo = File::where('fileable_id',$shop->id)->where('fileable_type','App\Model\Shop')->first();
+        if(is_object($logo))
         {
-            $shop = Shop::find($user->shop_id);
-            $logo = File::where('fileable_id',$shop->id)->where('fileable_type','App\Model\Shop')->first();
-            if(is_object($logo))
-            {
-                return $logo->path;
-            }
+            return $logo->path;
         }
 
         return 'default.jpg';

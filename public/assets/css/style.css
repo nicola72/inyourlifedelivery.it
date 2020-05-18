@@ -4106,10 +4106,25 @@ Template responsive style
 
 .block {display:block;}
 
-.prezzi {color:#000; font-weight:bold;  background-color:#fff; padding:5px; border:1px solid red;display:inline; padding-left:10px; padding-right:10px;}
+.prezzi {
+  color:#000;
+  font-weight:bold;
+  background-color:#fff;
+  padding:5px 10px;
+  border:1px solid red;
+  display:inline-block;
+  margin-top:10px;
+}
 
 .foto-header-home {background-image:url(../img/foto_header.jpg); background-repeat:no-repeat; background-size:cover; background-position:center center; margin-top:50px; min-height:600px;}
 
+.product-item a:hover{
+  color:#000 !important;
+}
+
+.product-item a:focus{
+  color:#000 !important;
+}
 
 @media (max-width: 768px) {
     .foto-header-home {display:none; }

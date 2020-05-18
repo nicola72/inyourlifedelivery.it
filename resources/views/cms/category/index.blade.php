@@ -92,8 +92,8 @@
                                         <!-- -->
                                     </td>
                                     <td>
-                                        @if($cat->cover())
-                                            <img src="/file/{{$cat->cover()}}" alt="" class="img-fluid" style="max-width:100px"/>
+                                        @if($cat->cover($cat->shop_id))
+                                            <img src="/file/{{$cat->cover($cat->shop_id)}}" alt="" class="img-fluid" style="max-width:100px"/>
                                         @endif
                                     </td>
                                 </tr>

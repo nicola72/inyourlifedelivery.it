@@ -2,6 +2,7 @@
 
 //ROUTES DEL WEBSITE
 Route::get('/','Website\PageController@index')->name('website.home');
+Route::post('/add_to_cart','Website\PageController@add_to_cart');
 
 
 //ROUTES DEL CMS

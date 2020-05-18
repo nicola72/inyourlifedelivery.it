@@ -29,9 +29,10 @@ class Shop extends Model
     public function logo()
     {
         $logo = $this->morphMany('App\Model\File','fileable')->first();
+
         if(is_object($logo))
         {
-            return $logo->first()->path;
+            return $logo->path;
         }
 
         return 'default.jpg';

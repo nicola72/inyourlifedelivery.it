@@ -79,7 +79,7 @@ class Category extends Model implements Sortable
         return $this->belongsTo('App\Model\Shop');
     }
 
-    public function cover()
+    public function cover($shop_id)
     {
         $images = $this->morphMany('App\Model\File','fileable');
         if($images)
@@ -92,16 +92,13 @@ class Category extends Model implements Sortable
             }
         }
 
-        $user = \Auth::user('cms');
-        if($user->role_id != 1)
+        $shop = Shop::find($shop_id);
+        $logo = File::where('fileable_id',$shop->id)->where('fileable_type','App\Model\Shop')->first();
+        if(is_object($logo))
         {
-            $shop = Shop::find($user->shop_id);
-            $logo = File::where('fileable_id',$shop->id)->where('fileable_type','App\Model\Shop')->first();
-            if(is_object($logo))
-            {
-                return $logo->path;
-            }
+            return $logo->path;
         }
+
         return 'default.jpg';
     }
 
