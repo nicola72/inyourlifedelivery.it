@@ -25,4 +25,15 @@ class Shop extends Model
     {
         return $this->belongsTo('App\Model\Cms\UserCms');
     }
+
+    public function logo()
+    {
+        $logo = $this->morphMany('App\Model\File','fileable')->first();
+        if(is_object($logo))
+        {
+            return $logo->first()->path;
+        }
+
+        return 'default.jpg';
+    }
 }

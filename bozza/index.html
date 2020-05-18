@@ -1,0 +1,1353 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Speedy Food</title>
+    <!-- Plugins CSS -->
+    <link href="css/plugins/plugins.css" rel="stylesheet">
+    <!-- load css for cubeportfolio -->
+
+    <link href="linearicons/fonts.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+
+
+
+    <!-- bootstrap-datepicker plugin -->
+    <link rel="stylesheet" href="bootstrap-datepicker/css/datepicker.css" />
+
+    <!-- bootstrap-colorpicker plugin -->
+    <link rel="stylesheet" href="bootstrap-colorpicker/css/bootstrap-colorpicker.css" />
+
+    <!-- bootstrap-tagsinput plugin -->
+    <link rel="stylesheet" href="bootstrap-tagsinput/bootstrap-tagsinput.css" />
+
+    <!-- bootstrap-clockpicker plugin -->
+    <link rel="stylesheet" href="bootstrap-clockpicker/css/bootstrap-clockpicker.min.css" />
+</head>
+
+<body>
+<div id="preloader">
+    <div id="preloader-inner"></div>
+</div><!--/preloader-->
+
+<!-- Pushy Menu -->
+<aside class="pushy pushy-right">
+    <div class="cart-content">
+        <div class="clearfix">
+            <a href="javascript:void(0)" class="pushy-link text-white-gray">Chiudi</a>
+        </div>
+        <ul class="list-unstyled">
+            <li class="clearfix">
+                <a href="#" class="float-left">
+                    <img src="img/pizze-classiche.jpg" class="img-fluid" alt="" width="60">
+                </a>
+                <div class="oHidden">
+                    <span class="close"><i class="ti-close"></i></span>
+                    <h4><a href="#">Pizza Margherita</a></h4>
+                    <p class="text-white-gray"><strong>€ 12.00</strong> x 2</p>
+                </div>
+            </li><!--/cart item-->
+            <li class="clearfix">
+                <a href="#" class="float-left">
+                    <img src="img/pizze-classiche.jpg" class="img-fluid" alt="" width="60">
+                </a>
+                <div class="oHidden">
+                    <span class="close"><i class="ti-close"></i></span>
+                    <h4><a href="#">Pizza Capricciosa</a></h4>
+                    <p>Ingredienti aggiunti:<br/>
+                        Prosciutto crudo<br/>
+                        Crema al tartufo</p>
+                    <p class="text-white-gray"><strong>€ 15.00</strong> x 1</p>
+                </div>
+            </li><!--/cart item-->
+            <li class="clearfix">
+                <a href="#" class="float-left">
+                    <img src="img/pizze-classiche.jpg" class="img-fluid" alt="" width="60">
+                </a>
+                <div class="oHidden">
+                    <span class="close"><i class="ti-close"></i></span>
+                    <h4><a href="#">Pizza ....</a></h4>
+                    <p class="text-white-gray"><strong>€ 10.00</strong> x 1</p>
+                </div>
+            </li><!--/cart item-->
+            <li class="clearfix">
+
+                <div class="float-right">
+                    <a href="#" class="btn btn-primary">Checkout</a>
+                </div>
+                <h4  class="text-white">
+                    <small>Totale - </small> 37.00€
+                </h4>
+            </li><!--/cart item-->
+        </ul>
+    </div>
+</aside>
+<!-- Site Overlay -->
+<div class="site-overlay"></div>
+
+
+<!--   barra di navigazione-->
+<nav class="navbar navbar-expand-lg navbar-light navbar-transparent bg-faded nav-sticky" style="background-color:#000; padding-top:5px; padding-bottom:5px;">
+
+    <div class="container">
+
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon icona_menu_mobile" ></span>
+        </button>
+
+
+        <a class="navbar-brand" href="#">
+            <img class='logo logo-dark' src="img/logo.png" alt=""style="max-width:180px;">
+            <img class='logo logo-light hidden-md-down' src="img/logo.png" alt=""style="max-width:180px;">
+        </a>
+
+        <div  id="navbarNavDropdown" class="navbar-collapse collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link "  href="#ordina">SCEGLI QUELLO CHE VUOI</a></li>
+
+
+                <li class="nav-item ">
+                    <a class="nav-link "  href="#orario">SCEGLI L'ORARIO</a></li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link "  href="#consegna">SCEGLI IL TIPO DI CONSEGNA</a></li>
+            </ul>
+        </div>
+
+
+        <div class=" navbar-right-elements">
+            <ul class="list-inline">
+
+                <li class="list-inline-item"><a href="javascript:void(0)" class=" menu-btn" style="font-size:150%;"><i class="ti-shopping-cart"></i> <span class="badge badge-default">3</span></a></li>
+            </ul>
+        </div><!--right nav icons-->
+    </div>
+</nav>
+<!--   fine barra di navigazione     -->
+
+
+
+
+
+
+<!--  immagine principale non presente su versione mobile     -->
+<div id="home"  class="foto-header-home">
+    <div class="transparent-angle angle-top-right"></div>
+    <div class="container">
+        <div class="row align-items-center">
+
+
+            <div class="col-lg8 mr-auto ml-auto pb50 pt200 ">
+
+                <h3 class="h1 text-white text-shadow text-center">ORDINA IN TRE SEMPLICI STEP<br/>I TUOI PIATTI PREFERITI</h3>
+
+            </div>
+
+        </div>
+    </div>
+</div><!--hero-->
+<!--  fine barra di navigazione     -->
+
+
+
+
+<!--   sezione con gli step-->
+<a name="ordina"></a>
+
+<section id='reviews' class='pt60 '  style="background-color:#ececec;">
+    <div class="container">
+
+
+        <div class="row">
+            <div class="col-lg-4 mb10 m-auto wow zoomInDown" data-wow-delay=".1s">
+                <div class="client-reviews-card-active uno">
+
+                    <div class="client-reviews-author ">
+
+                        <h4 class="text-center active-step">Scegli quello che vuoi</h5>
+
+                    </div>
+                </div>
+            </div><!--col-->
+
+
+        </div>
+
+
+    </div>
+</section>
+
+<!--    fine sezione con gli step    -->
+
+
+
+
+
+
+
+
+
+
+<div class="col-md-12" style="background-color:#fff;">
+
+    <div class="row">
+
+
+
+        <!--                    sezione con categorie prodotti-->
+
+        <div class="col-12 col-sm-12 col-md-3" >
+
+            <div class="active">
+                <a href="javascript:void(0)" class="btn btn-lg  img-categoria classiche-button" style="background-image:url(img/pizze-classiche.jpg); "></span></a>
+                <a href="javascript:void(0)" class="btn btn-lg  btn-primary  classiche-button btn-light" style="width:100%;"><span class="titolo-categoria">PIZZE CLASSICHE</span></a>
+            </div>
+
+            <div class="active">
+                <a href="javascript:void(0)" class="btn btn-lg  img-categoria gourmet-button" style="background-image:url(img/pizze-gourmet.jpg); background-position:center center;"></span></a>
+                <a href="javascript:void(0)" class="btn btn-lg  btn-primary  gourmet-button  btn-light" style="width:100%;"><span class="titolo-categoria">PIZZE GOURMET</span></a>
+            </div>
+
+            <div class="active">
+                <a href="#" class="btn btn-lg  img-categoria" style="background-image:url(img/focacce.jpg); background-position:center top;"></span></a>
+                <a href="#" class="btn btn-lg  btn-primary  focacce  btn-light" style="width:100%;"><span class="titolo-categoria">FOCACCE</span></a>
+            </div>
+
+            <div class="active">
+                <a href="#" class="btn btn-lg  img-categoria" style="background-image:url(img/pizze-dolci.jpg);  background-position:center top;"></span></a>
+                <a href="#" class="btn btn-lg  btn-primary  dolci  btn-light" style="width:100%;"><span class="titolo-categoria">PIZZE DOLCI</span></a>
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div class="col-md-9 pt20 ">
+
+            <div class="row">
+
+
+                <div class="pizze-classiche">
+                    <div class="col-md-12 text-center ">
+                        <h3>Pizze classiche</h3>
+                        <hr>
+                    </div>
+
+
+
+                    <!--  singolo prodotto-->
+
+
+                    <div class="col-md-12  prodotto-bianco mb-4">
+
+                        <div class="row">
+
+                            <!--  colonna sinistra prodotto-->
+
+                            <div class="col-sm-12 col-md-6 ">
+                                <div class="row">
+
+
+                                    <div class="col-sm-4 col-md-4 ">
+                                        <img src="img/pizze-classiche.jpg" alt="" class="img-fluid img-prodotto" />
+                                    </div>
+
+
+
+                                    <div class="col-12 col-sm-8 col-md-8">
+                                        <div class="titolo-piatto">PIZZA MARGHERITA</div>
+                                        <div class="descrizione-piatto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+
+                                        <div class="ingredienti">Ingredienti (clicca per desezionare un ingrediente): <br/>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="pomodoro"> Pomodoro<br/>
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="mozzarella"> Mozzarella<br/>
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="basilico"> Basilico<br/>
+                                                </div>
+
+
+                                                <!--   ingredienti-->
+                                                <div class="col-md-6">
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="olio"> Olio<br/>
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="sale"> Sale<br/>
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="origano"> Origano<br/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--                  fine ingredienti-->
+
+                                        <!-- ingredienti aggiunti-->
+                                        <div class="ingredienti ingredienti-aggiunti">Ingredienti aggiunti: <br/>
+
+                                            <input type="checkbox" name="ingredienti" checked="ckecked" value="pomodoro"> Prosciutto crudo + 2,00€<br/>
+                                            <input type="checkbox" name="ingredienti" checked="ckecked" value="mozzarella"> Crema tartufata + 1,00€<br/>
+                                        </div>
+                                        <!--fine igredienti aggiunti-->
+
+                                        <div class="prezzi">Prezzo: <strong>12.00€</strong></div>
+
+
+
+
+                                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Seleziona la dimensione</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="radio" name="dimensione" value="mini"> Mini  24 cm.<strong> - 2€</strong><br/>
+                                                        <input type="radio" name="dimensione" value="normale" checked="ckecked" > Normale  33 cm.<br/>
+                                                        <input type="radio" name="dimensione" value="doppia"> Doppia Pasta 33 cm. <strong>+ 1,50€</strong><br/>
+                                                        <input type="radio" name="dimensione" value="super"> Super  36 cm. <strong>+ 3,00€</strong><br/>
+                                                        <input type="radio" name="dimensione" value="mini"> Mega  40 cm. <strong>+ 7,50€</strong><br/>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Conferma</button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!--/modal-->
+
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!--   fine colonna sinistra   -->
+
+
+                            <!--        colonna destra prodotto-->
+                            <div class="col-12 col-sm-12 col-md-6 text-center mt-2">
+
+
+                                <div class="row" >
+
+
+                                    <div class="col-12 col-sm-12 col-md-6 varianti text-left">
+                                        <button type="button" class="btn btn-primary no-space" data-toggle="modal" data-target="#myModal" style="width:100%">
+                                            Seleziona<br/>dimensione
+                                        </button>
+                                    </div>
+
+
+                                    <div class="col-12 col-sm-12 col-md-6 text-center align-items-center pt-3 pb-4">
+
+                                        <div class="count-input " >
+
+                                            <form >
+                                                <a class="incr-btn" data-action="decrease" href="#"  ><strong>–</strong></a>
+                                                <input class="quantity" type="text" value="1" style="text-align:center">
+                                                <a class="incr-btn" data-action="increase" href="#" ><strong>+</strong></a>
+                                            </form>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-6 col-sm6 col-md-6 text-center   pt-2 pb-2">
+                                        <div class="col-sm-12 col-md-12 testo-bottone btn-light btn-aggiungi" ><a  data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="font-size:90%;"><i class="ti-plus"></i><br/>AGGIUNGI INGREDIENTI</a>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-6 col-sm-6 col-md-6 text-center pt-2 pb-2">
+                                        <div class="col-sm-12 col-md-12  testo-bottone  btn-light btn-aggiungi-carrello " ><a href="#" class="link-white"><i class="ti-shopping-cart"></i><br/>AGGIUNGI AL CARRELLO</a></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="col-md-12">
+                            <div class="collapse" id="collapseExample">
+                                <div class="card card-body" style="color:#000;">
+
+                                    <h4 class="text-center  pt-3 pb-3 mb-3">SCEGLI GLI INGREDIENTI DA AGGIUNGERE E CONFERMA</h4>
+
+                                    <form>
+                                        <div class="row mb-3">
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">Gratis</h5>
+
+
+                                                <input type="radio" name="gratis" value="balsamico"> Aceto balsamico<br/>
+                                                <input type="radio" name="gratis" value="aglio"> Aglio<br/>
+                                                <input type="radio" name="gratis" value="basilico"> Basilico<br/>
+                                                <input type="radio" name="gratis" value="...">  ...
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 0,50</h5>
+
+
+                                                <input type="radio" name="50" value="acciughe"> Acciughe<br/>
+                                                <input type="radio" name="50" value="ananas"> Ananas<br/>
+                                                <input type="radio" name="50" value="capperi"> Capperi<br/>
+                                                <input type="radio" name="50" value="..."> ...<br/>
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 1,00</h5>
+
+
+                                                <input type="radio" name="1" value="1"> Crema tartufata<br/>
+                                                <input type="radio" name="1" value="1"> Fagioli<br/>
+                                                <input type="radio" name="1" value="1"> Feta<br/>
+                                                <input type="radio" name="1" value="..."> ...<br/>
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 1,50</h5>
+
+
+                                                <input type="radio" name="15" value="nduja"> Nduja<br/>
+                                                <input type="radio" name="15" value="pancetta"> Pancetta<br/>
+                                                <input type="radio" name="15" value="parmigiano"> Parmigiano<br/>
+                                                <input type="radio" name="15" value="..."> ...<br/>
+
+                                            </div>
+
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 2,00</h5>
+
+
+                                                <input type="radio" name="2" value="prosciutto"> Prosciutto<br/>
+                                                <input type="radio" name="2" value="bufala"> Mozzarella di bufala<br/>
+                                                <input type="radio" name="2" value="olive"> Olive<br/>
+                                                <input type="radio" name="2" value="..."> ...<br/>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 2,50</h5>
+
+
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6 m-auto text-center ">
+                                            <a class="btn btn-light  text-center mt30 conferma" href="#">CONFERMA</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--     fine prodotto      -->
+                    <hr>
+
+                    <div class="col-md-12    mb-4">
+
+                        <div class="row">
+
+                            <div class="col-sm-12 col-md-6 ">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 ">
+                                        <img src="img/pizze-classiche.jpg" alt="" class="img-fluid img-prodotto" />
+                                    </div>
+                                    <div class="col-sm-8 col-md-8">
+                                        <div class="titolo-piatto">PIZZA CAPRICCIOSA</div>
+                                        <div class="descrizione-piatto">Lorem ipsum dolor sit amet, consectetur adipiscing.</div>
+                                        <div class="ingredienti">Ingredienti: Lorem ipsum dolor sit amet, consectetur adipiscing.</div>
+
+
+                                        <div class="varianti">
+                                            Seleziona la dimensione:<br/>
+                                            <input type="radio" name="dimensione" value="mini"> Mini  24 cm.<strong> - 2€</strong><br/>
+                                            <input type="radio" name="dimensione" value="normale" checked> Normale  33 cm.<br/>
+                                            <input type="radio" name="dimensione" value="doppia"> Doppia Pasta 33 cm. <strong>+ 1,50€</strong><br/>
+                                            <input type="radio" name="dimensione" value="super"> Super  36 cm. <strong>+ 3,00€</strong><br/>
+                                            <input type="radio" name="dimensione" value="mini"> Mega  40 cm. <strong>+ 7,50€</strong><br/>
+                                        </div>
+
+
+                                        <div class="prezzi">Prezzo: <strong>12.00€</strong></div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-sm-12 col-md-6 text-center mt-2">
+
+
+                                <div class="row" >
+
+
+                                    <div class="col-12 col-sm-12 col-md-4 text-center align-items-center pt-3 pb-4">
+
+                                        <div class="count-input " >
+
+                                            <form >
+                                                <a class="incr-btn" data-action="decrease" href="#"  ><strong>–</strong></a>
+                                                <input class="quantity" type="text" value="1" style="text-align:center">
+                                                <a class="incr-btn" data-action="increase" href="#" ><strong>+</strong></a>
+                                            </form>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-6 col-sm-6 col-md-4 text-center pt-2 pb-2">
+                                        <div class="col-sm-12 col-md-12 testo-bottone btn-light btn-aggiungi" ><a  data-toggle="collapse" href="#collapseExample1" aria-expanded="false" aria-controls="collapseExample" style="font-size:90%;"><i class="ti-plus"></i><br/>AGGIUNGI<br/>INGREDIENTI</a>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-6 col-sm-6 col-md-4 text-center  pt-2 pb-2">
+                                        <div class="col-sm-12 col-md-12  testo-bottone  btn-light btn-aggiungi-carrello " ><a href="#" class="link-white" style="font-size:90%;"><i class="ti-shopping-cart" ></i><br/>AGGIUNGI <span style="font-size:80%">AL</span><br/>CARRELLO</a></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="col-md-12">
+                            <div class="collapse" id="collapseExample1">
+                                <div class="card card-body" style="color:#000;">
+
+                                    <h4 class="text-center  pt-3 pb-3 mb-3">SCEGLI GLI INGREDIENTI DA AGGIUNGERE E CONFERMA</h4>
+
+                                    <form>
+                                        <div class="row mb-3">
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">Gratis</h5>
+
+
+                                                <input type="radio" name="gratis" value="balsamico"> Aceto balsamico<br/>
+                                                <input type="radio" name="gratis" value="aglio"> Aglio<br/>
+                                                <input type="radio" name="gratis" value="basilico"> Basilico<br/>
+                                                <input type="radio" name="gratis" value="...">  ...
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 0,50</h5>
+
+
+                                                <input type="radio" name="50" value="acciughe"> Acciughe<br/>
+                                                <input type="radio" name="50" value="ananas"> Ananas<br/>
+                                                <input type="radio" name="50" value="capperi"> Capperi<br/>
+                                                <input type="radio" name="50" value="..."> ...<br/>
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 1,00</h5>
+
+
+                                                <input type="radio" name="1" value="1"> Crema tartufata<br/>
+                                                <input type="radio" name="1" value="1"> Fagioli<br/>
+                                                <input type="radio" name="1" value="1"> Feta<br/>
+                                                <input type="radio" name="1" value="..."> ...<br/>
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 1,50</h5>
+
+
+                                                <input type="radio" name="15" value="nduja"> Nduja<br/>
+                                                <input type="radio" name="15" value="pancetta"> Pancetta<br/>
+                                                <input type="radio" name="15" value="parmigiano"> Parmigiano<br/>
+                                                <input type="radio" name="15" value="..."> ...<br/>
+
+                                            </div>
+
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 2,00</h5>
+
+
+                                                <input type="radio" name="2" value="prosciutto"> Prosciutto<br/>
+                                                <input type="radio" name="2" value="bufala"> Mozzarella di bufala<br/>
+                                                <input type="radio" name="2" value="olive"> Olive<br/>
+                                                <input type="radio" name="2" value="..."> ...<br/>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 2,50</h5>
+
+
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6 m-auto text-center ">
+                                            <a class="btn btn-light  text-center mt30 conferma" href="#">CONFERMA</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+
+
+
+
+                <div class="pizze-gourmet none">
+                    <div class="col-md-12 text-center ">
+                        <h3>Pizze gourmet</h3>
+                        <hr>
+                    </div>
+
+
+
+                    <!--  singolo prodotto-->
+
+
+                    <div class="col-md-12  prodotto-bianco mb-4">
+
+                        <div class="row">
+
+                            <!--  colonna sinistra prodotto-->
+
+                            <div class="col-sm-12 col-md-6 ">
+                                <div class="row">
+
+
+                                    <div class="col-sm-4 col-md-4 ">
+                                        <img src="img/pizze-classiche.jpg" alt="" class="img-fluid img-prodotto" />
+                                    </div>
+
+
+
+                                    <div class="col-12 col-sm-8 col-md-8">
+                                        <div class="titolo-piatto">PIZZA MARGHERITA</div>
+                                        <div class="descrizione-piatto">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+
+                                        <div class="ingredienti">Ingredienti (clicca per desezionare un ingrediente): <br/>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="pomodoro"> Pomodoro<br/>
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="mozzarella"> Mozzarella<br/>
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="basilico"> Basilico<br/>
+                                                </div>
+
+
+                                                <!--   ingredienti-->
+                                                <div class="col-md-6">
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="olio"> Olio<br/>
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="sale"> Sale<br/>
+                                                    <input type="checkbox" name="ingredienti" checked="ckecked" value="origano"> Origano<br/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--                  fine ingredienti-->
+
+                                        <!-- ingredienti aggiunti-->
+                                        <div class="ingredienti ingredienti-aggiunti">Ingredienti aggiunti: <br/>
+
+                                            <input type="checkbox" name="ingredienti" checked="ckecked" value="pomodoro"> Prosciutto crudo + 2,00€<br/>
+                                            <input type="checkbox" name="ingredienti" checked="ckecked" value="mozzarella"> Crema tartufata + 1,00€<br/>
+                                        </div>
+                                        <!--fine igredienti aggiunti-->
+
+                                        <div class="prezzi">Prezzo: <strong>12.00€</strong></div>
+
+
+
+
+                                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Seleziona la dimensione</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="radio" name="dimensione" value="mini"> Mini  24 cm.<strong> - 2€</strong><br/>
+                                                        <input type="radio" name="dimensione" value="normale" checked="ckecked" > Normale  33 cm.<br/>
+                                                        <input type="radio" name="dimensione" value="doppia"> Doppia Pasta 33 cm. <strong>+ 1,50€</strong><br/>
+                                                        <input type="radio" name="dimensione" value="super"> Super  36 cm. <strong>+ 3,00€</strong><br/>
+                                                        <input type="radio" name="dimensione" value="mini"> Mega  40 cm. <strong>+ 7,50€</strong><br/>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Conferma</button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!--/modal-->
+
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!--   fine colonna sinistra   -->
+
+
+                            <!--        colonna destra prodotto-->
+                            <div class="col-12 col-sm-12 col-md-6 text-center mt-2">
+
+
+                                <div class="row" >
+
+
+                                    <div class="col-12 col-md-6 varianti text-left">
+                                        <button type="button" class="btn btn-primary no-space" data-toggle="modal" data-target="#myModal">
+                                            Seleziona la dimensione
+                                        </button>
+                                    </div>
+
+
+                                    <div class="col-12 col-sm-6 col-md-6 text-center align-items-center pt-3 pb-4">
+
+                                        <div class="count-input " >
+
+                                            <form >
+                                                <a class="incr-btn" data-action="decrease" href="#"  ><strong>–</strong></a>
+                                                <input class="quantity" type="text" value="1" style="text-align:center">
+                                                <a class="incr-btn" data-action="increase" href="#" ><strong>+</strong></a>
+                                            </form>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-6 col-sm6 col-md-6 text-center   pt-2 pb-2">
+                                        <div class="col-sm-12 col-md-12 testo-bottone btn-light btn-aggiungi" ><a  data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="font-size:90%;"><i class="ti-plus"></i><br/>AGGIUNGI INGREDIENTI</a>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-6 col-sm-6 col-md-6 text-center pt-2 pb-2">
+                                        <div class="col-sm-12 col-md-12  testo-bottone  btn-light btn-aggiungi-carrello " ><a href="#" class="link-white"><i class="ti-shopping-cart"></i><br/>AGGIUNGI AL CARRELLO</a></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="col-md-12">
+                            <div class="collapse" id="collapseExample">
+                                <div class="card card-body" style="color:#000;">
+
+                                    <h4 class="text-center  pt-3 pb-3 mb-3">SCEGLI GLI INGREDIENTI DA AGGIUNGERE E CONFERMA</h4>
+
+                                    <form>
+                                        <div class="row mb-3">
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">Gratis</h5>
+
+
+                                                <input type="radio" name="gratis" value="balsamico"> Aceto balsamico<br/>
+                                                <input type="radio" name="gratis" value="aglio"> Aglio<br/>
+                                                <input type="radio" name="gratis" value="basilico"> Basilico<br/>
+                                                <input type="radio" name="gratis" value="...">  ...
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 0,50</h5>
+
+
+                                                <input type="radio" name="50" value="acciughe"> Acciughe<br/>
+                                                <input type="radio" name="50" value="ananas"> Ananas<br/>
+                                                <input type="radio" name="50" value="capperi"> Capperi<br/>
+                                                <input type="radio" name="50" value="..."> ...<br/>
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 1,00</h5>
+
+
+                                                <input type="radio" name="1" value="1"> Crema tartufata<br/>
+                                                <input type="radio" name="1" value="1"> Fagioli<br/>
+                                                <input type="radio" name="1" value="1"> Feta<br/>
+                                                <input type="radio" name="1" value="..."> ...<br/>
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 1,50</h5>
+
+
+                                                <input type="radio" name="15" value="nduja"> Nduja<br/>
+                                                <input type="radio" name="15" value="pancetta"> Pancetta<br/>
+                                                <input type="radio" name="15" value="parmigiano"> Parmigiano<br/>
+                                                <input type="radio" name="15" value="..."> ...<br/>
+
+                                            </div>
+
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 2,00</h5>
+
+
+                                                <input type="radio" name="2" value="prosciutto"> Prosciutto<br/>
+                                                <input type="radio" name="2" value="bufala"> Mozzarella di bufala<br/>
+                                                <input type="radio" name="2" value="olive"> Olive<br/>
+                                                <input type="radio" name="2" value="..."> ...<br/>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 2,50</h5>
+
+
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6 m-auto text-center ">
+                                            <a class="btn btn-light  text-center mt30 conferma" href="#">CONFERMA</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--     fine prodotto      -->
+                    <hr>
+
+                    <div class="col-md-12    mb-4">
+
+                        <div class="row">
+
+                            <div class="col-sm-12 col-md-6 ">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 ">
+                                        <img src="img/pizze-classiche.jpg" alt="" class="img-fluid img-prodotto" />
+                                    </div>
+                                    <div class="col-sm-8 col-md-8">
+                                        <div class="titolo-piatto">PIZZA CAPRICCIOSA</div>
+                                        <div class="descrizione-piatto">Lorem ipsum dolor sit amet, consectetur adipiscing.</div>
+                                        <div class="ingredienti">Ingredienti: Lorem ipsum dolor sit amet, consectetur adipiscing.</div>
+
+
+                                        <div class="varianti">
+                                            Seleziona la dimensione:<br/>
+                                            <input type="radio" name="dimensione" value="mini"> Mini  24 cm.<strong> - 2€</strong><br/>
+                                            <input type="radio" name="dimensione" value="normale" checked> Normale  33 cm.<br/>
+                                            <input type="radio" name="dimensione" value="doppia"> Doppia Pasta 33 cm. <strong>+ 1,50€</strong><br/>
+                                            <input type="radio" name="dimensione" value="super"> Super  36 cm. <strong>+ 3,00€</strong><br/>
+                                            <input type="radio" name="dimensione" value="mini"> Mega  40 cm. <strong>+ 7,50€</strong><br/>
+                                        </div>
+
+
+                                        <div class="prezzi">Prezzo: <strong>12.00€</strong></div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-sm-12 col-md-6 text-center mt-2">
+
+
+                                <div class="row" >
+
+
+                                    <div class="col-12 col-sm-4 col-md-4 text-center align-items-center pt-3 pb-4">
+                                        Inserisci la quantità
+                                        <div class="count-input " >
+
+                                            <form >
+                                                <a class="incr-btn" data-action="decrease" href="#"  ><strong>–</strong></a>
+                                                <input class="quantity" type="text" value="1" style="text-align:center">
+                                                <a class="incr-btn" data-action="increase" href="#" ><strong>+</strong></a>
+                                            </form>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-6 col-sm-4 col-md-4 text-center pt-2 pb-2">
+                                        <div class="col-sm-12 col-md-12 testo-bottone btn-light btn-aggiungi" ><a  data-toggle="collapse" href="#collapseExample1" aria-expanded="false" aria-controls="collapseExample" style="font-size:90%;"><i class="ti-plus"></i><br/>AGGIUNGI INGREDIENTI</a>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-6 col-sm-4 col-md-4 text-center  pt-2 pb-2">
+                                        <div class="col-sm-12 col-md-12  testo-bottone  btn-light btn-aggiungi-carrello " ><a href="#" class="link-white"><i class="ti-shopping-cart"></i><br/>AGGIUNGI AL CARRELLO</a></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="col-md-12">
+                            <div class="collapse" id="collapseExample1">
+                                <div class="card card-body" style="color:#000;">
+
+                                    <h4 class="text-center  pt-3 pb-3 mb-3">SCEGLI GLI INGREDIENTI DA AGGIUNGERE E CONFERMA</h4>
+
+                                    <form>
+                                        <div class="row mb-3">
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">Gratis</h5>
+
+
+                                                <input type="radio" name="gratis" value="balsamico"> Aceto balsamico<br/>
+                                                <input type="radio" name="gratis" value="aglio"> Aglio<br/>
+                                                <input type="radio" name="gratis" value="basilico"> Basilico<br/>
+                                                <input type="radio" name="gratis" value="...">  ...
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 0,50</h5>
+
+
+                                                <input type="radio" name="50" value="acciughe"> Acciughe<br/>
+                                                <input type="radio" name="50" value="ananas"> Ananas<br/>
+                                                <input type="radio" name="50" value="capperi"> Capperi<br/>
+                                                <input type="radio" name="50" value="..."> ...<br/>
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 1,00</h5>
+
+
+                                                <input type="radio" name="1" value="1"> Crema tartufata<br/>
+                                                <input type="radio" name="1" value="1"> Fagioli<br/>
+                                                <input type="radio" name="1" value="1"> Feta<br/>
+                                                <input type="radio" name="1" value="..."> ...<br/>
+
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 1,50</h5>
+
+
+                                                <input type="radio" name="15" value="nduja"> Nduja<br/>
+                                                <input type="radio" name="15" value="pancetta"> Pancetta<br/>
+                                                <input type="radio" name="15" value="parmigiano"> Parmigiano<br/>
+                                                <input type="radio" name="15" value="..."> ...<br/>
+
+                                            </div>
+
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 2,00</h5>
+
+
+                                                <input type="radio" name="2" value="prosciutto"> Prosciutto<br/>
+                                                <input type="radio" name="2" value="bufala"> Mozzarella di bufala<br/>
+                                                <input type="radio" name="2" value="olive"> Olive<br/>
+                                                <input type="radio" name="2" value="..."> ...<br/>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <h5 class="text-center gray">€ 2,50</h5>
+
+
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                                <input type="radio" name="25" value="..."> ...<br/>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6 m-auto text-center ">
+                                            <a class="btn btn-light  text-center mt30 conferma" href="#">CONFERMA</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <hr>
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+
+    </div>
+
+
+</div>
+
+
+<div class="clearfix mt-3"></div>
+
+
+
+<a name="orario"></a>
+
+
+<!--   sezione con gli step-->
+<a name="ordina"></a>
+
+<section id='reviews' class='pt60 '  style="background-color:#ececec;">
+    <div class="container">
+
+
+        <div class="row">
+
+            <div class="col-lg-4 m-auto mb10 wow zoomInDown " data-wow-delay=".15s">
+                <div class="client-reviews-card-active due">
+
+                    <div class="client-reviews-author">
+
+                        <h4 class="text-center active-step">Scegli l'orario di consegna</h5>
+
+                    </div>
+                </div>
+            </div><!--col-->
+
+        </div>
+
+
+    </div>
+</section>
+
+<!--    fine sezione con gli step    -->
+
+
+<div class="container mt-4 mb-4">
+
+    <div class="row">
+
+        <div class="col-md-6 m-auto  mt-4">
+
+
+            <div class="form-group row">
+
+                <div class="col-sm-10 m-auto">
+
+
+                    <div class="input-group input-append">
+                        <input id="timepicker1" type="text" class="form-control" placeholder="Scegli l'orario di consegna o ritiro">
+                        <span class="input-group-prepend last add-on"><span class="input-group-text"><i class="icon-clock"></i> </span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+<!--   sezione con gli step-->
+<a name="ordina"></a>
+
+<section id='reviews' class='pt60 '  style="background-color:#ececec;">
+    <div class="container">
+
+
+        <div class="row">
+
+            <div class="col-lg-4 mb10 wow zoomInDown  m-auto" data-wow-delay=".15s">
+                <div class="client-reviews-card-active tre">
+
+                    <div class="client-reviews-author">
+
+                        <h4 class="text-center next-step" style="color:#000;">Scegli il tipo di consegna</h5>
+
+                    </div>
+                </div>
+            </div><!--col-->
+
+        </div>
+
+
+    </div>
+</section>
+
+<!--    fine sezione con gli step    -->
+
+<a name="consegna"></a>
+<div class="col-md-12 mb-5">
+    <div class="row">
+
+
+        <div class="container mt-3 mb-5">
+            <div class="row">
+
+                <div class="col-md-6 text-center">
+                    <img src="img/consegna.png" alt="" class="img-fluid"  style="max-width:150px;"/><br/>
+                    <input type="radio" name="consegna" value="domicilio" /> <h6 class="d-inline">CONSEGNA A DOMICILIO</h6>
+                </div>
+
+
+                <div class="col-md-6 text-center">
+                    <img src="img/asporto.png" alt="" class="img-fluid" style="max-width:150px;"/><br/>
+                    <input type="radio" name="asporto" value="asporto" /> <h6 class="d-inline">ASPORTO</h6>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<div class="container mb-5">
+
+    <div class="row">
+
+        <a href="#" class="btn btn-lg  btn-primary back-orange focacce" style="width:100%;"><span class="titolo-categoria">CONFERMA E VAI AL PAGAMENTO</span></a>
+
+    </div>
+</div>
+
+
+
+<div class="navbar-right-elements cart-fixed pull-right">
+
+    <ul class="list-inline">
+        <li class="list-inline-item">
+            <a href="javascript:void(0)" class=" menu-btn "><i class="ti-shopping-cart"  style="font-weight:bold; font-size:200%; text-shadow:1px 1px 10px;"></i> <span class="badge badge-default" style="color:#000;:">3</span></a></li>
+    </ul>
+
+</div>
+
+
+
+
+
+
+<footer class="footer footer-standard pt50 pb10 ">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb40">
+                <h3>Pizzeria ........</h3>
+                <p>
+                    Via Dante Alighieri,<br/>
+                    50055 Lastra a Signa<br/>
+                    Tel. ........<br/>
+                    Mod ........<br/>
+                    Email .........<br/>
+                    P.IVA ............
+
+            </div>
+            <div class="col-lg-3 col-md-6 mb40">
+                <h3>Links utili</h3>
+                <ul class="list-unstyled footer-list-item">
+                    <li>
+                        <a href="#">
+                            Termini e condizioni
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            Metodi di pagamento
+                        </a>
+                    </li>
+
+
+
+                    <li>
+                        <a href="#">
+                            Privacy & policy cookies
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-lg-5 col-md-6 mb40">
+                <h3>Dove siamo</h3>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2881.1280951414055!2d11.104143215903475!3d43.77019975287436!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x132a5bcf74865a1f%3A0x2e4ee656c7248b8e!2sVia%20Dante%20Alighieri%2C%2010%2C%2050055%20Lastra%20a%20Signa%20FI!5e0!3m2!1sit!2sit!4v1589287001309!5m2!1sit!2sit" width="100%" height="250" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+            </div>
+        </div>
+    </div>
+</footer><!--/footer-->
+<div class="footer-bottomAlt">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="clearfix">
+                    <a href="#" class="social-icon-sm si-dark si-facebook si-dark-round">
+                        <i class="fa fa-facebook"></i>
+                        <i class="fa fa-facebook"></i>
+                    </a>
+                    <a href="#" class="social-icon-sm si-dark si-twitter si-dark-round">
+                        <i class="fa fa-twitter"></i>
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon-sm si-dark si-linkedin si-dark-round">
+                        <i class="fa fa-instagram"></i>
+                        <i class="fa fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <span>&copy; Copyright - Tutti i diritti riservati <?php echo date("Y",time());?>. <a href="https://www.inyourlife.info">Siti Internet by InYourLife</a></span>
+            </div>
+        </div>
+    </div>
+</div><!--/footer bottom-->
+<!--back to top-->
+<a href="#" class="back-to-top hidden-xs-down" id="back-to-top"><i class="ti-angle-up"></i></a>
+
+<script src="plugins/jquery/jquery-3.1.0.min.js"></script>
+<!-- jQuery first, then Tether, then Bootstrap JS. -->
+<script src="js/plugins/plugins.js"></script>
+<script src="js/assan.custom.js"></script>
+<!-- load cubeportfolio -->
+<script type="text/javascript" src="cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
+
+
+<!-- datepicker -->
+<script src="bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+
+<!-- colorpicker -->
+<script src="bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+
+<!-- tagsinput -->
+<script src="bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+
+<!-- clockpicker -->
+<script src="bootstrap-clockpicker/js/bootstrap-clockpicker.min.js"></script>
+
+<!-- form elements -->
+<script src="js/pages/form-elements.js"></script>
+
+
+
+<script>
+
+    $(document).ready(function(){
+
+        $( ".conferma" ).click(
+            function() {
+                $("#collapseExample").removeClass("show");
+            },
+        );
+
+
+        $( ".gourmet-button" ).click(
+            function() {
+                $(".pizze-classiche").addClass("none");
+                $(".pizze-gourmet").removeClass("none");
+            },
+        );
+
+
+        $( ".classiche-button" ).click(
+            function() {
+                $(".pizze-classiche").removeClass("none");
+                $(".pizze-gourmet").addClass("none");
+            },
+        );
+    });
+
+    //projects
+    (function ($, window, document, undefined) {
+        'use strict';
+
+        // init cubeportfolio
+        $('#js-grid-lightbox-gallery').cubeportfolio({
+            filters: '#js-filters-lightbox-gallery1, #js-filters-lightbox-gallery2',
+            layoutMode: 'grid',
+            mediaQueries: [{
+                width: 1500,
+                cols: 4
+            }, {
+                width: 1100,
+                cols: 3
+            }, {
+                width: 800,
+                cols: 3
+            }, {
+                width: 480,
+                cols: 2,
+                options: {
+                    caption: ''
+                }
+            }],
+            defaultFilter: '*',
+            animationType: 'flipOutDelay',
+            gapHorizontal: 0,
+            gapVertical: 0,
+            gridAdjustment: 'responsive',
+            caption: 'overlayBottomAlong',
+            displayType: 'sequentially',
+            displayTypeSpeed: 100,
+            // lightbox
+            lightboxDelegate: '.cbp-lightbox',
+            lightboxGallery: true,
+            lightboxTitleSrc: 'data-title',
+            lightboxCounter: '<div class="cbp-popup-lightbox-counter">{{current}} of {{total}}</div>'
+        });
+    })(jQuery, window, document);
+</script>
+</body>
+</html>

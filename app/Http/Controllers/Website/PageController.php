@@ -11,6 +11,7 @@ use App\Model\Page;
 use App\Model\Pairing;
 use App\Model\Product;
 use App\Model\Seo;
+use App\Model\Shop;
 use App\Model\Slider;
 use Illuminate\Http\Request;
 use App\Model\Url;
@@ -19,39 +20,30 @@ use App\Service\GoogleRecaptcha;
 
 class PageController extends Controller
 {
+    protected $shop;
+
     public function __construct()
     {
+        $this->middleware(function($request, $next)
+        {
+            $domain = $request->getHttpHost();
+            $domain = str_replace("www","",$domain);
+            $this->shop = Shop::where('domain',$domain)->first();
+            return $next($request);
+        });
+
     }
 
     public function index(Request $request)
     {
-        //per stabilire la lingua dobbiamo basarci sul dominio/alias
-        $domain = $request->getHttpHost();
-        $domain = str_replace("www","",$domain);
-        $domain = Domain::where('nome',$domain)->first();
-        $locale = $domain->locale;
-        \App::setLocale($locale);
-
-        $seo = Seo::where('locale',$locale)->where('homepage',1)->first();
-        $slider = Slider::where('visibile',1)->first();
-        $macrocategorie = Macrocategory::where('stato',1)->orderBy('order')->get();
-        $prodotti_novita = Product::where('visibile',1)->where('availability_id','!=',2)->where('novita',1)->get();
-        $abbinamenti_novita = Pairing::where('visibile',1)->where('novita',1)->get();
-        $prodotti_offerta = Product::where('visibile',1)->where('availability_id','!=',2)->where('offerta',1)->get();
-        $abbinamenti_offerta = Pairing::where('visibile',1)->where('offerta',1)->get();
-        $popup = Newsitem::where('visibile',1)->where('popup',1)->first();
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
 
 
         $params = [
-            'seo' => $seo,
-            'slider' => $slider,
-            'macrocategorie' => $macrocategorie,
-            'macro_request' => null, //paramtero necessario per stabilire il collapse del menu a sinistra
-            'prodotti_novita' => $prodotti_novita,
-            'abbinamenti_novita' => $abbinamenti_novita,
-            'prodotti_offerta' => $prodotti_offerta,
-            'abbinamenti_offerta' => $abbinamenti_offerta,
-            'popup'=> $popup
+            'shop' => $this->shop,
         ];
         return view('website.page.index',$params);
     }

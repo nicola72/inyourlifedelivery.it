@@ -2,20 +2,6 @@
 
 //ROUTES DEL WEBSITE
 Route::get('/','Website\PageController@index')->name('website.home');
-Route::group(['prefix' => '{locale}','where' => ['locale' => '[a-zA-Z]{2}'],'middleware' => 'setlocale'],function(){
-
-    Route::post('/invia_formcontatti','Website\PageController@invia_formcontatti')->name('invia_formcontatti');
-    Route::get('/{slug}','Website\PageController@page');
-
-    //per L'autorizzazione
-    Route::get('/login', 'Website\Auth\LoginController@showLoginForm')->name('website.login');
-    Route::post('/login','Website\Auth\LoginController@login')->name('website.login');
-    Route::get('/logout', 'Website\Auth\LoginController@logout')->name('website.logout');
-    Route::get('/register','Website\Auth\RegisterController@showRegistrationForm')->name('website.register');
-    Route::post('/register','Website\Auth\RegisterController@register');
-    Route::get('/password/reset','Website\Auth\ForgotPasswordController@showLinkRequestForm')->name('website.password.request');
-});
-
 
 
 //ROUTES DEL CMS
