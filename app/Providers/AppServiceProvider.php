@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         //funzione custom per formattare il prezzo
         \Blade::directive('money', function ($amount)
         {
-            return "<?php echo '€' . number_format($amount, 2,',','.'); ?>";
+            return "<?php echo '€ ' . number_format($amount, 2,',','.'); ?>";
         });
 
         //i moduli presenti

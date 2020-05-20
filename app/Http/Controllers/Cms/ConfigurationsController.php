@@ -374,7 +374,7 @@ class ConfigurationsController extends Controller
             }
         }
 
-        $old_days = DeliveryMin::where('shop_id',$shop->id)->get();
+        $old_days = DeliveryOpenDay::where('shop_id',$shop->id)->get();
 
         if($old_days->count() > 0)
         {

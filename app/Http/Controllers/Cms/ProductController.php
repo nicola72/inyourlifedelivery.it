@@ -72,7 +72,8 @@ class ProductController extends Controller
         {
             return redirect('/cms/product');
         }
-        $categorie = Category::all();
+
+        $categorie = Category::where('shop_id',$shop->id)->get();
 
         $params = [
             'form_name' => 'form_create_product',

@@ -1,17 +1,3 @@
-<!-- Pushy Menu -->
-<aside class="pushy pushy-right">
-    <div class="cart-content">
-        <div class="clearfix">
-            <a href="javascript:void(0)" class="pushy-link text-white-gray">Chiudi</a>
-        </div>
-        <ul class="list-unstyled">
-        </ul>
-    </div>
-</aside>
-<!-- Site Overlay -->
-<div class="site-overlay"></div>
-
-
 <!--   barra di navigazione-->
 <nav class="navbar navbar-expand-lg navbar-light navbar-transparent bg-faded nav-sticky" style="background-color:#000; padding-top:5px; padding-bottom:5px;">
 
@@ -20,7 +6,7 @@
             <span class="navbar-toggler-icon icona_menu_mobile" ></span>
         </button>
 
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
             <img class='logo logo-dark' src="/file/{{$shop->logo()}}" alt=""style="max-width:180px;max-height: 70px;">
             <img class='logo logo-light hidden-md-down' src="/file/{{$shop->logo()}}" alt=""style="max-width:180px;max-height: 70px;">
         </a>
@@ -45,7 +31,7 @@
                 <li class="list-inline-item">
                     <a href="javascript:void(0)" class=" menu-btn" style="font-size:150%;">
                         <i class="ti-shopping-cart"></i>
-                        <span class="badge badge-default">3</span>
+                        <span id="cart_count" class="badge badge-default">{{$carts->count()}}</span>
                     </a>
                 </li>
             </ul>

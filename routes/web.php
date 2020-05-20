@@ -2,7 +2,15 @@
 
 //ROUTES DEL WEBSITE
 Route::get('/','Website\PageController@index')->name('website.home');
+Route::get('/informativa','Website\PageController@informativa');
+Route::get('/policy','Website\PageController@policy');
+Route::get('/category/{id}','Website\PageController@category');
+Route::get('/remove_from_cart/{id}','Website\PageController@remove_from_cart');
 Route::post('/add_to_cart','Website\PageController@add_to_cart');
+Route::post('/update_price','Website\PageController@update_price');
+Route::post('/cart_resume','Website\PageController@cart_resume');
+Route::post('/checkout','Website\PageController@checkout');
+Route::post('/checkout_paypal','Website\PageController@checkout_paypal');
 
 
 //ROUTES DEL CMS

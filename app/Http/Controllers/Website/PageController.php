@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Website;
 use App\Mail\Contact;
 use App\Model\Cart;
 use App\Model\Category;
+use App\Model\DeliveryMunic;
 use App\Model\Domain;
 use App\Model\File;
 use App\Model\Ingredient;
@@ -21,9 +22,11 @@ use Illuminate\Http\Request;
 use App\Model\Url;
 use App\Http\Controllers\Controller;
 use App\Service\GoogleRecaptcha;
+use Carbon\Carbon;
 
 class PageController extends Controller
 {
+    //stabilisce su quale negozio ci troviamo (in base al dominio)
     protected $shop;
 
     public function __construct()
@@ -45,6 +48,8 @@ class PageController extends Controller
             return view('website.page.dominio_sbagliato');
         }
 
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+
         $categories = Category::where('shop_id',$this->shop->id)->where('stato',1)->orderBy('order')->get();
 
         $first_cat = $categories->first();
@@ -52,14 +57,237 @@ class PageController extends Controller
         $ingredients = Ingredient::where('category_id',$first_cat->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
         $variants = Variant::where('category_id',$first_cat->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
 
+        $carbon = Carbon::now('Europe/Rome');
+        $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
+
+        //trasformo tutti gli orari in timestamp per confrontarli
+        $ora_di_adesso = strtotime($now);
+        $prima_ora_del_giorno = strtotime($this->shop->deliveryHour->start_morning);
+        $prima_ora_della_sera = strtotime($this->shop->deliveryHour->start_afternoon);
+        $ultima_ora_del_giorno = strtotime($this->shop->deliveryHour->end_morning);
+        $ultima_ora_della_sera = strtotime($this->shop->deliveryHour->end_afternoon);
+
+
+        $possibile_ordinare_il_giorno = true;
+        $possibile_ordinare_la_sera = true;
+
+        //è troppo tardi non si può più ordinare il giorno
+        if($ora_di_adesso >= $ultima_ora_del_giorno)
+        {
+            $possibile_ordinare_il_giorno = false;
+        }
+
+        //è troppo tardi non si può più ordinare (domani si può)
+        if($ora_di_adesso >= $ultima_ora_della_sera)
+        {
+            $possibile_ordinare_la_sera = false;
+        }
+
+        //per il timepicker del giorno
+        $orario_partenza_giorno = $this->shop->deliveryHour->start_morning;
+        if($ora_di_adesso > $prima_ora_del_giorno)
+        {
+            $orario_partenza_giorno = $now;
+        }
+
+        //per il timepicker della sera
+        $orario_partenza_sera = $this->shop->deliveryHour->start_afternoon;
+        if($ora_di_adesso > $prima_ora_della_sera)
+        {
+            $orario_partenza_sera = $now;
+        }
+
         $params = [
             'shop' => $this->shop,
+            'carts' => $carts,
+            'category_selected' => $first_cat,
             'categories' => $categories,
             'products' => $products,
             'ingredients' => $ingredients,
             'variants' => $variants,
+            'now' => $now,
+            'possibile_ordinare_il_giorno' => $possibile_ordinare_il_giorno,
+            'possibile_ordinare_la_sera' => $possibile_ordinare_la_sera,
+            'aperto_il_giorno' => $this->aperto_il_giorno(),
+            'aperto_la_sera' => $this->aperto_la_sera(),
+            'orario_partenza_giorno' => $orario_partenza_giorno,
+            'orario_partenza_sera' => $orario_partenza_sera,
         ];
         return view('website.page.index',$params);
+    }
+
+    public function category(Request $request, $id)
+    {
+        $category_id = decrypt($id);
+
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+
+        $categories = Category::where('shop_id',$this->shop->id)->where('stato',1)->orderBy('order')->get();
+        $category = Category::find($category_id);
+
+        $products = Product::where('category_id',$category->id)->where('visibile',1)->where('omaggio',0)->where('shop_id',$this->shop->id)->get();
+        $ingredients = Ingredient::where('category_id',$category->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
+        $variants = Variant::where('category_id',$category->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
+
+        $params = [
+            'shop' => $this->shop,
+            'carts' => $carts,
+            'categories' => $categories,
+            'products' => $products,
+            'category_selected' => $category,
+            'ingredients' => $ingredients,
+            'variants' => $variants,
+        ];
+
+        $html = \View::make('website.page.partials.product_list',$params);
+        return ['result' => 1, 'msg' => '', 'html' => "$html"];
+    }
+
+    public function update_price(Request $request)
+    {
+        if(!$this->shop)
+        {
+            return ['result' => 0, 'msg' => 'Errore'];
+        }
+
+        $product_id = decrypt($request->input('product_id',null));
+        $shop_id = decrypt($request->input('shop_id',null));
+
+        \Log::debug('add_to_cart product_id='.$product_id.' shop_id='.$shop_id);
+
+        if($product_id == null || $shop_id == null)
+        {
+            \Log::error('fallito update_price con product_id='.$product_id.' e shop_id='.$shop_id);
+            return ['result' => 0, 'msg' => 'Errore'];
+        }
+
+        $shop = Shop::find($shop_id);
+        if(!$shop)
+        {
+            \Log::error('fallito update_price  non trovato il negozio con id='.$shop_id);
+            return ['result' => 0, 'msg' => 'Errore'];
+        }
+
+        $product = Product::find($product_id);
+        if(!$product)
+        {
+            \Log::error('fallito update_price  non trovato il prodotto con id='.$shop_id);
+            return ['result' => 0, 'msg' => 'Errore'];
+        }
+
+        $prezzo = $product->prezzo_vendita();
+
+        //controllo gli ingredienti eliminati
+        $ingredienti_eliminati = "";
+
+        if($product->ingredients->count() > 0)
+        {
+            foreach($product->ingredients as $ing)
+            {
+                if(!$request->has('ingredient_'.$ing->id))
+                {
+                    $ingredienti_eliminati .= $ing->nome_it.",";
+                }
+            }
+            //elimino l'ultima virgola
+            if($ingredienti_eliminati != '')
+            {
+                $ingredienti_eliminati = "senza " . substr($ingredienti_eliminati, 0, strlen($ingredienti_eliminati) - 1);
+            }
+        }
+
+        //controllo gli ingredienti aggiunti e modifico il prezzo
+        $ingredienti_aggiunti = "";
+
+        if($product->ingredienti_da_aggiungere()->count() > 0)
+        {
+            foreach($product->ingredienti_da_aggiungere() as $ing)
+            {
+                if($request->has('ingredient_'.$ing->id))
+                {
+                    $ingredienti_aggiunti .= $ing->nome_it.",";
+                    $prezzo = $prezzo + $ing->prezzo;
+                }
+            }
+            //elimino l'ultima virgola
+            if($ingredienti_aggiunti != '')
+            {
+                $ingredienti_aggiunti = "con " . substr($ingredienti_aggiunti, 0, strlen($ingredienti_aggiunti) - 1);
+            }
+        }
+
+        //controllo se c'è la variante e modifico il prezzo
+        $variante = "";
+
+        if($product->variants->count() > 0)
+        {
+            foreach ($product->variants as $variant)
+            {
+                if($request->has('variante'))
+                {
+                    $variant_id = $request->input('variante');
+                    $var = Variant::find($variant_id);
+                    if($var)
+                    {
+                        $variante = $var->nome_it;
+                        if($var->type == '+')
+                        {
+                            $prezzo = $prezzo + $var->prezzo;
+                        }
+                        else
+                        {
+                            $prezzo = $prezzo - $var->prezzo;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        //ritorna un kson con diversi componenti html per aggiornare la vista
+        return [
+            'result'=> 1,
+            'msg' => 'prezzo aggiornato',
+            'prezzo' => 'Prezzo: € ' . number_format($prezzo, 2,',','.'),
+            'ingredienti_eliminati' => $ingredienti_eliminati,
+            'ingredienti_aggiunti' => $ingredienti_aggiunti,
+            'variante' => $variante,
+        ];
+    }
+
+    public function remove_from_cart(Request $request, $id)
+    {
+        $cart_id = decrypt($id);
+        $cart = Cart::find($cart_id);
+
+        if(!$cart)
+        {
+            return ['result' => 0, 'msg' => 'Errore! Prodotto non trovato'];
+        }
+
+        $shop = Shop::find($cart->shop_id);
+        if($shop->id != $this->shop->id)
+        {
+            \Log::error('fallito remove_from_cart:: lo shop id del carrello non corrisponde a quello del dominio' );
+            return ['result' => 0, 'msg' => 'Errore! Prodotto non trovato'];
+        }
+
+        $cart->delete();
+
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+        $cart_html = \View::make('layouts.website_carrello',['carts' => $carts,'shop'=>$shop]);
+
+        return [
+            'result' => 1,
+            'msg' => 'Prodotto rimosso dal carrello',
+            'cart' => "$cart_html",
+            'cart_count' => $carts->count(),
+        ];
     }
 
     public function add_to_cart(Request $request)
@@ -181,7 +409,192 @@ class PageController extends Controller
             return ['result' => 0,'msg' => 'Errore! impossibile inserire il prodotto selezionato'];
         }
 
-        return ['result' => 1, 'msg' => 'Successo! Prodotto inserito nel carrello'];
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+        $cart_html = \View::make('layouts.website_carrello',['carts' => $carts,'shop'=>$shop]);
+
+        return [
+            'result' => 1,
+            'msg' => 'Prodotto inserito nel carrello',
+            'cart' => "$cart_html",
+            'cart_count' => $carts->count(),
+            ];
+    }
+
+    public function cart_resume(Request $request)
+    {
+        //inserisco i dati nella sessione
+        $request->flash();
+
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+
+        $data = $request->post();
+        $config = \Config::get('website_config');
+        $secret = $config['recaptcha_secret'];
+        /*if(!GoogleRecaptcha::verifyGoogleRecaptcha($data,$secret))
+        {
+            return back()->with('error',trans('msg.il_codice_di_controllo_errato'));
+        }*/
+
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+        if($carts->count() == 0)
+        {
+            return back()->with('error','Non hai nessun prodotto nel carrello');
+        }
+
+        $orario = $request->input('orario',null);
+        if($orario == null)
+        {
+            return back()->with('error','Non hai specificato l\'orario di consegna/ritiro');
+        }
+
+        $orario_html = $orario;
+        $orario = $orario.':00'; //aggiungo gli zeri dei secondi per inserirlo nel db
+
+        //controllo il formato dell'orario
+        $dateObj = \DateTime::createFromFormat('H:i:s', $orario);
+        if(!$dateObj)
+        {
+            return back()->with('error','L\'orario specificato non è nel giusto formato');
+        }
+
+        //controllo che la qunatità non superi il limite se c'è
+        $max_qty = $this->shop->deliveryMaxQuantity;
+        if($max_qty && ($carts->sum('qta') > $max_qty->qty))
+        {
+            return back()->with('error','Hai superato il limite di quantità. Per procedere con l\'ordinazione devi togliere alcuni prodotti');
+        }
+
+        //controllo il minimo di ordine
+        $min_ordine = $this->shop->deliveryMin;
+        if($min_ordine && ($carts->sum('totale') < $min_ordine->min ))
+        {
+            return back()->with('error','L\'ordine deve essere almeno di '.$min_ordine.' euro');
+        }
+
+        $carbon = Carbon::now('Europe/Rome');
+        $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
+        //trasformo in timestamp per confrontarli
+        $ora_di_adesso = strtotime($now);
+        $ora_richiesta = strtotime($orario);
+        $intervallo_min = (($this->shop->deliveryAvailableTime->time) ? $this->shop->deliveryAvailableTime->time : 0) * 60;
+
+        //controllo che l'orario sia sempre valido
+        if(($ora_di_adesso + $intervallo_min) > $ora_richiesta)
+        {
+            return back()->with('error','L\'orario indicato non è più disponible per effettuare l\'ordinazione');
+        }
+
+        $nome = $request->input('nome',null);
+        $cognome = $request->input('cognome',null);
+        $email = $request->input('email',null);
+        $tel = $request->input('tel',null);
+
+        if($nome == null || $cognome == null || $email == null || $tel == null)
+        {
+            return back()->with('error','Alcuni campi obbligatori non sono stati compilati');
+        }
+
+        $tipo_ordinazione = $request->input('tipo_ordinazione',null);
+        $indirizzo = $request->input('indirizzo',null);
+        $nr_civico = $request->input('nr_civico',null);
+        $comune_id = $request->input('comune',null);
+        $comune = false;
+
+        if($tipo_ordinazione == 'domicilio')
+        {
+            if($indirizzo == null || $nr_civico == null || $comune_id == null)
+            {
+                return back()->with('error','Per la consegna a domicilio devi compilare tutti i campi per l\'indirizzo di consegna');
+            }
+            $comune = DeliveryMunic::find($comune_id);
+        }
+
+        $note = $request->input('note',null);
+        $tipo_pagamento = $request->input('tipo_pagamento','payapal');
+
+        $dati_ordinazione = [
+            'nome' => $nome,
+            'cognome' => $cognome,
+            'email' => $email,
+            'tel' => $tel,
+            'tipo_ordinazione' => $tipo_ordinazione,
+            'indirizzo' => $indirizzo,
+            'nr_civico' => $nr_civico,
+            'comune' => $comune,
+            'note' => $note,
+            'tipo_pagamento' => $tipo_pagamento,
+            'orario' => $orario
+        ];
+
+        \Session::put('dati_ordinazione',$dati_ordinazione);
+
+
+        $params = [
+            'shop' => $this->shop,
+            'carts' => $carts,
+            'nome' => $nome,
+            'cognome' => $cognome,
+            'email' => $email,
+            'tel' => $tel,
+            'tipo_ordinazione' => $tipo_ordinazione,
+            'indirizzo' => $indirizzo,
+            'nr_civico' => $nr_civico,
+            'comune' => $comune,
+            'note' => $note,
+            'tipo_pagamento' => $tipo_pagamento,
+            'orario' => $orario_html
+        ];
+
+        return view('website.page.cart_resume',$params);
+
+    }
+
+    public function checkout(Request $request)
+    {
+        $dati_ordinazione = \Session::get('dati_ordinazione');
+
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+
+        if($this->shop->id != decrypt($request->input('shop_id')))
+        {
+            return back()->with('error','Errore grave!');
+        }
+
+        $nome = $dati_ordinazione['nome'];
+        $cognome = $dati_ordinazione['cognome'];
+        $email = $dati_ordinazione['email'];
+        $tel = $dati_ordinazione['tel'];
+        $tipo_ordinazione = $dati_ordinazione['tipo_ordinazione'];
+        $comune = $dati_ordinazione['comune'];
+        $indirizzo = $dati_ordinazione['indirizzo'];
+        $nr_civico = $dati_ordinazione['nr_civico'];
+        $note = $dati_ordinazione['note'];
+        $orario = $dati_ordinazione['orario'];
+
+        $carbon = Carbon::now('Europe/Rome');
+        $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
+        //trasformo in timestamp per confrontarli
+        $ora_di_adesso = strtotime($now);
+        $ora_richiesta = strtotime($orario);
+        $intervallo_min = (($this->shop->deliveryAvailableTime->time) ? $this->shop->deliveryAvailableTime->time : 0) * 60;
+
+        //controllo che l'orario sia sempre valido
+        if(($ora_di_adesso + $intervallo_min) > $ora_richiesta)
+        {
+            return back()->with('error','L\'orario indicato non è più disponible per effettuare l\'ordinazione');
+        }
+
+    }
+
+    public function checkout_paypal()
+    {
+
     }
 
     public function invia_formcontatti(Request $request)
@@ -209,6 +622,39 @@ class PageController extends Controller
 
         return ['result' => 1, 'msg' => trans('msg.grazie_per_averci_contattato')];
 
+    }
+
+    protected function aperto_il_giorno()
+    {
+        $oggi = date('N');
+        $oggi_in_italiano = [
+            1 => 'lunedi',
+            2 => 'martedi',
+            3 => 'mercoledi',
+            4 => 'giovedi',
+            5 => 'venerdi',
+            6 => 'sabato',
+            7 => 'domenica'
+        ];
+
+
+        return $this->shop->deliveryOpenDay->{$oggi_in_italiano[$oggi].'_giorno'};
+    }
+
+    protected function aperto_la_sera()
+    {
+        $oggi = date('N');
+        $oggi_in_italiano = [
+            1 => 'lunedi',
+            2 => 'martedi',
+            3 => 'mercoledi',
+            4 => 'giovedi',
+            5 => 'venerdi',
+            6 => 'sabato',
+            7 => 'domenica'
+        ];
+
+        return $this->shop->deliveryOpenDay->{$oggi_in_italiano[$oggi].'_sera'};
     }
 
 

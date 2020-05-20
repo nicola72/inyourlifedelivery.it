@@ -37,4 +37,39 @@ class Shop extends Model
 
         return 'default.jpg';
     }
+
+    public function deliveryHour()
+    {
+        return $this->hasOne('App\Model\DeliveryHour');
+    }
+
+    public function deliveryStep()
+    {
+        return $this->hasOne('App\Model\DeliveryStep');
+    }
+
+    public function deliveryOpenDay()
+    {
+        return $this->hasOne('App\Model\DeliveryOpenDay');
+    }
+
+    public function deliveryAvailableTime()
+    {
+        return $this->hasOne('App\Model\DeliveryAvailableTime');
+    }
+
+    public function deliveryMunics()
+    {
+        return $this->hasMany('App\Model\DeliveryMunic');
+    }
+
+    public function deliveryMaxQuantity()
+    {
+        return $this->hasOne('App\Model\DeliveryMaxQuantity');
+    }
+
+    public function deliveryMin()
+    {
+        return $this->hasOne('App\Model\DeliveryMin');
+    }
 }

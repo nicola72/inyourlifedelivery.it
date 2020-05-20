@@ -3968,9 +3968,13 @@ Template responsive style
 
 .active:hover {width:102%}
 
+#cat-list .active .btn-primary{
+  background-color: red;
 
-@media (max-width: 768px) {
-.active {margin-bottom:5px;}
+}
+
+#cat-list .active .btn-primary .titolo-categoria{
+  color:#fff;
 }
 
 
@@ -4178,6 +4182,13 @@ a.link-white{color:#fff;}
     content: "3";
 }
 
+.quattro:before {
+  content: "4";
+}
+
+.cinque:before {
+  content: "5";
+}
 
 .client-reviews-card-active:before {
     position: absolute;
@@ -4273,4 +4284,43 @@ a:link.btn-light  {color:#000 !important;}
 
     white-space:normal !important;
    
+}
+
+.customizzazioni{
+  text-transform: lowercase;
+  color:#252525;
+  font-weight: bold;
+  margin-bottom:2px;
+}
+
+.ui-timepicker-container{
+  z-index:100 !important;
+}
+
+.cart-item{
+  border-bottom:1px solid #ddd;
+}
+
+/** PER IL PRELOADER **/
+body.preloader-site {
+  overflow: hidden;
+}
+
+.preloader-wrapper {
+  height: 100%;
+  width: 100%;
+  background: #FFF;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999999;
+}
+
+.preloader-wrapper .preloader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width: 120px;
 }

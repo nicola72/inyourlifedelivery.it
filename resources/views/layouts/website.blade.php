@@ -18,6 +18,7 @@
 
             <link href="/assets/css/plugins/plugins.css" rel="stylesheet">
             <link href="/assets/css/style.css" rel="stylesheet">
+            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 
         @show
 
@@ -28,13 +29,36 @@
             <div id="preloader-inner"></div>
         </div>
 
+        <div id="inner-preloader" class="preloader-wrapper" style="display: none">
+            <div class="preloader">
+                <img src="/assets/img/preloader.gif" alt="">
+            </div>
+        </div>
+
+        <!-- menu Carrello -->
+        <aside id="cart-container" class="pushy pushy-right">
+            <div class="cart-content">
+                <div class="clearfix">
+                    <a href="javascript:void(0)" class="pushy-link text-white-gray">Chiudi</a>
+                </div>
+                <div id="cart-menu-list">
+                    @include('layouts.website_carrello')
+                </div>
+            </div>
+        </aside>
+        <div class="site-overlay"></div>
+        <!-- fine menu carrello -->
+
         @include('layouts.website_header')
-        @include('layouts.website_flash-message')
 
         @yield('content')
 
         @include('layouts.website_footer')
         <a href="#" class="back-to-top hidden-xs-down" id="back-to-top"><i class="ti-angle-up"></i></a>
+
+        <!-- FLASH MESSAGE IN MODALE -->
+        @include('layouts.website_flash-message')
+        <!-- -->
 
         <!-- MODALE -->
         <div id="myModal" class="modal fade" role="dialog"></div>
@@ -47,11 +71,65 @@
         <script src="/assets/js/assan.custom.js"></script>
         <!-- load cubeportfolio -->
         <script type="text/javascript" src="/assets/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+        <script src='https://www.google.com/recaptcha/api.js?hl=it'></script>
+        <script>
 
+            function showPreloader()
+            {
+                $('#inner-preloader').show();
+                $('body').addClass('preloader-site');
+            }
+
+            function hidePreloader()
+            {
+                $('.preloader-wrapper').fadeOut();
+                $('#inner-preloader').hide();
+                $('body').removeClass('preloader-site');
+            }
+
+            function show_products(category_id)
+            {
+                showPreloader();
+                $.ajax({
+                    type: "GET",
+                    url: "/category/"+category_id,
+                    dataType: "json",
+                    success: function (data){
+                        $('#main-page').html(data.html);
+                        hidePreloader();
+                    },
+                    error: function (){
+                        hidePreloader();
+                        alert("Si è verificato un errore! Riprova!");
+                    }
+                });
+            }
+
+            function remove_from_cart(cart_id)
+            {
+                showPreloader();
+                $.ajax({
+                    type: "GET",
+                    url: "/remove_from_cart/"+cart_id,
+                    dataType: "json",
+                    success: function (data){
+                        $('#cart-menu-list').html(data.cart);
+                        $('#cart_count').html(data.cart_count);
+                        hidePreloader();
+                    },
+                    error: function (){
+                        hidePreloader();
+                        alert("Si è verificato un errore! Riprova!");
+                    }
+                });
+            }
+        </script>
         @show
 
         @yield('js_script')
         @yield('js_script_form')
+        @yield('js_flash')
     @stack('body')
     </body>
 </html>

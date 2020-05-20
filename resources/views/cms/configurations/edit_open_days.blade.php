@@ -25,122 +25,241 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <h4>GIORNO</h4>
-                                                <h5>Lunedì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="lunedi_giorno" value="0" checked>Chiuso</label>
+                                            @if(!$old_days)
+                                                <div class="col-md-6">
+                                                    <h4>GIORNO</h4>
+                                                    <h5>Lunedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="lunedi_giorno" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="lunedi_giorno" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Martedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="martedi_giorno" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="martedi_giorno" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Mercoledì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="mercoledi_giorno" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="mercoledi_giorno" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Giovedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="giovedi_giorno" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="giovedi_giorno" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Venerdì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="venerdi_giorno" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="venerdi_giorno" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Sabato</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="sabato_giorno" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="sabato_giorno" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Domenica</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="domenica_giorno" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="domenica_giorno" value="1">Aperto</label>
+                                                    </div>
                                                 </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="lunedi_giorno" value="1">Aperto</label>
+                                                <div class="col-md-6">
+                                                    <h4>SERA</h4>
+                                                    <h5>Lunedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="lunedi_sera" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="lunedi_sera" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Martedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="martedi_sera" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="martedi_sera" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Mercoledì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="mercoledi_sera" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="mercoledi_sera" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Giovedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="giovedi_sera" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="giovedi_sera" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Venerdì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="venerdi_sera" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="venerdi_sera" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Sabato</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="sabato_sera" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="sabato_sera" value="1">Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Domenica</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="domenica_sera" value="0" checked>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="domenica_sera" value="1">Aperto</label>
+                                                    </div>
                                                 </div>
-                                                <br>
-                                                <h5>Martedì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="martedi_giorno" value="0" checked>Chiuso</label>
+                                            @else
+                                                <div class="col-md-6">
+                                                    <h4>GIORNO</h4>
+                                                    <h5>Lunedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="lunedi_giorno" value="0" {{(!$old_days->lunedi_giorno)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="lunedi_giorno" value="1" {{($old_days->lunedi_giorno)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Martedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="martedi_giorno" value="0" {{(!$old_days->martedi_giorno)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="martedi_giorno" value="1" {{($old_days->martedi_giorno)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Mercoledì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="mercoledi_giorno" value="0" {{(!$old_days->mercoledi_giorno)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="mercoledi_giorno" value="1" {{($old_days->mercoledi_giorno)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Giovedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="giovedi_giorno" value="0" {{(!$old_days->giovedi_giorno)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="giovedi_giorno" value="1" {{($old_days->giovedi_giorno)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Venerdì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="venerdi_giorno" value="0" {{(!$old_days->venerdi_giorno)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="venerdi_giorno" value="1" {{($old_days->venerdi_giorno)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Sabato</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="sabato_giorno" value="0" {{(!$old_days->sabato_giorno)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="sabato_giorno" value="1"{{($old_days->sabato_giorno)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Domenica</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="domenica_giorno" value="0" {{($old_days->domenica_giorno)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="domenica_giorno" value="1" {{($old_days->domenica_giorno)? 'checked':''}}>Aperto</label>
+                                                    </div>
                                                 </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="martedi_giorno" value="1">Aperto</label>
+                                                <div class="col-md-6">
+                                                    <h4>SERA</h4>
+                                                    <h5>Lunedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="lunedi_sera" value="0" {{(!$old_days->lunedi_sera)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="lunedi_sera" value="1" {{($old_days->lunedi_sera)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Martedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="martedi_sera" value="0" {{(!$old_days->martedi_sera)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="martedi_sera" value="1" {{($old_days->mertedi_sera)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Mercoledì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="mercoledi_sera" value="0" {{(!$old_days->mercoledi_sera)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="mercoledi_sera" value="1" {{($old_days->mercoledi_sera)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Giovedì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="giovedi_sera" value="0" {{(!$old_days->giovedi_sera)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="giovedi_sera" value="1" {{($old_days->giovedi_sera)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Venerdì</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="venerdi_sera" value="0" {{(!$old_days->venerdi_sera)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="venerdi_sera" value="1" {{($old_days->venerdi_sera)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Sabato</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="sabato_sera" value="0" {{(!$old_days->sabato_sera)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="sabato_sera" value="1" {{($old_days->sabato_sera)? 'checked':''}}>Aperto</label>
+                                                    </div>
+                                                    <br>
+                                                    <h5>Domenica</h5>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="domenica_sera" value="0" {{(!$old_days->domenica_sera)? 'checked':''}}>Chiuso</label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label><input type="radio" name="domenica_sera" value="1" {{($old_days->domenica_sera)? 'checked':''}}>Aperto</label>
+                                                    </div>
                                                 </div>
-                                                <br>
-                                                <h5>Mercoledì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="mercoledi_giorno" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="mercoledi_giorno" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Giovedì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="giovedi_giorno" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="giovedi_giorno" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Venerdì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="venerdi_giorno" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="venerdi_giorno" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Sabato</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="sabato_giorno" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="sabato_giorno" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Domenica</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="domenica_giorno" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="domenica_giorno" value="1">Aperto</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <h4>SERA</h4>
-                                                <h5>Lunedì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="lunedi_sera" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="lunedi_sera" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Martedì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="martedi_sera" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="martedi_sera" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Mercoledì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="mercoledi_sera" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="mercoledi_sera" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Giovedì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="giovedi_sera" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="giovedi_sera" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Venerdì</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="venerdi_sera" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="venerdi_sera" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Sabato</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="sabato_sera" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="sabato_sera" value="1">Aperto</label>
-                                                </div>
-                                                <br>
-                                                <h5>Domenica</h5>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="domenica_sera" value="0" checked>Chiuso</label>
-                                                </div>
-                                                <div class="radio">
-                                                    <label><input type="radio" name="domenica_sera" value="1">Aperto</label>
-                                                </div>
-                                            </div>
+                                            @endif
                                         </div>
 
                                     </div>

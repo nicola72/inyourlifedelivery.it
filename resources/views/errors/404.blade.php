@@ -1,4 +1,4 @@
-@extends('layouts.website')
+@extends('layouts.website_errors')
 
 @section('content')
     <div class="middle-box text-center animated fadeInDown">
