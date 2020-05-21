@@ -34,6 +34,8 @@
                                 <th>Dominio</th>
                                 <th>P.via</th>
                                 <th>Email</th>
+                                <th>Domicilio</th>
+                                <th>Asporto</th>
                                 <th>Stato</th>
                                 <th data-orderable="false">Azioni</th>
                             </tr>
@@ -48,12 +50,50 @@
 
                                     <td data-orderable="false">
 
+                                        <!-- Pulsante Switch Domicilio -->
+                                        <div class="switch">
+                                            <div class="onoffswitch">
+                                                <input type="checkbox" id="switch_dom_{{$shop->id}}"
+                                                       data-id="{{$shop->id}}"
+                                                       class="onoffswitch-checkbox domicilio-check"
+                                                        {{ ($shop->domicilio == 1) ? "checked" : "" }} />
+                                                <label class="onoffswitch-label" for="switch_dom_{{$shop->id}}">
+                                                    <span class="onoffswitch-inner"></span>
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!-- -->
+
+                                    </td>
+
+                                    <td data-orderable="false">
+
+                                        <!-- Pulsante Switch Asporto -->
+                                        <div class="switch">
+                                            <div class="onoffswitch">
+                                                <input type="checkbox" id="switch_asp_{{$shop->id}}"
+                                                       data-id="{{$shop->id}}"
+                                                       class="onoffswitch-checkbox asporto-check"
+                                                        {{ ($shop->asporto == 1) ? "checked" : "" }} />
+                                                <label class="onoffswitch-label" for="switch_asp_{{$shop->id}}">
+                                                    <span class="onoffswitch-inner"></span>
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!-- -->
+
+                                    </td>
+
+                                    <td data-orderable="false">
+
                                         <!-- Pulsante Switch Stato -->
                                         <div class="switch">
                                             <div class="onoffswitch">
                                                 <input type="checkbox" id="switch_{{$shop->id}}"
                                                        data-id="{{$shop->id}}"
-                                                       class="onoffswitch-checkbox"
+                                                       class="onoffswitch-checkbox stato-check"
                                                         {{ ($shop->stato == 1) ? "checked" : "" }} />
                                                 <label class="onoffswitch-label" for="switch_{{$shop->id}}">
                                                     <span class="onoffswitch-inner"></span>
@@ -126,13 +166,41 @@
         });
         //Fine Pulsante ELIMINA
 
-        $('.onoffswitch-checkbox').change(function ()
+        $('.stato-check').change(function ()
         {
             let stato = $(this).is(':checked') ? "1" : "0";
 
             $.ajax({
                 type: "GET",
                 url: "/cms/shops/switch_stato",
+                data: {id: $(this).attr('data-id'), stato : stato},
+                dataType: "json",
+                success: function (data){ alert(data.msg);},
+                error: function (){ alert("Si è verificato un errore! Riprova!");}
+            });
+        });
+
+        $('.asporto-check').change(function ()
+        {
+            let stato = $(this).is(':checked') ? "1" : "0";
+
+            $.ajax({
+                type: "GET",
+                url: "/cms/shops/switch_asporto",
+                data: {id: $(this).attr('data-id'), stato : stato},
+                dataType: "json",
+                success: function (data){ alert(data.msg);},
+                error: function (){ alert("Si è verificato un errore! Riprova!");}
+            });
+        });
+
+        $('.domicilio-check').change(function ()
+        {
+            let stato = $(this).is(':checked') ? "1" : "0";
+
+            $.ajax({
+                type: "GET",
+                url: "/cms/shops/switch_domicilio",
                 data: {id: $(this).attr('data-id'), stato : stato},
                 dataType: "json",
                 success: function (data){ alert(data.msg);},

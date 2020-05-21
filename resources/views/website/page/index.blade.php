@@ -279,6 +279,9 @@
         </div>
         <!-- -->
     </div>
+
+    <a id="orario_ancor" name="orario"></a>
+
     <section id='reviews' class='pt60 '  style="background-color:#ececec;">
         <div class="container">
             <div class="row">
@@ -387,11 +390,11 @@
                     <div class="row">
                         <div class="col-md-6 text-center">
                             <img src="/img/consegna.png" alt="" class="img-fluid"  style="max-width:150px;"/><br/>
-                            <input id="radio_tipo_1" type="radio" name="tipo_ordinazione" value="domicilio" /> <h6 class="d-inline">CONSEGNA A DOMICILIO</h6>
+                            <input class="tipo_ordinazione" id="radio_tipo_1" type="radio" name="tipo_ordinazione" value="domicilio" /> <h6 class="d-inline">CONSEGNA A DOMICILIO</h6>
                         </div>
                         <div class="col-md-6 text-center">
                             <img src="/img/asporto.png" alt="" class="img-fluid" style="max-width:150px;"/><br/>
-                            <input id="radio_tipo_2" type="radio" name="tipo_ordinazione" value="asporto" checked /> <h6 class="d-inline">ASPORTO</h6>
+                            <input class="tipo_ordinazione" id="radio_tipo_2" type="radio" name="tipo_ordinazione" value="asporto" checked /> <h6 class="d-inline">ASPORTO</h6>
                         </div>
                     </div>
                 </div>
@@ -413,16 +416,16 @@
         </section>
         <div class="container mt-3 mb-3">
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                     <label for="nome">Nome*</label>
                     <input type="text" id="nome" name="nome" class="form-control" value="{{old('nome')}}" required />
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                     <label for="nome">Cognome*</label>
                     <input type="text" id="cognome" name="cognome" class="form-control" value="{{old('cognome')}}" required />
                 </div>
             </div>
-            <div id="indirizzo_consegna" class="p-3 border">
+            <div id="indirizzo_consegna" class="p-3 border" style="display: none">
                 <div class="row mb-3">
                     <div class="col-md-12"><h4>Indirizzo di consegna</h4></div>
                     <div class="col-md-6">
@@ -436,22 +439,22 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-8">
+                    <div class="col-md-8 mb-3">
                         <label for="indirizzo">Via/Piazza*</label>
                         <input type="text" id="indirizzo" name="indirizzo" class="form-control" value="{{old('indirizzo')}}" />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <label for="nome">N°Civ.*</label>
                         <input type="text" id="nr_civico" name="nr_civico" class="form-control" value="{{old('nr_civico')}}" />
                     </div>
                 </div>
             </div>
             <div class="row mb-3 mt-3">
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                     <label for="tel">Telefono*</label>
                     <input type="text" id="tel" name="tel" class="form-control" value="{{old('tel')}}" required />
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 mb-3">
                     <label for="email">Email*</label>
                     <input type="email" id="email" name="email" class="form-control" value="{{old('email')}}" required />
                 </div>
@@ -486,6 +489,9 @@
                         @lang('msg.leggi_informativa')
                     </a>
                 </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12"><span style="color:#000">* obbligatorio</span></div>
             </div>
         </div>
 
@@ -533,36 +539,21 @@
             </div>
         </div>
     </form>
+
+    <div class="navbar-right-elements cart-fixed pull-right">
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                <a href="javascript:void(0)" class=" menu-btn ">
+                    <i class="ti-shopping-cart"  style="font-weight:bold; font-size:200%; text-shadow:1px 1px 10px;"></i>
+                    <span id="cart_count2" class="badge badge-default" style="color:#000;:">{{$carts->sum('qta')}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
 @endsection
 @section('js_script')
     <script>
-
-        /*$("#form_ordinazione").validate({
-            ignore: [],
-            event: 'blur',
-            rules: {
-                nome: {required: true},
-                cognome: {required: true},
-                tel:{required:true},
-                email: {required: true, email: true},
-                captcha_code: {required: true},
-                privacy: {required: true},
-            },
-            messages: {
-                nome: {required: "@lang('msg.obbligatorio')"},
-                cognome: {required: "@lang('msg.obbligatorio')"},
-                tel: {required: "@lang('msg.obbligatorio')"},
-                email: {required: "@lang('msg.obbligatorio')", email: "@lang('msg.inserisci_email_valida')"},
-
-                captcha_code: {required: "@lang('msg.obbligatorio')"},
-                privacy: {required: "@lang('msg.obbligatorio')"}
-            },
-            submitHandler: function (form)
-            {
-                form.submit();
-            },
-        });*/
-
 
         function increse(product_id)
         {
@@ -588,14 +579,14 @@
         $("#radio_tipo_1").click( function()
         {
             if( $(this).is(':checked') ){
-                $('#dati_consegna').fadeIn();
+                $('#indirizzo_consegna').fadeIn();
             }
         });
 
         $("#radio_tipo_2").click( function()
         {
             if( $(this).is(':checked') ){
-                $('#dati_consegna').fadeOut();
+                $('#indirizzo_consegna').fadeOut();
             }
         });
 
@@ -645,6 +636,7 @@
                 success: function (data){
                         $('#cart-menu-list').html(data.cart);
                         $('#cart_count').html(data.cart_count);
+                        $('#cart_count2').html(data.cart_count);
                         hidePreloader();
                         alert(data.msg);
                     },
@@ -693,6 +685,12 @@
             $('.pickers').change(function(){
                 alert('prego selezionare il valore dal menù a tendina');
             });
+        });
+
+        $(document).ready(function(){
+            if( $('#radio_tipo_1').is(':checked') ){
+                $('#indirizzo_consegna').fadeIn();
+            }
         });
 
         function validateHhMm(inputField)

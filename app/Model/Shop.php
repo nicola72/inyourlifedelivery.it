@@ -17,6 +17,8 @@ class Shop extends Model
         'cap',
         'email',
         'sede_legale',
+        'domicilio',
+        'asporto',
         'stato',
 
     ];

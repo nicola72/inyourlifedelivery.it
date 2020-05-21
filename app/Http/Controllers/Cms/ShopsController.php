@@ -174,4 +174,58 @@ class ShopsController extends Controller
 
         return back()->with('success','Elemento eliminato con successo!');
     }
+
+    public function switch_stato(Request $request)
+    {
+        $id = $request->id;
+        $stato = $request->stato;
+
+        try{
+            $item = Shop::find($id);
+            $item->stato = $stato;
+            $item->save();
+        }
+        catch(\Exception $e){
+
+            return ['result' => 0,'msg' => $e->getMessage()];
+        }
+        return ['result' => 1,'msg' => 'Elemento aggiornato con successo!'];
+
+    }
+
+    public function switch_asporto(Request $request)
+    {
+        $id = $request->id;
+        $stato = $request->stato;
+
+        try{
+            $item = Shop::find($id);
+            $item->asporto = $stato;
+            $item->save();
+        }
+        catch(\Exception $e){
+
+            return ['result' => 0,'msg' => $e->getMessage()];
+        }
+        return ['result' => 1,'msg' => 'Elemento aggiornato con successo!'];
+
+    }
+
+    public function switch_domicilio(Request $request)
+    {
+        $id = $request->id;
+        $stato = $request->stato;
+
+        try{
+            $item = Shop::find($id);
+            $item->domicilio = $stato;
+            $item->save();
+        }
+        catch(\Exception $e){
+
+            return ['result' => 0,'msg' => $e->getMessage()];
+        }
+        return ['result' => 1,'msg' => 'Elemento aggiornato con successo!'];
+
+    }
 }

@@ -12,6 +12,7 @@ class Order extends Model
         'id',
         'shop_id',
         'tipo',
+        'orario',
         'nome',
         'cognome',
         'email',

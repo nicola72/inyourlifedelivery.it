@@ -10,7 +10,7 @@
 
                     <!-- elimina dal carrello -->
                     <span class="close">
-                        <a href="javascript:void(0)" onclick="remove_from_cart('{{encrypt($cart->id)}}')"><i class="ti-close"></i></a>
+                        <a href="javascript:void(0)" onclick="remove_from_cart('{{encrypt($cart->id)}}',false)"><i class="ti-close"></i></a>
                     </span>
                     <!-- -->
 
@@ -44,9 +44,9 @@
             </li>
         @endforeach
         <li class="clearfix">
-            <!--<div class="float-right">
-                <a href="{{url('/cart_resume')}}" class="btn btn-primary" style="color:#000">Procedi</a>
-            </div>-->
+            <div class="float-right">
+                <a href="#orario_ancor" class="pushy-link btn btn-primary" style="color:#000;position: relative">Procedi</a>
+            </div>
             <h4  class="text-white">
                 <small>Totale: </small> @money($carts->sum('totale'))
             </h4>

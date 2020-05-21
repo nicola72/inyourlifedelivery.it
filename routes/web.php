@@ -6,9 +6,11 @@ Route::get('/informativa','Website\PageController@informativa');
 Route::get('/policy','Website\PageController@policy');
 Route::get('/category/{id}','Website\PageController@category');
 Route::get('/remove_from_cart/{id}','Website\PageController@remove_from_cart');
+Route::get('/esito_ordinazione/{id}','Website\PageController@esito_ordinazione')->name('website.esito_ordinazione');
 Route::post('/add_to_cart','Website\PageController@add_to_cart');
 Route::post('/update_price','Website\PageController@update_price');
 Route::post('/cart_resume','Website\PageController@cart_resume');
+Route::get('/get_cart_resume','Website\PageController@get_cart_resume')->name('website.cart_resume');
 Route::post('/checkout','Website\PageController@checkout');
 Route::post('/checkout_paypal','Website\PageController@checkout_paypal');
 
@@ -41,6 +43,9 @@ Route::group(['prefix' => 'cms'], function ()
         Route::post('/settings/update_config_module/{id}','Cms\SettingsController@update_config_module');
         Route::post('/settings/store_copy_config_module','Cms\SettingsController@store_copy_config_module');
 
+        Route::get('/shops/switch_stato','Cms\ShopsController@switch_stato');
+        Route::get('/shops/switch_domicilio','Cms\ShopsController@switch_domicilio');
+        Route::get('/shops/switch_asporto','Cms\ShopsController@switch_asporto');
         Route::get('/shops','Cms\ShopsController@index')->name('cms.shops');
         Route::get('/shops/create','Cms\ShopsController@create');
         Route::get('/shops/edit/{id}','Cms\ShopsController@edit');

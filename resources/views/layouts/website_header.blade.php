@@ -13,25 +13,34 @@
 
         <div  id="navbarNavDropdown" class="navbar-collapse collapse">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link "  href="#ordina">SCEGLI QUELLO CHE VUOI</a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link "  href="#orario">SCEGLI L'ORARIO</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link "  href="#consegna">SCEGLI IL TIPO DI CONSEGNA</a>
-                </li>
+                @if(\Route::currentRouteName() == 'website.home')
+                    <li class="nav-item">
+                        <a class="nav-link "  href="#ordina">SCEGLI QUELLO CHE VUOI</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link "  href="#orario_ancor">SCEGLI L'ORARIO</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link "  href="#consegna">SCEGLI IL TIPO DI CONSEGNA</a>
+                    </li>
+                @elseif(\Route::currentRouteName() == 'website.cart_resume')
+                    <li class="nav-item">
+                        <a class="nav-link " href="#ordina">RIEPILOGO ORDINAZIONE</a>
+                    </li>
+                @elseif(\Route::currentRouteName() == 'website.esito_ordinazione')
+                    <li class="nav-item">
+                        <a class="nav-link " href="#ordina">CONFERMA ORDINAZIONE</a>
+                    </li>
+                @endif
             </ul>
         </div>
-
 
         <div class=" navbar-right-elements">
             <ul class="list-inline">
                 <li class="list-inline-item">
                     <a href="javascript:void(0)" class=" menu-btn" style="font-size:150%;">
                         <i class="ti-shopping-cart"></i>
-                        <span id="cart_count" class="badge badge-default">{{$carts->count()}}</span>
+                        <span id="cart_count" class="badge badge-default">{{$carts->sum('qta')}}</span>
                     </a>
                 </li>
             </ul>

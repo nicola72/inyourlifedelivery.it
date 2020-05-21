@@ -11,6 +11,9 @@ use App\Model\File;
 use App\Model\Ingredient;
 use App\Model\Macrocategory;
 use App\Model\Newsitem;
+use App\Model\Order;
+use App\Model\OrderDetail;
+use App\Model\OrderShipping;
 use App\Model\Page;
 use App\Model\Pairing;
 use App\Model\Product;
@@ -158,7 +161,6 @@ class PageController extends Controller
         $product_id = decrypt($request->input('product_id',null));
         $shop_id = decrypt($request->input('shop_id',null));
 
-        \Log::debug('add_to_cart product_id='.$product_id.' shop_id='.$shop_id);
 
         if($product_id == null || $shop_id == null)
         {
@@ -282,11 +284,14 @@ class PageController extends Controller
         $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
         $cart_html = \View::make('layouts.website_carrello',['carts' => $carts,'shop'=>$shop]);
 
+        //se far fare il reload della pagina o meno
+
         return [
             'result' => 1,
+            'reload' => 0,
             'msg' => 'Prodotto rimosso dal carrello',
             'cart' => "$cart_html",
-            'cart_count' => $carts->count(),
+            'cart_count' => $carts->sum('qta'),
         ];
     }
 
@@ -319,6 +324,16 @@ class PageController extends Controller
 
         $prezzo = $product->prezzo_vendita();
         $qty = $request->input('qty',1);
+
+
+        //controllo che la quantità non superi il limite se c'è
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+        $max_qty = $this->shop->deliveryMaxQuantity;
+        $qty_da_verificare = $carts->sum('qta') + $qty;
+        if($max_qty && ($qty_da_verificare > $max_qty->qty))
+        {
+            return ['result' => 0, 'msg' => 'Non puoi ordinare più di '.$max_qty->qty.' prodotti'];
+        }
 
         //controllo gli ingredienti eliminati
         $ingredienti_eliminati = "";
@@ -416,7 +431,7 @@ class PageController extends Controller
             'result' => 1,
             'msg' => 'Prodotto inserito nel carrello',
             'cart' => "$cart_html",
-            'cart_count' => $carts->count(),
+            'cart_count' => $carts->sum('qta'),
             ];
     }
 
@@ -445,6 +460,7 @@ class PageController extends Controller
         }
 
         $orario = $request->input('orario',null);
+
         if($orario == null)
         {
             return back()->with('error','Non hai specificato l\'orario di consegna/ritiro');
@@ -460,7 +476,7 @@ class PageController extends Controller
             return back()->with('error','L\'orario specificato non è nel giusto formato');
         }
 
-        //controllo che la qunatità non superi il limite se c'è
+        //controllo che la quantità non superi il limite se c'è
         $max_qty = $this->shop->deliveryMaxQuantity;
         if($max_qty && ($carts->sum('qta') > $max_qty->qty))
         {
@@ -526,30 +542,48 @@ class PageController extends Controller
             'comune' => $comune,
             'note' => $note,
             'tipo_pagamento' => $tipo_pagamento,
-            'orario' => $orario
+            'orario' => $orario,
+            'orario_html' => $orario_html,
         ];
 
         \Session::put('dati_ordinazione',$dati_ordinazione);
 
+        return redirect()->route('website.cart_resume');
+
+    }
+
+    public function get_cart_resume(Request $request)
+    {
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+
+        $dati_ordinazione = \Session::get('dati_ordinazione',false);
+        if(!$dati_ordinazione)
+        {
+            return redirect()->route('website.home');
+        }
+
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
 
         $params = [
             'shop' => $this->shop,
             'carts' => $carts,
-            'nome' => $nome,
-            'cognome' => $cognome,
-            'email' => $email,
-            'tel' => $tel,
-            'tipo_ordinazione' => $tipo_ordinazione,
-            'indirizzo' => $indirizzo,
-            'nr_civico' => $nr_civico,
-            'comune' => $comune,
-            'note' => $note,
-            'tipo_pagamento' => $tipo_pagamento,
-            'orario' => $orario_html
+            'nome' => $dati_ordinazione['nome'],
+            'cognome' => $dati_ordinazione['cognome'],
+            'email' => $dati_ordinazione['email'],
+            'tel' => $dati_ordinazione['tel'],
+            'tipo_ordinazione' => $dati_ordinazione['tipo_ordinazione'],
+            'indirizzo' => $dati_ordinazione['indirizzo'],
+            'nr_civico' => $dati_ordinazione['nr_civico'],
+            'comune' => $dati_ordinazione['comune'],
+            'note' => $dati_ordinazione['note'],
+            'tipo_pagamento' => $dati_ordinazione['tipo_pagamento'],
+            'orario' => $dati_ordinazione['orario'],
+            'orario_html' => $dati_ordinazione['orario_html']
         ];
-
         return view('website.page.cart_resume',$params);
-
     }
 
     public function checkout(Request $request)
@@ -590,11 +624,96 @@ class PageController extends Controller
             return back()->with('error','L\'orario indicato non è più disponible per effettuare l\'ordinazione');
         }
 
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+        if($carts->count() == 0)
+        {
+            return back()->with('error','Non hai nessun prodotto nel carrello');
+        }
+
+        try{
+            $order = New Order();
+            $order->shop_id = $this->shop->id;
+            $order->tipo = $tipo_ordinazione;
+            $order->orario = $orario;
+            $order->nome = $nome;
+            $order->cognome = $cognome;
+            $order->email = $email;
+            $order->telefono = $tel;
+            $order->note = $note;
+            $order->modalita_pagamento = 'alla consegna';
+            $order->importo = $carts->sum('totale');
+            $order->save();
+
+            $order_id = $order->id;
+
+            foreach ($carts as $cart)
+            {
+                $orderDetail = new OrderDetail();
+                $orderDetail->order_id = $order_id;
+                $orderDetail->shop_id = $this->shop->id;
+                $orderDetail->product_id = $cart->product_id;
+                $orderDetail->nome_prodotto = $cart->nome_prodotto;
+                $orderDetail->variante = $cart->variante;
+                $orderDetail->ingredienti_eliminati = $cart->ingredienti_eliminati;
+                $orderDetail->ingredienti_aggiunti = $cart->ingredienti_aggiunti;
+                $orderDetail->qta = $cart->qta;
+                $orderDetail->prezzo = $cart->prezzo;
+                $orderDetail->totale = $cart->totale;
+                $orderDetail->save();
+            }
+
+            if($tipo_ordinazione == 'domicilio')
+            {
+                $orderShipping = New OrderShipping();
+                $orderShipping->order_id = $order_id;
+                $orderShipping->shop_id = $this->shop->id;
+                $orderShipping->comune = $comune->comune;
+                $orderShipping->indirizzo = $indirizzo;
+                $orderShipping->nr_civico = $nr_civico;
+                $orderShipping->nome = $nome;
+                $orderShipping->cognome = $cognome;
+                $orderShipping->email = $email;
+                $orderShipping->telefono = $tel;
+                $orderShipping->save();
+            }
+        }
+        catch(\Exception $e){
+
+            \Log::error('fallito checkout  errore inserimento ordine '.$e->getMessage() );
+            return back()->with('error','Errore! Non è possibile procedere con l\'ordinazione');
+        }
+
+        //rimuovo gli articoli dal carrello
+        foreach ($carts as $cart)
+        {
+            $cart->delete();
+        }
+
+        return redirect()->route('website.esito_ordinazione', ['id' => encrypt($order_id)]);
+
     }
 
     public function checkout_paypal()
     {
 
+    }
+
+    public function esito_ordinazione(Request $request,$id)
+    {
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+
+        $order_id = decrypt($id);
+        $order = Order::find($order_id);
+
+        $params = [
+            'shop' => $this->shop,
+            'order' => $order,
+        ];
+
+        return view('website.page.esito_ordine',$params);
     }
 
     public function invia_formcontatti(Request $request)

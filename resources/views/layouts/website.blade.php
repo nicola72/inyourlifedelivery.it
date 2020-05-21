@@ -36,6 +36,7 @@
         </div>
 
         <!-- menu Carrello -->
+        @if(\Route::currentRouteName() == 'website.home')
         <aside id="cart-container" class="pushy pushy-right">
             <div class="cart-content">
                 <div class="clearfix">
@@ -47,6 +48,7 @@
             </div>
         </aside>
         <div class="site-overlay"></div>
+        @endif
         <!-- fine menu carrello -->
 
         @include('layouts.website_header')
@@ -72,59 +74,13 @@
         <!-- load cubeportfolio -->
         <script type="text/javascript" src="/assets/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+        <!-- JAVASCRIPT -->
+        <script type="text/javascript" src="/assets/js/website.js"></script>
+        <!-- -->
+
         <script src='https://www.google.com/recaptcha/api.js?hl=it'></script>
-        <script>
 
-            function showPreloader()
-            {
-                $('#inner-preloader').show();
-                $('body').addClass('preloader-site');
-            }
-
-            function hidePreloader()
-            {
-                $('.preloader-wrapper').fadeOut();
-                $('#inner-preloader').hide();
-                $('body').removeClass('preloader-site');
-            }
-
-            function show_products(category_id)
-            {
-                showPreloader();
-                $.ajax({
-                    type: "GET",
-                    url: "/category/"+category_id,
-                    dataType: "json",
-                    success: function (data){
-                        $('#main-page').html(data.html);
-                        hidePreloader();
-                    },
-                    error: function (){
-                        hidePreloader();
-                        alert("Si è verificato un errore! Riprova!");
-                    }
-                });
-            }
-
-            function remove_from_cart(cart_id)
-            {
-                showPreloader();
-                $.ajax({
-                    type: "GET",
-                    url: "/remove_from_cart/"+cart_id,
-                    dataType: "json",
-                    success: function (data){
-                        $('#cart-menu-list').html(data.cart);
-                        $('#cart_count').html(data.cart_count);
-                        hidePreloader();
-                    },
-                    error: function (){
-                        hidePreloader();
-                        alert("Si è verificato un errore! Riprova!");
-                    }
-                });
-            }
-        </script>
         @show
 
         @yield('js_script')

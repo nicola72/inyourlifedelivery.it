@@ -1,4 +1,4 @@
-@extends('layouts.website_cart_resume')
+@extends('layouts.website')
 @section('content')
     <div id="main-page" class="col-md-12" style="background-color:#fff;padding-top:140px;">
         <div class="container">
@@ -8,7 +8,10 @@
                         <h4 class="text-uppercase mb-4">Riepilo prodotti ordinati</h4>
                         @foreach($carts as $cart)
                             <div class="row cart-item mb-2 pb-1">
-                                <div class="col-sm-8">
+                                <div class="col-sm-1">
+                                    <a href="javascript:void(0)" title="elimina" onclick="remove_from_cart('{{encrypt($cart->id)}}',1)"><i class="fa fa-trash"></i></a>
+                                </div>
+                                <div class="col-sm-7">
                                     <h6 class="text-uppercase">{{$cart->nome_prodotto}}</h6>
                                     @if($cart->variante != '')
                                         {{$cart->variante}}<br>
@@ -40,7 +43,7 @@
                         <h4 class="text-uppercase mb-4">Tipo di consegna: {{$tipo_ordinazione}}</h4>
                     </div>
                     <div id="user-details mt-5">
-                        <h4 class="text-uppercase mb-4">Alle ore {{$orario}}</h4>
+                        <h4 class="text-uppercase mb-4">Alle ore {{$orario_html}}</h4>
                     </div>
                     <div id="user-details mt-5">
                         <h4 class="text-uppercase mb-4">I tuoi dati</h4>
@@ -125,7 +128,12 @@
                                     <input type="hidden" name="shop_id" value="{{encrypt($shop->id)}}" />
                                     <input type="hidden" name="nome" value="{{$nome}}" />
                                     <input type="hidden" name="cognome" value="{{$cognome}}" />
-                                    <input type="hidden" name="comune" value="{{$comune->id}}" />
+                                    @if($comune)
+                                        <input type="hidden" name="comune" value="{{$comune->id}}" />
+                                    @else
+                                        <input type="hidden" name="comune" value="" />
+                                    @endif
+
                                     <input type="hidden" name="indirizzo" value="{{$indirizzo}}" />
                                     <input type="hidden" name="nr_civico" value="{{$nr_civico}}" />
                                     <input type="hidden" name="tel" value="{{$tel}}" />
