@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Billing e.g. invoices and receipts</title>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: none;
+            width: 100% !important;
+            height: 100%;
+            line-height: 1.6;
+        }
+
+        /* Let's make sure all tables have defaults */
+        table td {
+            vertical-align: top;
+        }
+
+        /* -------------------------------------
+            BODY & CONTAINER
+        ------------------------------------- */
+        body {
+            background-color: #f6f6f6;
+        }
+
+        .body-wrap {
+            background-color: #f6f6f6;
+            width: 100%;
+        }
+
+        .container {
+            display: block !important;
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            /* makes it centered */
+            clear: both !important;
+        }
+
+        .content {
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+            padding: 20px;
+        }
+
+        /* -------------------------------------
+            TYPOGRAPHY
+        ------------------------------------- */
+        h1, h2, h3 {
+            font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+            color: #000;
+            margin: 40px 0 0;
+            line-height: 1.2;
+            font-weight: 400;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 500;
+        }
+
+        h2 {
+            font-size: 24px;
+        }
+
+        h3 {
+            font-size: 18px;
+        }
+
+        h4 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        p, ul, ol {
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        p li, ul li, ol li {
+            margin-left: 5px;
+            list-style-position: inside;
+        }
+
+        /* -------------------------------------
+            LINKS & BUTTONS
+        ------------------------------------- */
+        a {
+            color: #1ab394;
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+
+<body>
+<table class="main" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <td>
+
+        </td>
+    </tr>
+</table>
+
+<table class="body-wrap">
+    <tr>
+        <td></td>
+        <td class="container" width="600">
+            <div class="content">
+                <table class="main" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="content-wrap aligncenter">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td class="content-block">
+                                        <h2>Ordinazione Pizzeria</h2>
+                                        <h3>
+                                            Consegna a domicilio
+                                        </h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="content-block">
+                                        <table class="invoice">
+                                            <tr>
+                                                <td>
+                                                    Nicola Tamburini
+                                                    <br>Ordine n° 2
+                                                    <br>12/10/2020
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                                        <tr>
+                                                            <td>
+                                                                Pizza margherita
+                                                            </td>
+                                                            <td class="alignright">
+                                                                Q.tà: 1
+                                                            </td>
+                                                            <td class="alignright">
+                                                                10,00 &euro;
+                                                            </td>
+                                                            <td class="alignright">
+                                                                Tot. 10,00 &euro;
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="total">
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td class="alignright" width="80%">Totale</td>
+                                                            <td class="alignright">10,00 &euro;</td>
+                                                        </tr>
+
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="content-block">
+
+                                        Orario ritiro: 13:20
+
+                                    </td>
+                                </tr>
+                                @if($order->tipo == 'domicilio')
+                                <tr>
+                                    <td class="content-block">
+                                        Indirizzo consegna:
+                                        <br>
+                                        via vittorio veneto, 98
+                                        <br>
+                                        Cerreto G.
+                                    </td>
+                                </tr>
+                                @endif
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <div class="footer">
+                    <table width="100%">
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div></div>
+        </td>
+        <td></td>
+    </tr>
+</table>
+
+</body>
+</html>

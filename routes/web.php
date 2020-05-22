@@ -13,6 +13,10 @@ Route::post('/cart_resume','Website\PageController@cart_resume');
 Route::get('/get_cart_resume','Website\PageController@get_cart_resume')->name('website.cart_resume');
 Route::post('/checkout','Website\PageController@checkout');
 Route::post('/checkout_paypal','Website\PageController@checkout_paypal');
+Route::post('/paypal_notify','Website\PageController@paypal_notify');
+Route::get('/paypal_error','Website\PageController@paypal_error');
+Route::get('/stripe', 'Website\PageController@stripe');
+Route::post('/stripe', 'Website\PageController@stripePost')->name('stripe.post');
 
 
 //ROUTES DEL CMS

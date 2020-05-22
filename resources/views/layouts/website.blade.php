@@ -45,6 +45,9 @@
                 <div id="cart-menu-list">
                     @include('layouts.website_carrello')
                 </div>
+                <div id="btn-procedi" class="{{($carts->count() > 0) ? 'd-block':'d-none'}}">
+                    <a href="#orario_ancor" class="pushy-link btn btn-primary" style="color:#000;position: relative;top:0px;right:0px">Procedi</a>
+                </div>
             </div>
         </aside>
         <div class="site-overlay"></div>
@@ -62,8 +65,8 @@
         @include('layouts.website_flash-message')
         <!-- -->
 
-        <!-- MODALE -->
-        <div id="myModal" class="modal fade" role="dialog"></div>
+        <!-- MODALE PER ALERT JAVASCRIPT -->
+        @include('layouts.website_alert-message')
         <!-- FINE MODALE -->
 
         @section('scripts')

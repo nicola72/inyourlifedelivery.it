@@ -135,12 +135,12 @@
 
                                         <!-- pulsante Aggiungi al Carrello -->
                                         <div class="col-md-6 text-center pt-2 pb-2">
-                                            <div class="col-md-12  testo-bottone  btn-light btn-aggiungi-carrello " >
-                                                <a href="javascript:void(0)" onclick="addToCart({{$product->id}})" class="link-white">
+                                            <a href="javascript:void(0)" onclick="addToCart({{$product->id}})" class="link-white">
+                                                <div class="col-md-12  testo-bottone  btn-light btn-aggiungi-carrello " >
                                                     <i class="ti-shopping-cart"></i>
                                                     <br/>AGGIUNGI AL CARRELLO
-                                                </a>
-                                            </div>
+                                                </div>
+                                            </a>
                                         </div>
                                         <!-- -->
 
@@ -607,8 +607,9 @@
                             $('#variante_'+product_id).html(data.variante);
                             $('#eliminati_'+product_id).html(data.ingredienti_eliminati);
                             $('#aggiunti_'+product_id).html(data.ingredienti_aggiunti);
+                            $('#alert-modal-msg').html(data.msg);
                             hidePreloader();
-                            alert(data.msg);
+                            $("#alert_modal").modal();
                             scroll_to('box_prod_'+ product_id);
                         }
                         else
@@ -637,8 +638,10 @@
                         $('#cart-menu-list').html(data.cart);
                         $('#cart_count').html(data.cart_count);
                         $('#cart_count2').html(data.cart_count);
+                        $('#alert-modal-msg').html(data.msg);
+                        $('#btn-procedi').addClass('d-block');
                         hidePreloader();
-                        alert(data.msg);
+                        $("#alert_modal").modal();
                     },
                 error: function (){
                     hidePreloader();

@@ -120,7 +120,7 @@
                     <div id="pagamento" class="mt-5">
                         <div class="row pt-2 pb-2 mb-5">
                             <div class="col-md-6">
-                                <a href="/" class="btn testo-bottone btn-light btn-aggiungi w-100" >Modifica</a>
+                                <a href="/" class="btn testo-bottone btn-light btn-aggiungi w-100 mb-3" >Modifica</a>
                             </div>
                             <div class="col-md-6">
                                 <form id="form_checkout" method="post" action="{{($tipo_pagamento == 'paypal') ? '/checkout_paypal':'checkout'}}" >
@@ -133,7 +133,6 @@
                                     @else
                                         <input type="hidden" name="comune" value="" />
                                     @endif
-
                                     <input type="hidden" name="indirizzo" value="{{$indirizzo}}" />
                                     <input type="hidden" name="nr_civico" value="{{$nr_civico}}" />
                                     <input type="hidden" name="tel" value="{{$tel}}" />
@@ -141,10 +140,14 @@
                                     <input type="hidden" name="orario" value="{{$orario}}" />
                                     <input type="hidden" name="tipo_ordinazione" value="{{$tipo_ordinazione}}" />
                                     <input type="hidden" name="note" value="{{$note}}" />
-                                    <button type="submit" class="link-white testo-bottone btn btn-light btn-aggiungi w-100" style="background-color: red;color:#fff;">
+
+                                    <button type="submit" class="link-white testo-bottone btn btn-light btn-aggiungi w-100" style="background-color: red;color:#fff !important;">
                                         {{($tipo_pagamento == 'paypal') ? 'Conferma e vai su Paypal':'Conferma ordine'}}
                                     </button>
                                 </form>
+                                <a href="{{url('/stripe')}}" class="link-white testo-bottone btn btn-light btn-aggiungi w-100" style="background-color: red;color:#fff !important;">
+                                    Stripe
+                                </a>
                             </div>
                         </div>
 

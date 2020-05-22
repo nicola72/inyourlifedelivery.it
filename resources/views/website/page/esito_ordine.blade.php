@@ -6,20 +6,23 @@
                 <div class="col-md-12">
                     <h4>
                         Grazie {{$order->nome}}<br>
-                        Abbiamo preso in carico la tua ordinazione!
+                        @if($order->modalita_pagamento == 'paypal')
+                            il pagamento è stato effettuato con successo...<br>
+                        @endif
+                        abbiamo preso in carico la tua ordinazione!
                     </h4>
                     <br>
                     <h5>
 
-                        Ti abbiamo inviato un'email con il riepilogo dell'ordinazione.<br>
+                        Ti abbiamo inviato un'email con il riepilogo.<br>
                         @if($order->tipo == 'domicilio')
-                            La consegna è prevista per le {{$order->orario}}
+                            La consegna è prevista per le {{substr($order->orario, 0, -3)}}
                             <br>
                             al seguente indirizzo:
                             <br>
                             {{$order->orderShipping->indirizzo}}, {{$order->orderShipping->nr_civico}} {{$order->orderShipping->comune}}
                         @else
-                            Il ritiro è previsto per le {{$order->orario}}
+                            Il ritiro è previsto per le {{substr($order->orario, 0, -3)}}
                         @endif
                         <br>
                         <br>

@@ -2,30 +2,25 @@
 
 namespace App\Http\Controllers\Website;
 
-use App\Mail\Contact;
+use App\Mail\OrderMail;
 use App\Model\Cart;
 use App\Model\Category;
 use App\Model\DeliveryMunic;
 use App\Model\Domain;
 use App\Model\File;
 use App\Model\Ingredient;
-use App\Model\Macrocategory;
-use App\Model\Newsitem;
 use App\Model\Order;
 use App\Model\OrderDetail;
 use App\Model\OrderShipping;
-use App\Model\Page;
-use App\Model\Pairing;
 use App\Model\Product;
-use App\Model\Seo;
 use App\Model\Shop;
-use App\Model\Slider;
 use App\Model\Variant;
 use Illuminate\Http\Request;
-use App\Model\Url;
 use App\Http\Controllers\Controller;
 use App\Service\GoogleRecaptcha;
 use Carbon\Carbon;
+use Stripe\Stripe;
+use Stripe\Charge;
 
 class PageController extends Controller
 {
@@ -34,10 +29,12 @@ class PageController extends Controller
 
     public function __construct()
     {
+        $stripe_public = 'pk_test_DUbqvChAPFqXmiLRLWYIqp1000144RRWYs';
+        $stripe_secret = 'sk_test_0ICo2W8wY3a41qkgTiKHGHY400MRCzLl32';
         $this->middleware(function($request, $next)
         {
             $domain = $request->getHttpHost();
-            $domain = str_replace("www","",$domain);
+            $domain = str_replace("www.","",$domain);
             $this->shop = Shop::where('domain',$domain)->first();
             return $next($request);
         });
@@ -254,7 +251,7 @@ class PageController extends Controller
         //ritorna un kson con diversi componenti html per aggiornare la vista
         return [
             'result'=> 1,
-            'msg' => 'prezzo aggiornato',
+            'msg' => 'il prodotto '.$product->nome_it.' è stato aggiornato',
             'prezzo' => 'Prezzo: € ' . number_format($prezzo, 2,',','.'),
             'ingredienti_eliminati' => $ingredienti_eliminati,
             'ingredienti_aggiunti' => $ingredienti_aggiunti,
@@ -300,7 +297,7 @@ class PageController extends Controller
         $product_id = decrypt($request->input('product_id',null));
         $shop_id = decrypt($request->input('shop_id',null));
 
-        \Log::debug('add_to_cart product_id='.$product_id.' shop_id='.$shop_id);
+        //\Log::debug('add_to_cart product_id='.$product_id.' shop_id='.$shop_id);
 
         if($product_id == null || $shop_id == null)
         {
@@ -429,7 +426,7 @@ class PageController extends Controller
 
         return [
             'result' => 1,
-            'msg' => 'Prodotto inserito nel carrello',
+            'msg' => '+ '.$qty.' '.$product->nome_it .' nel carrello',
             'cart' => "$cart_html",
             'cart_count' => $carts->sum('qta'),
             ];
@@ -689,13 +686,208 @@ class PageController extends Controller
             $cart->delete();
         }
 
+        $mail = New OrderMail($order,$this->shop);
+        $to = $this->shop->email;
+
+        try{
+            \Mail::to($to)->cc($order->email)->send($mail);
+        }
+        catch(\Exception $e)
+        {
+            \Log::error('fallito invio email ordine '.$e->getMessage() );
+        }
+
         return redirect()->route('website.esito_ordinazione', ['id' => encrypt($order_id)]);
 
     }
 
-    public function checkout_paypal()
+    public function checkout_paypal(Request $request)
     {
+        $dati_ordinazione = \Session::get('dati_ordinazione');
 
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+
+        if($this->shop->id != decrypt($request->input('shop_id')))
+        {
+            return back()->with('error','Errore grave!');
+        }
+
+        $nome = $dati_ordinazione['nome'];
+        $cognome = $dati_ordinazione['cognome'];
+        $email = $dati_ordinazione['email'];
+        $tel = $dati_ordinazione['tel'];
+        $tipo_ordinazione = $dati_ordinazione['tipo_ordinazione'];
+        $comune = $dati_ordinazione['comune'];
+        $indirizzo = $dati_ordinazione['indirizzo'];
+        $nr_civico = $dati_ordinazione['nr_civico'];
+        $note = $dati_ordinazione['note'];
+        $orario = $dati_ordinazione['orario'];
+
+        $carbon = Carbon::now('Europe/Rome');
+        $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
+        //trasformo in timestamp per confrontarli
+        $ora_di_adesso = strtotime($now);
+        $ora_richiesta = strtotime($orario);
+        $intervallo_min = (($this->shop->deliveryAvailableTime->time) ? $this->shop->deliveryAvailableTime->time : 0) * 60;
+
+        //controllo che l'orario sia sempre valido
+        if(($ora_di_adesso + $intervallo_min) > $ora_richiesta)
+        {
+            return back()->with('error','L\'orario indicato non è più disponible per effettuare l\'ordinazione');
+        }
+
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+        if($carts->count() == 0)
+        {
+            return back()->with('error','Non hai nessun prodotto nel carrello');
+        }
+
+        try{
+            $order = New Order();
+            $order->shop_id = $this->shop->id;
+            $order->tipo = $tipo_ordinazione;
+            $order->orario = $orario;
+            $order->nome = $nome;
+            $order->cognome = $cognome;
+            $order->email = $email;
+            $order->telefono = $tel;
+            $order->note = $note;
+            $order->modalita_pagamento = 'paypal';
+            $order->importo = $carts->sum('totale');
+            $order->save();
+
+            $order_id = $order->id;
+
+            foreach ($carts as $cart)
+            {
+                $orderDetail = new OrderDetail();
+                $orderDetail->order_id = $order_id;
+                $orderDetail->shop_id = $this->shop->id;
+                $orderDetail->product_id = $cart->product_id;
+                $orderDetail->nome_prodotto = $cart->nome_prodotto;
+                $orderDetail->variante = $cart->variante;
+                $orderDetail->ingredienti_eliminati = $cart->ingredienti_eliminati;
+                $orderDetail->ingredienti_aggiunti = $cart->ingredienti_aggiunti;
+                $orderDetail->qta = $cart->qta;
+                $orderDetail->prezzo = $cart->prezzo;
+                $orderDetail->totale = $cart->totale;
+                $orderDetail->save();
+            }
+
+            if($tipo_ordinazione == 'domicilio')
+            {
+                $orderShipping = New OrderShipping();
+                $orderShipping->order_id = $order_id;
+                $orderShipping->shop_id = $this->shop->id;
+                $orderShipping->comune = $comune->comune;
+                $orderShipping->indirizzo = $indirizzo;
+                $orderShipping->nr_civico = $nr_civico;
+                $orderShipping->nome = $nome;
+                $orderShipping->cognome = $cognome;
+                $orderShipping->email = $email;
+                $orderShipping->telefono = $tel;
+                $orderShipping->save();
+            }
+        }
+        catch(\Exception $e){
+
+            \Log::error('fallito checkout  errore inserimento ordine '.$e->getMessage() );
+            return back()->with('error','Errore! Non è possibile procedere con l\'ordinazione');
+        }
+
+        //rimuovo gli articoli dal carrello
+        foreach ($carts as $cart)
+        {
+            \Log::debug('rimosso il carrello con id '.$cart->id );
+            $cart->delete();
+        }
+
+        $data = array ();
+        $data['cmd'] = '_xclick';
+        $data['no_note'] = 0;
+        $data['lc'] = 'IT';
+        $data['custom'] = $order->id;
+        $data['business'] = $this->shop->deliveryPaypal->email;
+        $data['item_name'] = "Ordine Numero " . $order->id;
+        $data['amount'] = $order->importo;
+        $data['rm'] = 2;
+        $data['currency_code'] = 'EUR';
+        $data['first_name'] = $order->nome;
+        $data['last_name'] = $order->cognome;
+        $data['payer_email'] = $order->email;
+        $data['return'] = 'https://'.$this->shop->domain.'/esito_ordinazione/'.encrypt($order->id);
+        $data['cancel_return'] =  'https://'.$this->shop->domain.'/paypal_error';
+        //ricordarsi di mettere questa url nelle eccezioni del middleware VerifyCsrfToken altrimenti non va
+        $data['notify_url'] = 'https://'.$this->shop->domain.'/paypal_notify';
+
+        $queryString = http_build_query($data);
+
+        if(\App::environment() == 'develop')
+        {
+            $url = 'https://sandbox.paypal.com/cgi-bin/webscr' . "?" . $queryString;
+        }
+        else
+        {
+            $url = 'https://www.paypal.com/cgi-bin/webscr' . "?" . $queryString;
+        }
+
+        //andiamo su paypal
+        return redirect()->to($url);
+    }
+
+    public function paypal_notify(Request $request)
+    {
+        if($this->verifica_transazione())
+        {
+            $id_ordine = $request->post('custom');
+            $id_transazione = $request->post('txn_id');
+
+            try{
+                $order = Order::find($id_ordine);
+                $order->stato_pagamento = 1;
+                $order->idtranspag = $id_transazione;
+                $order->save();
+            }
+            catch(\Exception $e){
+
+                \Log::error('fallita notifica paypal impossibile aggiornare l\'ordine '.$e->getMessage() );
+                return;
+            }
+
+            $mail = New OrderMail($order,$this->shop);
+            $to = $this->shop->email;
+
+            try{
+                \Mail::to($to)->cc($order->email)->send($mail);
+            }
+            catch(\Exception $e)
+            {
+                \Log::error('fallito invio email ordine '.$e->getMessage() );
+            }
+        }
+        else
+        {
+            \Log::error('fallito verifica transazione paypal ' );
+        }
+
+        return;
+    }
+
+    public function paypal_error()
+    {
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+
+        $params = [
+            'shop' => $this->shop,
+        ];
+
+        return view('website.page.paypal_error',$params);
     }
 
     public function esito_ordinazione(Request $request,$id)
@@ -716,36 +908,67 @@ class PageController extends Controller
         return view('website.page.esito_ordine',$params);
     }
 
-    public function invia_formcontatti(Request $request)
+    protected function verifica_transazione()
     {
-        $data = $request->post();
-        $config = \Config::get('website_config');
-        $secret = $config['recaptcha_secret'];
-
-        if(!GoogleRecaptcha::verifyGoogleRecaptcha($data,$secret))
+        $req = 'cmd=_notify-validate';
+        foreach ($_POST as $key => $value)
         {
-            return ['result' => 0, 'msg' => trans('msg.il_codice_di_controllo_errato')];
+            $value = urlencode(stripslashes($value));
+            $value = preg_replace('/(.*[^%^0^D])(%0A)(.*)/i', '${1}%0D%0A${3}', $value); // IPN fix
+            $req .= "&$key=$value";
         }
 
-        $to = ($config['in_sviluppo']) ? $config['email_debug'] : $config['email'];
-
-        $mail = new Contact($data);
-
-        try{
-            \Mail::to($to)->send($mail);
-        }
-        catch(\Exception $e)
+        //ATTENZIONE la chiamata curl in sandbox non funziona in quanto da errore https, quindi in fase di sviluppo evitare la verifica curl
+        if(\App::environment() == 'develop')
         {
-            return ['result' => 0, 'msg' => $e->getMessage()];
+            $url_paypal = 'https://sandbox.paypal.com/cgi-bin/webscr';
+            return true;
+        }
+        else
+        {
+            $url_paypal = 'https://www.paypal.com/cgi-bin/webscr';
         }
 
-        return ['result' => 1, 'msg' => trans('msg.grazie_per_averci_contattato')];
+        $ch = curl_init($url_paypal);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $req);
+        curl_setopt($ch, CURLOPT_SSLVERSION, 6);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Connection: Close'));
+        $res = curl_exec($ch);
 
+        if (!$res)
+        {
+            $errstr = curl_error($ch);
+            curl_close($ch);
+            \Log::error('fallita verifica transazione paypal '.$errstr );
+            return false;
+        }
+
+        $info = curl_getinfo($ch);
+
+        // Check the http response
+        $httpCode = $info['http_code'];
+        if ($httpCode != 200)
+        {
+            \Log::error('fallita verifica transazione paypal PayPal responded with http cod '.$httpCode );
+            return false;
+        }
+
+        curl_close($ch);
+
+        return true;
     }
 
     protected function aperto_il_giorno()
     {
-        $oggi = date('N');
+        //il numero del giorno (es.1 lunedì)
+        $key = date('N');
         $oggi_in_italiano = [
             1 => 'lunedi',
             2 => 'martedi',
@@ -757,12 +980,13 @@ class PageController extends Controller
         ];
 
 
-        return $this->shop->deliveryOpenDay->{$oggi_in_italiano[$oggi].'_giorno'};
+        return $this->shop->deliveryOpenDay->{$oggi_in_italiano[$key].'_giorno'};
     }
 
     protected function aperto_la_sera()
     {
-        $oggi = date('N');
+        //il numero del giorno (es.1 lunedì)
+        $key = date('N');
         $oggi_in_italiano = [
             1 => 'lunedi',
             2 => 'martedi',
@@ -773,8 +997,27 @@ class PageController extends Controller
             7 => 'domenica'
         ];
 
-        return $this->shop->deliveryOpenDay->{$oggi_in_italiano[$oggi].'_sera'};
+        return $this->shop->deliveryOpenDay->{$oggi_in_italiano[$key].'_sera'};
     }
 
+    public function stripe()
+    {
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        return view('website.page.stripe');
+    }
+
+    public function stripePost(Request $request)
+    {
+        Stripe::setApiKey(env('STRIPE_SECRET'));
+        Charge::create ([
+            "amount" => 100 * 100,
+            "currency" => "usd",
+            "source" => $request->stripeToken,
+            "description" => "Test payment from itsolutionstuff.com."
+        ]);
+
+        \Session::flash('success', 'Payment successful!');
+        return back();
+    }
 
 }

@@ -44,9 +44,9 @@
             </li>
         @endforeach
         <li class="clearfix">
-            <div class="float-right">
+            <!--<div class="float-right">
                 <a href="#orario_ancor" class="pushy-link btn btn-primary" style="color:#000;position: relative">Procedi</a>
-            </div>
+            </div>-->
             <h4  class="text-white">
                 <small>Totale: </small> @money($carts->sum('totale'))
             </h4>

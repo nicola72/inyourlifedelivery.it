@@ -74,4 +74,9 @@ class Shop extends Model
     {
         return $this->hasOne('App\Model\DeliveryMin');
     }
+
+    public function deliveryPaypal()
+    {
+        return $this->hasOne('App\Model\DeliveryPaypal');
+    }
 }
