@@ -79,4 +79,9 @@ class Shop extends Model
     {
         return $this->hasOne('App\Model\DeliveryPaypal');
     }
+
+    public function deliveryStripe()
+    {
+        return $this->hasOne('App\Model\DeliveryStripe');
+    }
 }

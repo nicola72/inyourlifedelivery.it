@@ -15,7 +15,7 @@ Route::post('/checkout','Website\PageController@checkout');
 Route::post('/checkout_paypal','Website\PageController@checkout_paypal');
 Route::post('/paypal_notify','Website\PageController@paypal_notify');
 Route::get('/paypal_error','Website\PageController@paypal_error');
-Route::get('/stripe', 'Website\PageController@stripe');
+Route::get('/checkout_stripe/{id}', 'Website\PageController@checkout_stripe');
 Route::post('/stripe', 'Website\PageController@stripePost')->name('stripe.post');
 
 
@@ -123,6 +123,9 @@ Route::group(['prefix' => 'cms'], function ()
         Route::post('/variant/store','Cms\VariantController@store');
         Route::post('/variant/update/{id}','Cms\VariantController@update');
         Route::get('/variant','Cms\VariantController@index')->name('cms.varianti');
+
+        Route::get('/order_details/{id}','Cms\OrdersController@order_details');
+        Route::get('/orders','Cms\OrdersController@index')->name('cms.ordini');
 
         Route::post('/file/sort_images', 'Cms\FileController@sort_images');
         Route::get('/file','Cms\FileController@index')->name('cms.file');

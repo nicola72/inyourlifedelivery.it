@@ -145,9 +145,12 @@
                                         {{($tipo_pagamento == 'paypal') ? 'Conferma e vai su Paypal':'Conferma ordine'}}
                                     </button>
                                 </form>
-                                <a href="{{url('/stripe')}}" class="link-white testo-bottone btn btn-light btn-aggiungi w-100" style="background-color: red;color:#fff !important;">
-                                    Stripe
+                                @if($tipo_pagamento == 'paypal' && $stripe)
+                                <br>
+                                <a href="{{url('/checkout_stripe',['id'=>encrypt($shop->id)])}}" class="link-white testo-bottone btn btn-light btn-aggiungi w-100" style="background-color: red;color:#fff !important;">
+                                    Paga con Stripe
                                 </a>
+                                @endif
                             </div>
                         </div>
 

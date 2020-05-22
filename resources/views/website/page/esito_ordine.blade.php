@@ -6,7 +6,7 @@
                 <div class="col-md-12">
                     <h4>
                         Grazie {{$order->nome}}<br>
-                        @if($order->modalita_pagamento == 'paypal')
+                        @if($order->modalita_pagamento == 'paypal' || $order->modalita_pagamento == 'stripe')
                             il pagamento è stato effettuato con successo...<br>
                         @endif
                         abbiamo preso in carico la tua ordinazione!

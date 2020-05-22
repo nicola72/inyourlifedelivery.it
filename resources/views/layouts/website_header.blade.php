@@ -31,6 +31,10 @@
                     <li class="nav-item">
                         <a class="nav-link " href="#ordina">CONFERMA ORDINAZIONE</a>
                     </li>
+                @else
+                    <li class="nav-item">
+                        <a class="nav-link " href="#ordina">&nbsp;</a>
+                    </li>
                 @endif
             </ul>
         </div>

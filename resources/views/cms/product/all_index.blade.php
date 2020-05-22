@@ -36,8 +36,8 @@
                                     <td>@money($product->prezzo_scontato)</td>
 
                                     <td>
-                                        @if($product->cover())
-                                            <img src="/file/{{$product->cover()}}" alt="" class="img-fluid" style="max-width:100px"/>
+                                        @if($product->cover($product->shop_id))
+                                            <img src="/file/{{$product->cover($product->shop_id)}}" alt="" class="img-fluid" style="max-width:100px"/>
                                         @endif
                                     </td>
                                 </tr>

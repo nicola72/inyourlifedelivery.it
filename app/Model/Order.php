@@ -36,6 +36,11 @@ class Order extends Model
         return $this->hasOne('App\Model\OrderShipping');
     }
 
+    public function shop()
+    {
+        return $this->belongsTo('App\Model\Shop');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Model\Website\User');

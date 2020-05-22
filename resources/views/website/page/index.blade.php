@@ -517,7 +517,7 @@
                     <div class="row">
                         <div class="col-md-6 text-center">
                             <input id="radio_pag_1" type="radio" name="tipo_pagamento" value="paypal" />
-                            <h6 class="d-inline">PAYPAL</h6>
+                            <h6 class="d-inline">PAYPAL O STRIPE</h6>
                         </div>
                         <div class="col-md-6 text-center">
                             <input id="radio_pag_2" type="radio" name="tipo_pagamento" value="alla_consegna" checked />
