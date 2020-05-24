@@ -18,7 +18,7 @@ Route::get('/paypal_error','Website\PageController@paypal_error');
 Route::get('/checkout_stripe/{id}', 'Website\PageController@checkout_stripe');
 Route::post('/stripe', 'Website\PageController@stripePost')->name('stripe.post');
 
-Route::post('/response_twilio', 'Website\PageController@response_twilio');
+Route::get('/send_twilio', 'Website\PageController@send_twilio');
 
 
 //ROUTES DEL CMS

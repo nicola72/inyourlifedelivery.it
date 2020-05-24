@@ -21,6 +21,8 @@ use App\Service\GoogleRecaptcha;
 use Carbon\Carbon;
 use Stripe\Stripe;
 use Stripe\Charge;
+use Twilio\Rest\Client;
+
 
 class PageController extends Controller
 {
@@ -695,6 +697,7 @@ class PageController extends Controller
 
         try{
             \Mail::to($to)->cc($order->email)->send($mail);
+            $this->send_whatsapp();
         }
         catch(\Exception $e)
         {
@@ -866,6 +869,7 @@ class PageController extends Controller
 
             try{
                 \Mail::to($to)->cc($order->email)->send($mail);
+                $this->send_whatsapp();
             }
             catch(\Exception $e)
             {
@@ -969,15 +973,56 @@ class PageController extends Controller
         return true;
     }
 
-    public function response_twilio(Request $request)
+    protected function send_whatsapp()
     {
-        $msg = '';
-        foreach($request->post() as $key=>$param)
+        if($this->shop->whatsapp != '')
         {
-            $msg.= 'Key='.$key.' param='.$param;
+            $sid = "ACde8a66f7048629c1d3cddb87bf88d31c";
+            $token = "9b05552bc4c037ba1cb2189c80938a4a";
+            $client = new Client($sid, $token);
+
+            $client->messages
+                ->create("whatsapp:+39".$this->shop->whatsapp, // to
+                    [
+                        "from" => "whatsapp:+14155238886",
+                        "body" => "Attenzione! hai ricevuto un nuovo ordine."
+                    ]
+                );
         }
-        \Log::error('repsonse twilio '.$msg );
-        exti();
+
+    }
+
+    public function send_twilio(Request $request)
+    {
+        $sid = "ACde8a66f7048629c1d3cddb87bf88d31c";
+        $token = "9b05552bc4c037ba1cb2189c80938a4a";
+        $client = new Client($sid, $token);
+
+        //per sms
+        /*$account = $client->getAccount();
+        var_dump($account);
+        exit();*/
+        // Use the client to do fun stuff like send text messages!
+        /*$client->messages->create(
+            // the number you'd like to send the message to
+            '+393313935540',
+            [
+                // A Twilio phone number you purchased at twilio.com/console
+                'from' => '+12058430762',
+                // the body of the text message you'd like to send
+                'body' => 'messaggio ordine!'
+            ]
+        );*/
+
+        //per whatsapp
+        $client->messages
+            ->create("whatsapp:+393313935540", // to
+                [
+                    "from" => "whatsapp:+14155238886",
+                    "body" => "Nuovo ordine su Speedy Food!"
+                ]
+            );
+
     }
 
     protected function aperto_il_giorno()
@@ -1177,6 +1222,7 @@ class PageController extends Controller
 
             try{
                 \Mail::to($to)->cc($order->email)->send($mail);
+                $this->send_whatsapp();
             }
             catch(\Exception $e)
             {
