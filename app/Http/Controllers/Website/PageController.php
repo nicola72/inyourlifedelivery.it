@@ -969,6 +969,17 @@ class PageController extends Controller
         return true;
     }
 
+    public function response_twilio(Request $request)
+    {
+        $msg = '';
+        foreach($request->post() as $key=>$param)
+        {
+            $msg.= 'Key='.$key.' param='.$param;
+        }
+        \Log::error('repsonse twilio '.$msg );
+        exti();
+    }
+
     protected function aperto_il_giorno()
     {
         //il numero del giorno (es.1 lunedì)

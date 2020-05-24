@@ -26,7 +26,6 @@
                                 <th>Pagato</th>
                                 <th>Tipo</th>
                                 <th>Importo</th>
-                                <th>Azioni</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -53,11 +52,6 @@
                                     </td>
                                     <td>{{$order->tipo}}</td>
                                     <td>@money($order->importo)</td>
-                                    <td>
-                                        <a href="{{url('cms/order_details/',['id'=>$order->id])}}" title="dettagli">
-                                            <i class="fa fa-search"></i>
-                                        </a>
-                                    </td>
 
                                 </tr>
                             @endforeach

@@ -55,7 +55,12 @@
                                     <div class="col-md-8 text-center text-sm-left">
 
                                         <!-- nome prodotto -->
-                                        <div class="titolo-piatto">{{$product->nome_it}}</div>
+                                        <div class="titolo-piatto">
+                                            @if($product->novita)
+                                                <span class="badge badge-primary">Novità</span>&nbsp;
+                                            @endif
+                                            {{$product->nome_it}}
+                                        </div>
                                         <!-- -->
 
                                         <!-- descrizione prodotto -->
