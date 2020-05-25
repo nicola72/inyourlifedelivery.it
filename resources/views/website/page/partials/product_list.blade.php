@@ -5,14 +5,18 @@
             @foreach($categories as $category)
                 @if($category_selected->id == $category->id)
                     <div class="{{($category_selected->id == $category->id) ? 'active':''}} mb-2">
-                        <a href="javascript:void(0)" class="btn btn-lg  img-categoria classiche-button" style="background-image:url('/file/big/{{$category->cover($shop->id)}}'); "></a>
+                        @if($category->cover($shop->id))
+                            <a href="javascript:void(0)" class="btn btn-lg  img-categoria classiche-button" style="background-image:url('/file/big/{{$category->cover($shop->id)}}'); "></a>
+                        @endif
                         <a href="javascript:void(0)" class="btn btn-lg  btn-primary  classiche-button btn-light w-100">
                             <span class="titolo-categoria">{{$category->nome_it}}</span>
                         </a>
                     </div>
                 @else
                     <div class="{{($category_selected->id == $category->id) ? 'active':''}} mb-2">
-                        <a href="javascript:void(0)" onclick="show_products('{{encrypt($category->id)}}')" class="btn btn-lg  img-categoria classiche-button" style="background-image:url('/file/big/{{$category->cover($shop->id)}}'); "></a>
+                        @if($category->cover($shop->id))
+                            <a href="javascript:void(0)" onclick="show_products('{{encrypt($category->id)}}')" class="btn btn-lg  img-categoria classiche-button" style="background-image:url('/file/big/{{$category->cover($shop->id)}}'); "></a>
+                        @endif
                         <a href="javascript:void(0)" onclick="show_products('{{encrypt($category->id)}}')" class="btn btn-lg  btn-primary  classiche-button btn-light w-100">
                             <span class="titolo-categoria">{{$category->nome_it}}</span>
                         </a>
@@ -116,6 +120,7 @@
                                     <!-- -->
 
                                     <!-- pulsante collapse x Ingredienti -->
+                                    @if($product->ingredients->count() > 0)
                                     <div class="col-6 col-md-6 text-center ">
                                         <div class="col-sm-12 col-md-12 testo-bottone btn-light btn-aggiungi" >
                                             <a data-toggle="collapse"
@@ -128,11 +133,13 @@
                                             </a>
                                         </div>
                                     </div>
+                                    @endif
                                     <!-- -->
 
 
 
                                     <!-- pulsante collapse x Varianti -->
+                                    @if($product->variants->count() > 0)
                                     <div class="col-6 col-md-6 text-center">
                                         <div class="col-sm-12 col-md-12 testo-bottone btn-light btn-aggiungi" >
                                             <a data-toggle="collapse"
@@ -145,6 +152,7 @@
                                             </a>
                                         </div>
                                     </div>
+                                    @endif
                                     <!-- -->
 
                                 </div>

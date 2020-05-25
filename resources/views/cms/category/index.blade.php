@@ -114,7 +114,7 @@
             $('#table-categories').DataTable({
                 responsive: true,
                 pageLength: 100,
-                order: [[ 4, "asc" ]], //order in base a order
+                order: [[ 4, "desc" ]], //order in base a order
                 language:{ "url": "/cms_assets/js/plugins/dataTables/dataTable.ita.lang.json" }
             });
 

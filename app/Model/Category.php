@@ -91,15 +91,16 @@ class Category extends Model implements Sortable
                 return $images->first()->path;
             }
         }
+        return false;
 
-        $shop = Shop::find($shop_id);
+        /*$shop = Shop::find($shop_id);
         $logo = File::where('fileable_id',$shop->id)->where('fileable_type','App\Model\Shop')->first();
         if(is_object($logo))
         {
             return $logo->path;
         }
 
-        return 'default.jpg';
+        return 'default.jpg';*/
     }
 
 }
