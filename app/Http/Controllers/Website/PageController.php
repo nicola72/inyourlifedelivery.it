@@ -58,6 +58,7 @@ class PageController extends Controller
         $products = Product::where('category_id',$first_cat->id)->where('visibile',1)->where('omaggio',0)->where('shop_id',$this->shop->id)->get();
         $ingredients = Ingredient::where('category_id',$first_cat->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
         $variants = Variant::where('category_id',$first_cat->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
+        $prodotti_omaggio = Product::where('visibile',1)->where('omaggio',1)->where('shop_id',$this->shop->id)->get();
 
         $carbon = Carbon::now('Europe/Rome');
         $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
@@ -105,6 +106,7 @@ class PageController extends Controller
             'category_selected' => $first_cat,
             'categories' => $categories,
             'products' => $products,
+            'prodotti_omaggio' => $prodotti_omaggio,
             'ingredients' => $ingredients,
             'variants' => $variants,
             'now' => $now,
@@ -529,6 +531,7 @@ class PageController extends Controller
 
         $note = $request->input('note',null);
         $tipo_pagamento = $request->input('tipo_pagamento','payapal');
+        $prodotto_omaggio = $request->input('prodotto_omaggio',null);
 
         $dati_ordinazione = [
             'nome' => $nome,
@@ -541,6 +544,7 @@ class PageController extends Controller
             'comune' => $comune,
             'note' => $note,
             'tipo_pagamento' => $tipo_pagamento,
+            'prodotto_omaggio' => $prodotto_omaggio,
             'orario' => $orario,
             'orario_html' => $orario_html,
         ];
@@ -569,6 +573,8 @@ class PageController extends Controller
         //se c'è stripe
         $stripe = $this->shop->deliveryStripe;
 
+        $prodotto_omaggio = ($dati_ordinazione['prodotto_omaggio'] != null) ? Product::find($dati_ordinazione['prodotto_omaggio']) : false;
+
         $params = [
             'shop' => $this->shop,
             'carts' => $carts,
@@ -584,6 +590,7 @@ class PageController extends Controller
             'tipo_pagamento' => $dati_ordinazione['tipo_pagamento'],
             'orario' => $dati_ordinazione['orario'],
             'orario_html' => $dati_ordinazione['orario_html'],
+            'prodotto_omaggio' => $prodotto_omaggio,
             'stripe' => $stripe
         ];
         return view('website.page.cart_resume',$params);
@@ -613,6 +620,7 @@ class PageController extends Controller
         $nr_civico = $dati_ordinazione['nr_civico'];
         $note = $dati_ordinazione['note'];
         $orario = $dati_ordinazione['orario'];
+        $omaggio = ($dati_ordinazione['prodotto_omaggio'] != null) ? Product::find($dati_ordinazione['prodotto_omaggio'])->nome_it : '';
 
         $carbon = Carbon::now('Europe/Rome');
         $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
@@ -643,6 +651,7 @@ class PageController extends Controller
             $order->email = $email;
             $order->telefono = $tel;
             $order->note = $note;
+            $order->omaggio = $omaggio;
             $order->modalita_pagamento = 'alla consegna';
             $order->importo = $carts->sum('totale');
             $order->save();
@@ -732,6 +741,7 @@ class PageController extends Controller
         $nr_civico = $dati_ordinazione['nr_civico'];
         $note = $dati_ordinazione['note'];
         $orario = $dati_ordinazione['orario'];
+        $omaggio = ($dati_ordinazione['prodotto_omaggio'] != null) ? Product::find($dati_ordinazione['prodotto_omaggio'])->nome_it : '';
 
         $carbon = Carbon::now('Europe/Rome');
         $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
@@ -762,6 +772,7 @@ class PageController extends Controller
             $order->email = $email;
             $order->telefono = $tel;
             $order->note = $note;
+            $order->omaggio = $omaggio;
             $order->modalita_pagamento = 'paypal';
             $order->importo = $carts->sum('totale');
             $order->save();
@@ -999,6 +1010,39 @@ class PageController extends Controller
 
     }
 
+    public function informativa()
+    {
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+        $params = [
+            'shop' => $this->shop
+        ];
+
+        return view('website.page.informativa',$params);
+    }
+
+    public function cookies_policy()
+    {
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+        $params = [
+            'shop' => $this->shop
+        ];
+
+        return view('website.page.cookies_policy',$params);
+    }
+
+    public function clear_cookies(Request $request)
+    {
+        $_POST = array_map("trim", $_POST); // se esternamente ad uno switch
+        $expiration_date = time() + (10 * 365 * 24 * 60 * 60); // in 10 years => Faccio scadere il cookie in un futuro abbastanza lontano
+        setcookie("c_acceptance", "yes", $expiration_date, "/");
+    }
+
     public function send_twilio(Request $request)
     {
         $sid = "ACde8a66f7048629c1d3cddb87bf88d31c";
@@ -1091,6 +1135,7 @@ class PageController extends Controller
         $nr_civico = $dati_ordinazione['nr_civico'];
         $note = $dati_ordinazione['note'];
         $orario = $dati_ordinazione['orario'];
+        $omaggio = ($dati_ordinazione['prodotto_omaggio'] != null) ? Product::find($dati_ordinazione['prodotto_omaggio'])->nome_it : '';
 
         $carbon = Carbon::now('Europe/Rome');
         $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
@@ -1121,6 +1166,7 @@ class PageController extends Controller
             $order->email = $email;
             $order->telefono = $tel;
             $order->note = $note;
+            $order->omaggio = $omaggio;
             $order->modalita_pagamento = 'stripe';
             $order->importo = $carts->sum('totale');
             $order->save();

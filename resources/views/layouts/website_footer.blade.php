@@ -2,18 +2,17 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-4 col-md-6 mb40">
-                <h3>Pizzeria ........</h3>
+                <h3>{{$shop->insegna}}</h3>
                 <p>
-                    Via Dante Alighieri,<br/>
-                    50055 Lastra a Signa<br/>
-                    Tel. ........<br/>
-                    Mod ........<br/>
-                    Email .........<br/>
-                    P.IVA ............
+                    {{$shop->indirizzo}},{{$shop->nr_civico}}<br/>
+                    {{$shop->cap}} {{$shop->citta}} ({{$shop->provincia}})<br/>
+                    Tel. {{$shop->telefono}}<br/>
+                    Email {{$shop->email}}<br/>
+                    P.IVA {{$shop->p_iva}}
 
             </div>
             <div class="col-lg-3 col-md-6 mb40">
-                <h3>Links utili</h3>
+                <!--<h3>Links utili</h3>
                 <ul class="list-unstyled footer-list-item">
                     <li>
                         <a href="#">
@@ -25,15 +24,12 @@
                             Metodi di pagamento
                         </a>
                     </li>
-
-
-
                     <li>
                         <a href="#">
                             Privacy & policy cookies
                         </a>
                     </li>
-                </ul>
+                </ul> -->
             </div>
         </div>
     </div>
@@ -43,18 +39,7 @@
         <div class="row">
             <div class="col-lg-7">
                 <div class="clearfix">
-                    <a href="#" class="social-icon-sm si-dark si-facebook si-dark-round">
-                        <i class="fa fa-facebook"></i>
-                        <i class="fa fa-facebook"></i>
-                    </a>
-                    <a href="#" class="social-icon-sm si-dark si-twitter si-dark-round">
-                        <i class="fa fa-twitter"></i>
-                        <i class="fa fa-twitter"></i>
-                    </a>
-                    <a href="#" class="social-icon-sm si-dark si-linkedin si-dark-round">
-                        <i class="fa fa-instagram"></i>
-                        <i class="fa fa-instagram"></i>
-                    </a>
+
                 </div>
             </div>
             <div class="col-lg-5">

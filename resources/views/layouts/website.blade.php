@@ -69,6 +69,10 @@
         @include('layouts.website_alert-message')
         <!-- FINE MODALE -->
 
+        <!-- BANNER COOKIES -->
+        @include('layouts.website_cookie_banner')
+        <!-- -->
+
         @section('scripts')
 
         <!-- jQuery first, then Tether, then Bootstrap JS. -->

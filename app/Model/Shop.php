@@ -16,6 +16,7 @@ class Shop extends Model
         'provincia',
         'cap',
         'email',
+        'telefono',
         'sede_legale',
         'domicilio',
         'asporto',

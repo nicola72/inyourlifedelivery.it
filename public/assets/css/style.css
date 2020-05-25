@@ -4120,7 +4120,7 @@ Template responsive style
   margin-top:10px;
 }
 
-.foto-header-home {background-image:url(../img/foto_header.jpg); background-repeat:no-repeat; background-size:cover; background-position:center center; margin-top:50px; min-height:600px;}
+.foto-header-home {background-image:url(../img/foto_head_1.jpg); background-repeat:no-repeat; background-size:cover; background-position:center center; margin-top:50px; min-height:360px;}
 
 .product-item a:hover{
   color:#000 !important;
@@ -4136,7 +4136,8 @@ Template responsive style
 }
 
 
-.pt200 {padding-top:200px;} 
+.pt200 {padding-top:200px;}
+.pt120{padding-top:120px;}
 
 .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
     color: #f39100;

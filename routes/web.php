@@ -17,7 +17,9 @@ Route::post('/paypal_notify','Website\PageController@paypal_notify');
 Route::get('/paypal_error','Website\PageController@paypal_error');
 Route::get('/checkout_stripe/{id}', 'Website\PageController@checkout_stripe');
 Route::post('/stripe', 'Website\PageController@stripePost')->name('stripe.post');
-
+Route::post('/clear_cookies', 'Website\PageController@clear_cookies');
+Route::get('/cookies_policy', 'Website\PageController@cookies_policy');
+Route::get('/informativa', 'Website\PageController@informativa');
 Route::get('/send_twilio', 'Website\PageController@send_twilio');
 
 

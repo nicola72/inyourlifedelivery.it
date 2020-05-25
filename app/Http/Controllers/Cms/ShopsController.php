@@ -46,6 +46,7 @@ class ShopsController extends Controller
             $shop->provincia = $request->provincia;
             $shop->cap = $request->cap;
             $shop->email = $request->email;
+            $shop->telefono = $request->tel;
             $shop->sede_legale = $request->sede_legale;
 
             $shop->save();
@@ -143,6 +144,7 @@ class ShopsController extends Controller
             $shop->provincia = $request->provincia;
             $shop->cap = $request->cap;
             $shop->email = $request->email;
+            $shop->telefono = $request->tel;
             $shop->sede_legale = $request->sede_legale;
 
             $shop->save();

@@ -6,7 +6,7 @@
         <div class="transparent-angle angle-top-right"></div>
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg8 mr-auto ml-auto pb50 pt200 ">
+                <div class="col-lg8 mr-auto ml-auto pb50 pt120 ">
                     <h3 class="h1 text-white text-shadow text-center">ORDINA IN TRE SEMPLICI STEP<br/>I TUOI PIATTI PREFERITI</h3>
                 </div>
             </div>
@@ -227,6 +227,18 @@
                     </em>
                 </div>
             </div>
+            @if($prodotti_omaggio->count() > 0)
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3">
+                        <label for="email">Scegli un prodotto omaggio</label>
+                        <select name="prodotto_omaggio" id="prodotto_omaggio" class="form-control" >
+                            @foreach($prodotti_omaggio as $prod)
+                                <option value="{{$prod->id}}">{{$prod->nome_it}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            @endif
             <div class="row mb-3">
                 <div class="col-md-12">
                     <label for="note">Note</label>

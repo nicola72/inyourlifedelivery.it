@@ -20,5 +20,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'paypal_notify',
+        'clear_cookies'
     ];
 }

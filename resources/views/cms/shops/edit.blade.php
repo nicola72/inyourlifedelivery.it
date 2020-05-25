@@ -38,6 +38,13 @@
 
                 <div class="form-group">
                     <label class="d-block">
+                        Telefono*
+                    </label>
+                    <input type="text" name="tel" id="tel" value="{{$shop->telefono}}" class="form-control mb-2" />
+                </div>
+
+                <div class="form-group">
+                    <label class="d-block">
                         P.Iva*
                     </label>
                     <input type="text" name="p_iva" id="p_iva" value="{{$shop->p_iva}}" class="form-control mb-2" />

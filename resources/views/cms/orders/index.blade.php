@@ -112,7 +112,9 @@
         });
         //Fine Pulsante ELIMINA
 
-
+        setTimeout(function(){
+            window.location.reload();
+        }, 36000);
 
     </script>
 @stop

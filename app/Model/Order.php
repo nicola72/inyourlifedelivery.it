@@ -18,6 +18,7 @@ class Order extends Model
         'email',
         'telefono',
         'note',
+        'omaggio',
         'spese_spedizione',
         'modalita_pagamento',
         'stato_pagamento',

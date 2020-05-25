@@ -38,6 +38,13 @@
 
                 <div class="form-group">
                     <label class="d-block">
+                        Telefono*
+                    </label>
+                    <input type="text" name="tel" id="tel" class="form-control mb-2" />
+                </div>
+
+                <div class="form-group">
+                    <label class="d-block">
                         P.Iva*
                     </label>
                     <input type="text" name="p_iva" id="p_iva" class="form-control mb-2" />
@@ -116,6 +123,7 @@
             rag_soc:{required:true},
             domain:{required:true},
             email:{required:true},
+            tel:{required:true},
             cap:{required:true},
             p_iva:{required:true},
             citta:{required:true},
@@ -129,6 +137,7 @@
             rag_soc:{required:'Questo campo è obbligatorio'},
             domain:{required:'Questo campo è obbligatorio'},
             email:{required:'Questo campo è obbligatorio'},
+            tel:{required:'Questo campo è obbligatorio'},
             cap:{required:'Questo campo è obbligatorio'},
             p_iva:{required:'Questo campo è obbligatorio'},
             citta:{required:'Questo campo è obbligatorio'},
