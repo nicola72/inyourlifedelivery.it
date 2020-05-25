@@ -16,7 +16,7 @@
                                     </div>
                                     <div class="panel-body">
                                         @if($logo)
-                                            <img src="/file/{{$logo->path}}" alt="" class="img-fluid" />
+                                            <img src="/file/{{$logo->path}}" alt="" class="img-fluid" style="max-width: 160px" />
                                         @endif
                                         <br>
                                         <br>

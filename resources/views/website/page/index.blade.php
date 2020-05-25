@@ -303,6 +303,9 @@
 
             </div>
         </div>
+        <!--<div style="padding-top:40px">
+            <a href="https://wa.me/393392910497?text=Se vuoi fai una domanda">Whatsapp</a>
+        </div>-->
     </form>
 
     <div class="navbar-right-elements cart-fixed pull-right">

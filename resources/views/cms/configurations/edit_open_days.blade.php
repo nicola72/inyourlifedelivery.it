@@ -23,7 +23,7 @@
                             {{ csrf_field() }}
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <div class="row">
                                             @if(!$old_days)
                                                 <div class="col-md-6">
@@ -216,7 +216,7 @@
                                                         <label><input type="radio" name="martedi_sera" value="0" {{(!$old_days->martedi_sera)? 'checked':''}}>Chiuso</label>
                                                     </div>
                                                     <div class="radio">
-                                                        <label><input type="radio" name="martedi_sera" value="1" {{($old_days->mertedi_sera)? 'checked':''}}>Aperto</label>
+                                                        <label><input type="radio" name="martedi_sera" value="1" {{($old_days->martedi_sera)? 'checked':''}}>Aperto</label>
                                                     </div>
                                                     <br>
                                                     <h5>Mercoledì</h5>
@@ -267,11 +267,16 @@
                             </div>
 
                             <div class="form-group">
-                                <span>* campi obbligatori</span>
-                                <br><br>
-                                <button class="btn btn-primary btn-lg w-100" type="submit">
-                                    <i class="fa fa-dot-circle-o"></i> SALVA
-                                </button>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <span>* campi obbligatori</span>
+                                        <br><br>
+                                        <button class="btn btn-primary btn-lg w-100" type="submit">
+                                            <i class="fa fa-dot-circle-o"></i> SALVA
+                                        </button>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </form>

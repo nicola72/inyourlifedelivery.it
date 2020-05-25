@@ -981,13 +981,20 @@ class PageController extends Controller
             $token = "9b05552bc4c037ba1cb2189c80938a4a";
             $client = new Client($sid, $token);
 
-            $client->messages
-                ->create("whatsapp:+39".$this->shop->whatsapp, // to
-                    [
-                        "from" => "whatsapp:+14155238886",
-                        "body" => "Attenzione! hai ricevuto un nuovo ordine."
-                    ]
-                );
+            try{
+                $client->messages
+                    ->create("whatsapp:+39".$this->shop->whatsapp, // to
+                        [
+                            "from" => "whatsapp:+14155238886",
+                            "body" => "Attenzione! hai ricevuto un nuovo ordine."
+                        ]
+                    );
+                \Log::error('whatsapp ordinde non effettuato');
+            }
+            catch(\Exception $e){
+
+            }
+
         }
 
     }
