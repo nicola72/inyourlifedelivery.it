@@ -988,8 +988,8 @@ class PageController extends Controller
     {
         if($this->shop->whatsapp != '')
         {
-            $sid = "ACde8a66f7048629c1d3cddb87bf88d31c";
-            $token = "9b05552bc4c037ba1cb2189c80938a4a";
+            $sid = $this->shop->twilio_id;
+            $token = $this->shop->twilio_token;
             $client = new Client($sid, $token);
 
             try{
@@ -1045,8 +1045,8 @@ class PageController extends Controller
 
     public function send_twilio(Request $request)
     {
-        $sid = "ACde8a66f7048629c1d3cddb87bf88d31c";
-        $token = "9b05552bc4c037ba1cb2189c80938a4a";
+        $sid = $this->shop->twilio_id;
+        $token = $this->shop->twilio_token;
         $client = new Client($sid, $token);
 
         //per sms
