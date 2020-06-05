@@ -1119,36 +1119,7 @@ class PageController extends Controller
 
     public function send_sms(Request $request)
     {
-        $sid = 'ACde8a66f7048629c1d3cddb87bf88d31c';
-        $token = '3a071f85d54b7bf6984b51da7819f1b7';
-        $client = new Client($sid, $token);
 
-        //per sms
-        /*$client->messages->create(
-            // the number you'd like to send the message to
-            '+393313935540',
-            [
-                // A Twilio phone number you purchased at twilio.com/console
-                'from' => '+12058430762',
-                // the body of the text message you'd like to send
-                'body' => 'messaggio ordine!'
-            ]
-        );*/
-
-        $client->messages
-            ->create("whatsapp:+393313935540", // to
-                [
-                    "from" => "whatsapp:+14155238886",
-                    "body" => "Attenzione! hai ricevuto un nuovo ordine."
-                ]
-            );
-
-        /*try{
-
-        }
-        catch(\Exception $e){
-            $client->
-        }*/
     }
 
     protected function aperto_il_giorno()
