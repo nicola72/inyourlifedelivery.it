@@ -598,100 +598,39 @@ class PageController extends Controller
 
     public function checkout(Request $request)
     {
-        $dati_ordinazione = \Session::get('dati_ordinazione');
-
         if(!$this->shop)
         {
             return view('website.page.dominio_sbagliato');
         }
 
+        //controllo che lo shop del form corrisponda a quello del dominio in cui ci troviamo
         if($this->shop->id != decrypt($request->input('shop_id')))
         {
             return back()->with('error','Errore grave!');
         }
 
-        $nome = $dati_ordinazione['nome'];
-        $cognome = $dati_ordinazione['cognome'];
-        $email = $dati_ordinazione['email'];
-        $tel = $dati_ordinazione['tel'];
-        $tipo_ordinazione = $dati_ordinazione['tipo_ordinazione'];
-        $comune = $dati_ordinazione['comune'];
-        $indirizzo = $dati_ordinazione['indirizzo'];
-        $nr_civico = $dati_ordinazione['nr_civico'];
-        $note = $dati_ordinazione['note'];
-        $orario = $dati_ordinazione['orario'];
-        $omaggio = ($dati_ordinazione['prodotto_omaggio'] != null) ? Product::find($dati_ordinazione['prodotto_omaggio'])->nome_it : '';
-
-        $carbon = Carbon::now('Europe/Rome');
-        $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
-        //trasformo in timestamp per confrontarli
-        $ora_di_adesso = strtotime($now);
-        $ora_richiesta = strtotime($orario);
-        $intervallo_min = (($this->shop->deliveryAvailableTime->time) ? $this->shop->deliveryAvailableTime->time : 0) * 60;
+        //tutti dati dell'ordinazione presenti nella sessione
+        $dati_ordinazione = \Session::get('dati_ordinazione');
 
         //controllo che l'orario sia sempre valido
-        if(($ora_di_adesso + $intervallo_min) > $ora_richiesta)
+        if(!$this->check_orario_valido($dati_ordinazione['orario']))
         {
             return back()->with('error','L\'orario indicato non è più disponible per effettuare l\'ordinazione');
         }
 
+        //prendo il carrello
         $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+
+        //verifico che il carrello non sia vuoto
         if($carts->count() == 0)
         {
             return back()->with('error','Non hai nessun prodotto nel carrello');
         }
 
-        try{
-            $order = New Order();
-            $order->shop_id = $this->shop->id;
-            $order->tipo = $tipo_ordinazione;
-            $order->orario = $orario;
-            $order->nome = $nome;
-            $order->cognome = $cognome;
-            $order->email = $email;
-            $order->telefono = $tel;
-            $order->note = $note;
-            $order->omaggio = $omaggio;
-            $order->modalita_pagamento = 'alla consegna';
-            $order->importo = $carts->sum('totale');
-            $order->save();
-
-            $order_id = $order->id;
-
-            foreach ($carts as $cart)
-            {
-                $orderDetail = new OrderDetail();
-                $orderDetail->order_id = $order_id;
-                $orderDetail->shop_id = $this->shop->id;
-                $orderDetail->product_id = $cart->product_id;
-                $orderDetail->nome_prodotto = $cart->nome_prodotto;
-                $orderDetail->variante = $cart->variante;
-                $orderDetail->ingredienti_eliminati = $cart->ingredienti_eliminati;
-                $orderDetail->ingredienti_aggiunti = $cart->ingredienti_aggiunti;
-                $orderDetail->qta = $cart->qta;
-                $orderDetail->prezzo = $cart->prezzo;
-                $orderDetail->totale = $cart->totale;
-                $orderDetail->save();
-            }
-
-            if($tipo_ordinazione == 'domicilio')
-            {
-                $orderShipping = New OrderShipping();
-                $orderShipping->order_id = $order_id;
-                $orderShipping->shop_id = $this->shop->id;
-                $orderShipping->comune = $comune->comune;
-                $orderShipping->indirizzo = $indirizzo;
-                $orderShipping->nr_civico = $nr_civico;
-                $orderShipping->nome = $nome;
-                $orderShipping->cognome = $cognome;
-                $orderShipping->email = $email;
-                $orderShipping->telefono = $tel;
-                $orderShipping->save();
-            }
-        }
-        catch(\Exception $e){
-
-            \Log::error('fallito checkout  errore inserimento ordine '.$e->getMessage() );
+        //inserisco l'ordine nel database
+        $order = $this->add_ordine_to_db($dati_ordinazione,'alla_consegna', $carts);
+        if(!$order)
+        {
             return back()->with('error','Errore! Non è possibile procedere con l\'ordinazione');
         }
 
@@ -701,145 +640,75 @@ class PageController extends Controller
             $cart->delete();
         }
 
-        $mail = New OrderMail($order,$this->shop);
-        $to = $this->shop->email;
+        //invio l'email dell'ordine
+        $this->send_order_email($order);
 
-        try{
-            \Mail::to($to)->cc($order->email)->send($mail);
-            $this->send_whatsapp();
-        }
-        catch(\Exception $e)
-        {
-            \Log::error('fallito invio email ordine '.$e->getMessage() );
-        }
-
-        return redirect()->route('website.esito_ordinazione', ['id' => encrypt($order_id)]);
+        //vado alla pagina esito ordine
+        return redirect()->route('website.esito_ordinazione', ['id' => encrypt($order->id)]);
 
     }
 
     public function checkout_paypal(Request $request)
     {
-        $dati_ordinazione = \Session::get('dati_ordinazione');
-
         if(!$this->shop)
         {
             return view('website.page.dominio_sbagliato');
         }
 
+        //controllo che lo shop del form corrisponda a quello del dominio in cui ci troviamo
         if($this->shop->id != decrypt($request->input('shop_id')))
         {
             return back()->with('error','Errore grave!');
         }
 
-        $nome = $dati_ordinazione['nome'];
-        $cognome = $dati_ordinazione['cognome'];
-        $email = $dati_ordinazione['email'];
-        $tel = $dati_ordinazione['tel'];
-        $tipo_ordinazione = $dati_ordinazione['tipo_ordinazione'];
-        $comune = $dati_ordinazione['comune'];
-        $indirizzo = $dati_ordinazione['indirizzo'];
-        $nr_civico = $dati_ordinazione['nr_civico'];
-        $note = $dati_ordinazione['note'];
-        $orario = $dati_ordinazione['orario'];
-        $omaggio = ($dati_ordinazione['prodotto_omaggio'] != null) ? Product::find($dati_ordinazione['prodotto_omaggio'])->nome_it : '';
-
-        $carbon = Carbon::now('Europe/Rome');
-        $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
-        //trasformo in timestamp per confrontarli
-        $ora_di_adesso = strtotime($now);
-        $ora_richiesta = strtotime($orario);
-        $intervallo_min = (($this->shop->deliveryAvailableTime->time) ? $this->shop->deliveryAvailableTime->time : 0) * 60;
+        //tutti dati dell'ordinazione presenti nella sessione
+        $dati_ordinazione = \Session::get('dati_ordinazione');
 
         //controllo che l'orario sia sempre valido
-        if(($ora_di_adesso + $intervallo_min) > $ora_richiesta)
+        if(!$this->check_orario_valido($dati_ordinazione['orario']))
         {
             return back()->with('error','L\'orario indicato non è più disponible per effettuare l\'ordinazione');
         }
 
+        //prendo il carrello
         $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+
+        //verifico che il carrello non sia vuoto
         if($carts->count() == 0)
         {
             return back()->with('error','Non hai nessun prodotto nel carrello');
         }
 
-        try{
-            $order = New Order();
-            $order->shop_id = $this->shop->id;
-            $order->tipo = $tipo_ordinazione;
-            $order->orario = $orario;
-            $order->nome = $nome;
-            $order->cognome = $cognome;
-            $order->email = $email;
-            $order->telefono = $tel;
-            $order->note = $note;
-            $order->omaggio = $omaggio;
-            $order->modalita_pagamento = 'paypal';
-            $order->importo = $carts->sum('totale');
-            $order->save();
-
-            $order_id = $order->id;
-
-            foreach ($carts as $cart)
-            {
-                $orderDetail = new OrderDetail();
-                $orderDetail->order_id = $order_id;
-                $orderDetail->shop_id = $this->shop->id;
-                $orderDetail->product_id = $cart->product_id;
-                $orderDetail->nome_prodotto = $cart->nome_prodotto;
-                $orderDetail->variante = $cart->variante;
-                $orderDetail->ingredienti_eliminati = $cart->ingredienti_eliminati;
-                $orderDetail->ingredienti_aggiunti = $cart->ingredienti_aggiunti;
-                $orderDetail->qta = $cart->qta;
-                $orderDetail->prezzo = $cart->prezzo;
-                $orderDetail->totale = $cart->totale;
-                $orderDetail->save();
-            }
-
-            if($tipo_ordinazione == 'domicilio')
-            {
-                $orderShipping = New OrderShipping();
-                $orderShipping->order_id = $order_id;
-                $orderShipping->shop_id = $this->shop->id;
-                $orderShipping->comune = $comune->comune;
-                $orderShipping->indirizzo = $indirizzo;
-                $orderShipping->nr_civico = $nr_civico;
-                $orderShipping->nome = $nome;
-                $orderShipping->cognome = $cognome;
-                $orderShipping->email = $email;
-                $orderShipping->telefono = $tel;
-                $orderShipping->save();
-            }
-        }
-        catch(\Exception $e){
-
-            \Log::error('fallito checkout  errore inserimento ordine '.$e->getMessage() );
+        //inserisco l'ordine nel database
+        $order = $this->add_ordine_to_db($dati_ordinazione,'paypal', $carts);
+        if(!$order)
+        {
             return back()->with('error','Errore! Non è possibile procedere con l\'ordinazione');
         }
 
         //rimuovo gli articoli dal carrello
         foreach ($carts as $cart)
         {
-            \Log::debug('rimosso il carrello con id '.$cart->id );
             $cart->delete();
         }
 
-        $data = array ();
-        $data['cmd'] = '_xclick';
-        $data['no_note'] = 0;
-        $data['lc'] = 'IT';
-        $data['custom'] = $order->id;
-        $data['business'] = $this->shop->deliveryPaypal->email;
-        $data['item_name'] = "Ordine Numero " . $order->id;
-        $data['amount'] = $order->importo;
-        $data['rm'] = 2;
+        //creo l'array dei dati per la query string di paypal
+        $data = [];
+        $data['cmd']           = '_xclick';
+        $data['no_note']       = 0;
+        $data['lc']            = 'IT';
+        $data['custom']        = $order->id;
+        $data['business']      = $this->shop->deliveryPaypal->email;
+        $data['item_name']     = "Ordine Numero " . $order->id;
+        $data['amount']        = $order->importo;
+        $data['rm']            = 2;
         $data['currency_code'] = 'EUR';
-        $data['first_name'] = $order->nome;
-        $data['last_name'] = $order->cognome;
-        $data['payer_email'] = $order->email;
-        $data['return'] = 'https://'.$this->shop->domain.'/esito_ordinazione/'.encrypt($order->id);
-        $data['cancel_return'] =  'https://'.$this->shop->domain.'/paypal_error';
-        //ricordarsi di mettere questa url nelle eccezioni del middleware VerifyCsrfToken altrimenti non va
-        $data['notify_url'] = 'https://'.$this->shop->domain.'/paypal_notify';
+        $data['first_name']    = $order->nome;
+        $data['last_name']     = $order->cognome;
+        $data['payer_email']   = $order->email;
+        $data['return']        = 'https://'.$this->shop->domain.'/esito_ordinazione/'.encrypt($order->id);
+        $data['cancel_return'] = 'https://'.$this->shop->domain.'/paypal_error';
+        $data['notify_url']    = 'https://'.$this->shop->domain.'/paypal_notify';//mettere questa url nelle eccezioni del middleware VerifyCsrfToken
 
         $queryString = http_build_query($data);
 
@@ -856,13 +725,133 @@ class PageController extends Controller
         return redirect()->to($url);
     }
 
+    public function checkout_stripe(Request $request,$id)
+    {
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+
+        //controllo che lo shop del form corrisponda a quello del dominio in cui ci troviamo
+        if($this->shop->id != decrypt($id))
+        {
+            return back()->with('error','Errore grave!');
+        }
+
+        //tutti dati dell'ordinazione presenti nella sessione
+        $dati_ordinazione = \Session::get('dati_ordinazione');
+
+        //controllo che l'orario sia sempre valido
+        if(!$this->check_orario_valido($dati_ordinazione['orario']))
+        {
+            return back()->with('error','L\'orario indicato non è più disponible per effettuare l\'ordinazione');
+        }
+
+        //prendo il carrello
+        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
+
+        //verifico che il carrello non sia vuoto
+        if($carts->count() == 0)
+        {
+            return back()->with('error','Non hai nessun prodotto nel carrello');
+        }
+
+        //inserisco l'ordine nel database
+        $order = $this->add_ordine_to_db($dati_ordinazione,'stripe', $carts);
+        if(!$order)
+        {
+            return back()->with('error','Errore! Non è possibile procedere con l\'ordinazione');
+        }
+
+        //rimuovo gli articoli dal carrello
+        foreach ($carts as $cart)
+        {
+            $cart->delete();
+        }
+
+        if(\App::environment() == 'develop')
+        {
+            $public_key = env('STRIPE_KEY');
+        }
+        else
+        {
+            $public_key = $this->shop->deliveryStripe->public_key;
+        }
+
+
+        $params = [
+            'shop' => $this->shop,
+            'order' => $order,
+            'public_key' => $public_key
+        ];
+
+        //faccio vedere la pagina con il form per il pagamento con stripe
+        return view('website.page.stripe',$params);
+    }
+
+    public function stripePost(Request $request)
+    {
+        $order_id = decrypt($request->input('order_id'));
+        $order = Order::find($order_id);
+        if(\App::environment() == 'develop')
+        {
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+        }
+        else
+        {
+            Stripe::setApiKey($this->shop->deliveryStripe->secret_key);
+        }
+
+        $charge = Charge::create ([
+            "amount" => $order->importo * 100,
+            "currency" => "eur",
+            "source" => $request->stripeToken,
+            "description" => "Pagamento ordinazione ".$this->shop->insegna,
+        ]);
+
+        //se il pagamento è andato a buon fine
+        if($charge->paid)
+        {
+            $id_transazione = $charge->id;
+
+            //aggiorno l'ordine nel db con l'id transazione di stripe e stato pagamento a 1
+            try{
+                $order->stato_pagamento = 1;
+                $order->idtranspag = $id_transazione;
+                $order->save();
+            }
+            catch(\Exception $e){
+
+                \Log::error('fallita notifica stripe impossibile aggiornare l\'ordine '.$e->getMessage() );
+            }
+
+            //invio l'email dell'ordine
+            $this->send_order_email($order);
+
+            \Log::debug('effettuato pagamento con stripe '.$charge->id );
+
+            //vado alla pagina esito ordine
+            return redirect()->route('website.esito_ordinazione', ['id' => encrypt($order->id)]);
+        }
+        else
+        {
+            \Log::error('fallito transazione con stripe '.$charge->failure_message );
+            $params = [
+                'shop' => $this->shop,
+            ];
+            return view('website.page.stripe_error',$params);
+        }
+    }
+
     public function paypal_notify(Request $request)
     {
+        //verifico che la transazione sia andata a buon fine
         if($this->verifica_transazione())
         {
             $id_ordine = $request->post('custom');
             $id_transazione = $request->post('txn_id');
 
+            //aggiorno l'ordine nel db con l'id di transazione paypal e stato pagamento su 1
             try{
                 $order = Order::find($id_ordine);
                 $order->stato_pagamento = 1;
@@ -875,17 +864,8 @@ class PageController extends Controller
                 return;
             }
 
-            $mail = New OrderMail($order,$this->shop);
-            $to = $this->shop->email;
-
-            try{
-                \Mail::to($to)->cc($order->email)->send($mail);
-                $this->send_whatsapp();
-            }
-            catch(\Exception $e)
-            {
-                \Log::error('fallito invio email ordine '.$e->getMessage() );
-            }
+            //invio l'email dell'ordine
+            $this->send_order_email($order);
         }
         else
         {
@@ -916,6 +896,7 @@ class PageController extends Controller
             return view('website.page.dominio_sbagliato');
         }
 
+        //\Log::debug('esito pagamento'.$this->shop->insegna);
         $order_id = decrypt($id);
         $order = Order::find($order_id);
 
@@ -925,6 +906,135 @@ class PageController extends Controller
         ];
 
         return view('website.page.esito_ordine',$params);
+    }
+
+    public function informativa()
+    {
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+        $params = [
+            'shop' => $this->shop
+        ];
+
+        return view('website.page.informativa',$params);
+    }
+
+    public function cookies_policy()
+    {
+        if(!$this->shop)
+        {
+            return view('website.page.dominio_sbagliato');
+        }
+        $params = [
+            'shop' => $this->shop
+        ];
+
+        return view('website.page.cookies_policy',$params);
+    }
+
+    public function clear_cookies(Request $request)
+    {
+        $_POST = array_map("trim", $_POST); // se esternamente ad uno switch
+        $expiration_date = time() + (10 * 365 * 24 * 60 * 60); // in 10 years => Faccio scadere il cookie in un futuro abbastanza lontano
+        setcookie("c_acceptance", "yes", $expiration_date, "/");
+    }
+
+    protected function add_ordine_to_db($dati, $modalita_pagamento, $carts)
+    {
+        //omaggio può essere un oggetto Product oppure null
+        $omaggio = ($dati['prodotto_omaggio'] != null) ? Product::find($dati['prodotto_omaggio']) : '';
+
+        try{
+            $order = New Order();
+            $order->shop_id = $this->shop->id;
+            $order->tipo = $dati['tipo_ordinazione'];
+            $order->orario = $dati['orario'];
+            $order->nome = $dati['nome'];
+            $order->cognome = $dati['cognome'];
+            $order->email = $dati['email'];
+            $order->telefono = $dati['tel'];
+            $order->note = $dati['note'];
+            $order->omaggio = $omaggio->nome_it;
+            $order->modalita_pagamento = $modalita_pagamento;
+            $order->importo = $carts->sum('totale');
+            $order->save();
+
+            $order_id = $order->id;
+
+            foreach ($carts as $cart)
+            {
+                $orderDetail = new OrderDetail();
+                $orderDetail->order_id = $order_id;
+                $orderDetail->shop_id = $this->shop->id;
+                $orderDetail->product_id = $cart->product_id;
+                $orderDetail->nome_prodotto = $cart->nome_prodotto;
+                $orderDetail->variante = $cart->variante;
+                $orderDetail->ingredienti_eliminati = $cart->ingredienti_eliminati;
+                $orderDetail->ingredienti_aggiunti = $cart->ingredienti_aggiunti;
+                $orderDetail->qta = $cart->qta;
+                $orderDetail->prezzo = $cart->prezzo;
+                $orderDetail->totale = $cart->totale;
+                $orderDetail->save();
+            }
+
+            if($dati['tipo_ordinazione'] == 'domicilio')
+            {
+                $orderShipping = New OrderShipping();
+                $orderShipping->order_id = $order_id;
+                $orderShipping->shop_id = $this->shop->id;
+                $orderShipping->comune = $dati['comune']->comune;
+                $orderShipping->indirizzo = $dati['indirizzo'];
+                $orderShipping->nr_civico = $dati['nr_civico'];
+                $orderShipping->nome = $dati['nome'];
+                $orderShipping->cognome = $dati['cognome'];
+                $orderShipping->email = $dati['email'];
+                $orderShipping->telefono = $dati['tel'];
+                $orderShipping->save();
+            }
+        }
+        catch(\Exception $e){
+
+            \Log::error('fallito checkout  errore inserimento ordine '.$e->getMessage() );
+            return false;
+        }
+
+        return $order;
+    }
+
+    protected function send_order_email($order)
+    {
+        $mail = New OrderMail($order,$this->shop);
+        $to = $this->shop->email;
+
+        try{
+            \Mail::to($to)->cc($order->email)->send($mail);
+            $this->send_whatsapp();
+        }
+        catch(\Exception $e)
+        {
+            \Log::error('fallito invio email ordine '.$e->getMessage() );
+        }
+        return true;
+    }
+
+    protected function check_orario_valido($orario)
+    {
+        $carbon = Carbon::now('Europe/Rome');
+        $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
+        //trasformo in timestamp per confrontarli
+        $ora_di_adesso = strtotime($now);
+        $ora_richiesta = strtotime($orario);
+        $intervallo_min = (($this->shop->deliveryAvailableTime->time) ? $this->shop->deliveryAvailableTime->time : 0) * 60;
+
+        //controllo che l'orario sia sempre valido
+        if(($ora_di_adesso + $intervallo_min) > $ora_richiesta)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     protected function verifica_transazione()
@@ -1000,60 +1110,20 @@ class PageController extends Controller
                             "body" => "Attenzione! hai ricevuto un nuovo ordine."
                         ]
                     );
-                \Log::error('whatsapp ordinde non effettuato');
             }
             catch(\Exception $e){
-
+                \Log::error('impossibile inviare ordine whatsapp');
             }
-
         }
-
     }
 
-    public function informativa()
+    public function send_sms(Request $request)
     {
-        if(!$this->shop)
-        {
-            return view('website.page.dominio_sbagliato');
-        }
-        $params = [
-            'shop' => $this->shop
-        ];
-
-        return view('website.page.informativa',$params);
-    }
-
-    public function cookies_policy()
-    {
-        if(!$this->shop)
-        {
-            return view('website.page.dominio_sbagliato');
-        }
-        $params = [
-            'shop' => $this->shop
-        ];
-
-        return view('website.page.cookies_policy',$params);
-    }
-
-    public function clear_cookies(Request $request)
-    {
-        $_POST = array_map("trim", $_POST); // se esternamente ad uno switch
-        $expiration_date = time() + (10 * 365 * 24 * 60 * 60); // in 10 years => Faccio scadere il cookie in un futuro abbastanza lontano
-        setcookie("c_acceptance", "yes", $expiration_date, "/");
-    }
-
-    public function send_twilio(Request $request)
-    {
-        $sid = $this->shop->twilio_id;
-        $token = $this->shop->twilio_token;
+        $sid = 'ACde8a66f7048629c1d3cddb87bf88d31c';
+        $token = '3a071f85d54b7bf6984b51da7819f1b7';
         $client = new Client($sid, $token);
 
         //per sms
-        /*$account = $client->getAccount();
-        var_dump($account);
-        exit();*/
-        // Use the client to do fun stuff like send text messages!
         /*$client->messages->create(
             // the number you'd like to send the message to
             '+393313935540',
@@ -1065,15 +1135,20 @@ class PageController extends Controller
             ]
         );*/
 
-        //per whatsapp
         $client->messages
             ->create("whatsapp:+393313935540", // to
                 [
                     "from" => "whatsapp:+14155238886",
-                    "body" => "Nuovo ordine su Speedy Food!"
+                    "body" => "Attenzione! hai ricevuto un nuovo ordine."
                 ]
             );
 
+        /*try{
+
+        }
+        catch(\Exception $e){
+            $client->
+        }*/
     }
 
     protected function aperto_il_giorno()
@@ -1111,194 +1186,8 @@ class PageController extends Controller
         return $this->shop->deliveryOpenDay->{$oggi_in_italiano[$key].'_sera'};
     }
 
-    public function checkout_stripe(Request $request,$id)
-    {
-        $dati_ordinazione = \Session::get('dati_ordinazione');
 
-        if(!$this->shop)
-        {
-            return view('website.page.dominio_sbagliato');
-        }
 
-        if($this->shop->id != decrypt($id))
-        {
-            return back()->with('error','Errore grave!');
-        }
 
-        $nome = $dati_ordinazione['nome'];
-        $cognome = $dati_ordinazione['cognome'];
-        $email = $dati_ordinazione['email'];
-        $tel = $dati_ordinazione['tel'];
-        $tipo_ordinazione = $dati_ordinazione['tipo_ordinazione'];
-        $comune = $dati_ordinazione['comune'];
-        $indirizzo = $dati_ordinazione['indirizzo'];
-        $nr_civico = $dati_ordinazione['nr_civico'];
-        $note = $dati_ordinazione['note'];
-        $orario = $dati_ordinazione['orario'];
-        $omaggio = ($dati_ordinazione['prodotto_omaggio'] != null) ? Product::find($dati_ordinazione['prodotto_omaggio'])->nome_it : '';
-
-        $carbon = Carbon::now('Europe/Rome');
-        $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
-        //trasformo in timestamp per confrontarli
-        $ora_di_adesso = strtotime($now);
-        $ora_richiesta = strtotime($orario);
-        $intervallo_min = (($this->shop->deliveryAvailableTime->time) ? $this->shop->deliveryAvailableTime->time : 0) * 60;
-
-        //controllo che l'orario sia sempre valido
-        if(($ora_di_adesso + $intervallo_min) > $ora_richiesta)
-        {
-            return back()->with('error','L\'orario indicato non è più disponible per effettuare l\'ordinazione');
-        }
-
-        $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
-        if($carts->count() == 0)
-        {
-            return back()->with('error','Non hai nessun prodotto nel carrello');
-        }
-
-        try{
-            $order = New Order();
-            $order->shop_id = $this->shop->id;
-            $order->tipo = $tipo_ordinazione;
-            $order->orario = $orario;
-            $order->nome = $nome;
-            $order->cognome = $cognome;
-            $order->email = $email;
-            $order->telefono = $tel;
-            $order->note = $note;
-            $order->omaggio = $omaggio;
-            $order->modalita_pagamento = 'stripe';
-            $order->importo = $carts->sum('totale');
-            $order->save();
-
-            $order_id = $order->id;
-
-            foreach ($carts as $cart)
-            {
-                $orderDetail = new OrderDetail();
-                $orderDetail->order_id = $order_id;
-                $orderDetail->shop_id = $this->shop->id;
-                $orderDetail->product_id = $cart->product_id;
-                $orderDetail->nome_prodotto = $cart->nome_prodotto;
-                $orderDetail->variante = $cart->variante;
-                $orderDetail->ingredienti_eliminati = $cart->ingredienti_eliminati;
-                $orderDetail->ingredienti_aggiunti = $cart->ingredienti_aggiunti;
-                $orderDetail->qta = $cart->qta;
-                $orderDetail->prezzo = $cart->prezzo;
-                $orderDetail->totale = $cart->totale;
-                $orderDetail->save();
-            }
-
-            if($tipo_ordinazione == 'domicilio')
-            {
-                $orderShipping = New OrderShipping();
-                $orderShipping->order_id = $order_id;
-                $orderShipping->shop_id = $this->shop->id;
-                $orderShipping->comune = $comune->comune;
-                $orderShipping->indirizzo = $indirizzo;
-                $orderShipping->nr_civico = $nr_civico;
-                $orderShipping->nome = $nome;
-                $orderShipping->cognome = $cognome;
-                $orderShipping->email = $email;
-                $orderShipping->telefono = $tel;
-                $orderShipping->save();
-            }
-        }
-        catch(\Exception $e){
-
-            \Log::error('fallito checkout  errore inserimento ordine '.$e->getMessage() );
-            return back()->with('error','Errore! Non è possibile procedere con l\'ordinazione');
-        }
-
-        //rimuovo gli articoli dal carrello
-        foreach ($carts as $cart)
-        {
-            \Log::debug('rimosso il carrello con id '.$cart->id );
-            $cart->delete();
-        }
-
-        if(\App::environment() == 'develop')
-        {
-            $public_key = env('STRIPE_KEY');
-        }
-        else
-        {
-            $public_key = $this->shop->deliveryStripe->public_key;
-        }
-
-        $params = [
-            'shop' => $this->shop,
-            'order' => $order,
-            'public_key' => $public_key
-        ];
-
-        return view('website.page.stripe',$params);
-    }
-
-    public function stripePost(Request $request)
-    {
-        $order_id = decrypt($request->input('order_id'));
-        $order = Order::find($order_id);
-        if(\App::environment() == 'develop')
-        {
-            Stripe::setApiKey(env('STRIPE_SECRET'));
-        }
-        else
-        {
-            Stripe::setApiKey($this->shop->deliveryStripe->secret_key);
-        }
-
-        $charge = Charge::create ([
-            "amount" => $order->importo * 100,
-            "currency" => "eur",
-            "source" => $request->stripeToken,
-            "description" => "Pagamento ordinazione ".$this->shop->insegna,
-        ]);
-
-        //se il pagamento è andato a buon fine
-        if($charge->paid)
-        {
-            $id_transazione = $charge->id;
-
-            try{
-                $order->stato_pagamento = 1;
-                $order->idtranspag = $id_transazione;
-                $order->save();
-            }
-            catch(\Exception $e){
-
-                \Log::error('fallita notifica stripe impossibile aggiornare l\'ordine '.$e->getMessage() );
-            }
-
-            $mail = New OrderMail($order,$this->shop);
-            $to = $this->shop->email;
-
-            try{
-                \Mail::to($to)->cc($order->email)->send($mail);
-                $this->send_whatsapp();
-            }
-            catch(\Exception $e)
-            {
-                \Log::error('fallito invio email ordine '.$e->getMessage() );
-            }
-
-            $params = [
-                'shop' => $this->shop,
-                'order' => $order,
-            ];
-
-            \Log::debug('effettuato pagamento con stripe '.$charge->id );
-
-            return view('website.page.esito_ordine',$params);
-        }
-        else
-        {
-            \Log::error('fallito transazione con stripe '.$charge->failure_message );
-            $params = [
-                'shop' => $this->shop,
-            ];
-            return view('website.page.stripe_error',$params);
-        }
-    }
 
 }

@@ -4,3 +4,13 @@ https://www.itsolutionstuff.com/post/laravel-57-stripe-payment-gateway-integrati
 Puoi iniziare ad accettare i pagamenti non appena il tuo account Stripe è connesso al tuo e-commerce. Stripe gestisce tutte le tue transazioni.
 
 Stripe trasferisce il denaro sul tuo conto corrente in base a una pianificazione impostata nel tuo Stripe dashboard
+
+Name: Test
+
+Number: 4242 4242 4242 4242
+
+CSV: 123
+
+Expiration Month: 12
+
+Expiration Year: 2024

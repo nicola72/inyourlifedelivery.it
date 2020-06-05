@@ -195,7 +195,7 @@
                                                     <br>
                                                     <h5>Domenica</h5>
                                                     <div class="radio">
-                                                        <label><input type="radio" name="domenica_giorno" value="0" {{($old_days->domenica_giorno)? 'checked':''}}>Chiuso</label>
+                                                        <label><input type="radio" name="domenica_giorno" value="0" {{(!$old_days->domenica_giorno)? 'checked':''}}>Chiuso</label>
                                                     </div>
                                                     <div class="radio">
                                                         <label><input type="radio" name="domenica_giorno" value="1" {{($old_days->domenica_giorno)? 'checked':''}}>Aperto</label>
