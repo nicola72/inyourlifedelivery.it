@@ -16,10 +16,13 @@
         <!-- Styles -->
         @section('styles')
 
-            <link href="/assets/css/plugins/plugins.css" rel="stylesheet">
-            <link href="/assets/css/style.css" rel="stylesheet">
-            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+            <link rel="preload" href="/assets/css/plugins/plugins.css" as="style">
+            <link rel="preload" href="/assets/css/style.css" as="style">
+            <link rel="preload" as="style" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 
+            <link rel="stylesheet" href="/assets/css/plugins/plugins.css" >
+            <link rel="stylesheet" href="/assets/css/style.css" >
+            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
         @show
 
         @stack('head')

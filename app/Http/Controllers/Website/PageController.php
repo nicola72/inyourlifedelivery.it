@@ -488,7 +488,7 @@ class PageController extends Controller
         $min_ordine = $this->shop->deliveryMin;
         if($min_ordine && ($carts->sum('totale') < $min_ordine->min ))
         {
-            return back()->with('error','L\'ordine deve essere almeno di '.$min_ordine.' euro');
+            return back()->with('error','L\'ordine deve essere almeno di '.$min_ordine->min.' euro');
         }
 
         $carbon = Carbon::now('Europe/Rome');
@@ -557,6 +557,9 @@ class PageController extends Controller
 
     public function get_cart_resume(Request $request)
     {
+        //inserisco i dati nella sessione
+        $request->session()->reflash();
+
         if(!$this->shop)
         {
             return view('website.page.dominio_sbagliato');
@@ -956,7 +959,10 @@ class PageController extends Controller
             $order->email = $dati['email'];
             $order->telefono = $dati['tel'];
             $order->note = $dati['note'];
-            $order->omaggio = $omaggio->nome_it;
+            if($omaggio != '')
+            {
+                $order->omaggio = $omaggio->nome_it;
+            }
             $order->modalita_pagamento = $modalita_pagamento;
             $order->importo = $carts->sum('totale');
             $order->save();

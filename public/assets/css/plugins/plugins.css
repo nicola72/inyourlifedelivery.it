@@ -3,13 +3,7 @@
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */
 
-@font-face {
-  font-family: 'FontAwesome';
-  src: url("../../fonts/fontawesome-webfont.eot?v=4.7.0");
-  src: url("../../fonts/fontawesome-webfont.eot?#iefix&v=4.7.0") format('embedded-opentype'),url("../../fonts/fontawesome-webfont.woff2?v=4.7.0") format('woff2'),url("../../fonts/fontawesome-webfont.woff?v=4.7.0") format('woff'),url("../../fonts/fontawesome-webfont.ttf?v=4.7.0") format('truetype'),url("../../fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
+
 
 .fa {
   display: inline-block;
@@ -7997,7 +7991,7 @@
   position: absolute;
   top: 50%;
   right: 15px;
-  background: url("../../../pushy/img/arrow.svg") no-repeat;
+  /*background: url("../../../pushy/img/arrow.svg") no-repeat;*/
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
@@ -8105,15 +8099,15 @@
 
 .mfp-zoom-out-cur,
 .mfp-zoom-out-cur .mfp-image-holder .mfp-close {
-  cursor: -moz-zoom-out;
-  cursor: -webkit-zoom-out;
+  /*cursor: -moz-zoom-out;
+  cursor: -webkit-zoom-out;*/
   cursor: zoom-out;
 }
 
 .mfp-zoom {
   cursor: pointer;
-  cursor: -webkit-zoom-in;
-  cursor: -moz-zoom-in;
+  /*cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;*/
   cursor: zoom-in;
 }
 
@@ -8659,7 +8653,7 @@ img.mfp-img {
   top: 50%;
   margin-left: -40px;
   margin-top: -40px;
-  background: url("../../../owl.carousel/dist/assets/owl.video.play.png") no-repeat;
+  /*background: url("../../../owl.carousel/dist/assets/owl.video.play.png") no-repeat;*/
   cursor: pointer;
   z-index: 1;
   -webkit-backface-visibility: hidden;
@@ -8753,6 +8747,7 @@ img.mfp-img {
 .owl-theme .owl-dots .owl-dot:hover span {
   background: #869791;
 }
+/*
 @font-face {
   font-family: 'et-line';
   src: url("../../../../et-line-font/fonts/et-line.eot");
@@ -8762,7 +8757,7 @@ img.mfp-img {
 		url("../../../../et-line-font/fonts/et-line.svg#et-line") format('svg');
   font-weight: normal;
   font-style: normal;
-}
+}*/
 
 /* Use the following CSS code if you want to use data attributes for inserting your icons */
 
@@ -11383,11 +11378,6 @@ pre code {
   transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
-@media screen and (prefers-reduced-motion:reduce) {
-  .form-control {
-    transition: none;
-  }
-}
 
 .form-control::-ms-expand {
   background-color: transparent;
@@ -11903,11 +11893,7 @@ textarea.form-control {
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
-@media screen and (prefers-reduced-motion:reduce) {
-  .btn {
-    transition: none;
-  }
-}
+
 
 .btn:focus,
 .btn:hover {
@@ -12603,11 +12589,7 @@ input[type=submit].btn-block {
   transition: opacity .15s linear;
 }
 
-@media screen and (prefers-reduced-motion:reduce) {
-  .fade {
-    transition: none;
-  }
-}
+
 
 .fade:not(.show) {
   opacity: 0;
@@ -12624,11 +12606,6 @@ input[type=submit].btn-block {
   transition: height .35s ease;
 }
 
-@media screen and (prefers-reduced-motion:reduce) {
-  .collapsing {
-    transition: none;
-  }
-}
 
 .dropdown,
 .dropleft,
@@ -13439,11 +13416,7 @@ input[type=submit].btn-block {
   appearance: none;
 }
 
-@media screen and (prefers-reduced-motion:reduce) {
-  .custom-range::-webkit-slider-thumb {
-    transition: none;
-  }
-}
+
 
 .custom-range::-webkit-slider-thumb:active {
   background-color: #b3d7ff;
@@ -13470,11 +13443,7 @@ input[type=submit].btn-block {
   appearance: none;
 }
 
-@media screen and (prefers-reduced-motion:reduce) {
-  .custom-range::-moz-range-thumb {
-    transition: none;
-  }
-}
+
 
 .custom-range::-moz-range-thumb:active {
   background-color: #b3d7ff;
@@ -13503,11 +13472,7 @@ input[type=submit].btn-block {
   appearance: none;
 }
 
-@media screen and (prefers-reduced-motion:reduce) {
-  .custom-range::-ms-thumb {
-    transition: none;
-  }
-}
+
 
 .custom-range::-ms-thumb:active {
   background-color: #b3d7ff;
@@ -13540,13 +13505,6 @@ input[type=submit].btn-block {
   transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
-@media screen and (prefers-reduced-motion:reduce) {
-  .custom-control-label::before,
-  .custom-file-label,
-  .custom-select {
-    transition: none;
-  }
-}
 
 .nav {
   display: -ms-flexbox;
@@ -14098,4 +14056,4 @@ body {
 .table .thead-dark th {
   color: inherit;
   border-color: #dee2e6;
-}
+}}

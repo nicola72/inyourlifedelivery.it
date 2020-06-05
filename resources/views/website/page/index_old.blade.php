@@ -149,11 +149,11 @@
                     <div class="row">
                         <div class="col-md-6 text-center">
                             <img src="/img/consegna.png" alt="" class="img-fluid"  style="max-width:150px;"/><br/>
-                            <input class="tipo_ordinazione" id="radio_tipo_1" type="radio" name="tipo_ordinazione" value="domicilio" {{(old('tipo_ordinazione') == 'domicilio') ? 'checked':''}} /> <h6 class="d-inline">CONSEGNA A DOMICILIO</h6>
+                            <input class="tipo_ordinazione" id="radio_tipo_1" type="radio" name="tipo_ordinazione" value="domicilio" /> <h6 class="d-inline">CONSEGNA A DOMICILIO</h6>
                         </div>
                         <div class="col-md-6 text-center">
                             <img src="/img/asporto.png" alt="" class="img-fluid" style="max-width:150px;"/><br/>
-                            <input class="tipo_ordinazione" id="radio_tipo_2" type="radio" name="tipo_ordinazione" value="asporto" {{(old('tipo_ordinazione') == 'domicilio') ? '':'checked'}} /> <h6 class="d-inline">ASPORTO</h6>
+                            <input class="tipo_ordinazione" id="radio_tipo_2" type="radio" name="tipo_ordinazione" value="asporto" checked /> <h6 class="d-inline">ASPORTO</h6>
                         </div>
                     </div>
                 </div>
@@ -177,11 +177,11 @@
             <div class="row mb-3">
                 <div class="col-md-6 mb-3">
                     <label for="nome">Nome*</label>
-                    <input type="text" id="nome" name="nome" class="form-control" value="{{old('nome')}}"  />
+                    <input type="text" id="nome" name="nome" class="form-control" value="{{old('nome')}}" required />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="nome">Cognome*</label>
-                    <input type="text" id="cognome" name="cognome" class="form-control" value="{{old('cognome')}}" />
+                    <input type="text" id="cognome" name="cognome" class="form-control" value="{{old('cognome')}}" required />
                 </div>
             </div>
             <div id="indirizzo_consegna" class="p-3 border" style="display: none">
@@ -192,7 +192,7 @@
                         <select name="comune" id="comune" class="form-control">
                             <option value="">seleziona</option>
                             @foreach($shop->deliveryMunics as $munic)
-                                <option value="{{$munic->id}}" {{(old('comune') == $munic->id) ? 'selected':''}}>{{$munic->comune}}</option>
+                                <option value="{{$munic->id}}">{{$munic->comune}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -211,11 +211,11 @@
             <div class="row mb-3 mt-3">
                 <div class="col-md-6 mb-3">
                     <label for="tel">Telefono*</label>
-                    <input type="text" id="tel" name="tel" class="form-control" value="{{old('tel')}}"  />
+                    <input type="text" id="tel" name="tel" class="form-control" value="{{old('tel')}}" required />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="email">Email*</label>
-                    <input type="email" id="email" name="email" class="form-control" value="{{old('email')}}" />
+                    <input type="email" id="email" name="email" class="form-control" value="{{old('email')}}" required />
                 </div>
             </div>
             <div class="row mb-3">
@@ -256,7 +256,7 @@
                 <!-- fine CAPTCHA -->
                 <div class="col-md-12">
                     Privacy* @lang('msg.consenso')
-                    <input name="privacy" type="checkbox" id="privacy" value="Privacy" />&nbsp;&nbsp; <br>
+                    <input name="privacy" type="checkbox" id="privacy" value="Privacy" required />&nbsp;&nbsp; <br>
                     <a style="color:#000" href="{{url('/informativa')}}" target="_blank">
                         @lang('msg.leggi_informativa')
                     </a>
@@ -309,7 +309,7 @@
         <div class="container mb-5">
             <div class="row">
                 <div class="col-md-12">
-                    <button id="submit_btn" onclick="checkForm();" class="btn btn-lg  btn-primary back-orange focacce w-100">
+                    <button id="submit_btn" type="submit" class="btn btn-lg  btn-primary back-orange focacce w-100">
                         <span class="titolo-categoria">PROCEDI CON L'ORDINE</span>
                     </button>
                 </div>
@@ -333,96 +333,6 @@
 @endsection
 @section('js_script')
     <script>
-
-        function checkForm()
-        {
-            event.preventDefault();
-
-            var nome = $('#nome').val();
-            var cognome = $('#cognome').val();
-            var tel = $('#tel').val();
-            var email = $('#email').val();
-            var comune = $('#comune').val();
-            var nr_civico = $('#nr_civico').val();
-            var indirizzo = $('#indirizzo').val();
-            var orario = $('#orario').val();
-
-            if(orario === '')
-            {
-                alert('Attenzione! Non hai selezionato l\'orario di consegna');
-                scroll_to('orario_ancor');
-                return;
-            }
-
-            if(nome === '')
-            {
-                alert('Attenzione! Il nome è obbligatorio');
-                $('#nome').focus();
-                scroll_to('nome');
-                return;
-            }
-
-            if(cognome === '')
-            {
-                alert('Attenzione! Il cognome è obbligatorio');
-                $('#cognome').focus();
-                scroll_to('cognome');
-                return;
-            }
-
-            if(email === '')
-            {
-                alert('Attenzione! obbligatorio inserire un\'email valida');
-                $('#email').focus();
-                scroll_to('email');
-                return;
-            }
-
-            if(tel === '')
-            {
-                alert('Attenzione! Il telefono è obbligatorio');
-                $('#tel').focus();
-                scroll_to('tel');
-                return;
-            }
-
-            if( $('#radio_tipo_1').is(':checked') )
-            {
-                if(comune === '')
-                {
-                    alert('Attenzione! Per la consegna a domicilio è obbligatorio inserire il Comune');
-                    $('#comune').focus();
-                    scroll_to('comune');
-                    return;
-                }
-
-                if(indirizzo === '')
-                {
-                    alert('Attenzione! Per la consegna a domicilio è obbligatorio inserire la Via/Piazza');
-                    $('#indirizzo').focus();
-                    scroll_to('indirizzo');
-                    return;
-                }
-
-                if(nr_civico === '')
-                {
-                    alert('Attenzione! Per la consegna a domicilio è obbligatorio inserire il Numero Civico');
-                    $('#nr_civico').focus();
-                    scroll_to('nr_civico');
-                    return;
-                }
-            }
-
-            if(!$('#privacy').is(':checked'))
-            {
-                alert('Attenzione! E\' obbligatorio acconsentire al trattamento dei dati');
-                $('#privacy').focus();
-                scroll_to('privacy');
-                return;
-            }
-
-            $('#form_ordinazione').submit();
-        }
 
         function increse(product_id)
         {
