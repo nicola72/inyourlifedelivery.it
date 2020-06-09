@@ -11,6 +11,7 @@ use App\Model\DeliveryOpenDay;
 use App\Model\DeliveryPaypal;
 use App\Model\DeliveryShippingCost;
 use App\Model\DeliveryStep;
+use App\Model\DeliveryString;
 use App\Model\File;
 use App\Model\Shop;
 use Carbon\Carbon;
@@ -48,6 +49,10 @@ class ConfigurationsController extends Controller
             $description = DeliveryDescription::where('shop_id',$shop->id)->first();
             $maxqty = DeliveryMaxQuantity::where('shop_id',$shop->id)->first();
             $paypal = DeliveryPaypal::where('shop_id',$shop->id)->first();
+            $label_for_ingredients = DeliveryString::where('shop_id',$shop->id)->where('for','ingredients')->first();
+            $label_for_variants = DeliveryString::where('shop_id',$shop->id)->where('for','variants')->first();
+            $label_for_gratis = DeliveryString::where('shop_id',$shop->id)->where('for','gratis')->first();
+            $label_for_omaggio = DeliveryString::where('shop_id',$shop->id)->where('for','omaggio')->first();
 
             $params = [
                 'title_page' => 'Configurazioni negozio',
@@ -70,6 +75,11 @@ class ConfigurationsController extends Controller
                 'form_maxqty' => 'form_maxqty',
                 'paypal'=> $paypal,
                 'form_paypal' => 'form_paypal',
+                'label_for_ingredients' => $label_for_ingredients,
+                'label_for_variants' => $label_for_variants,
+                'label_for_gratis' => $label_for_gratis,
+                'label_for_omaggio' => $label_for_omaggio,
+                'form_labels' => 'form_labels'
             ];
 
             return view('cms.configurations.index',$params);
@@ -100,6 +110,10 @@ class ConfigurationsController extends Controller
         $description = DeliveryDescription::where('shop_id',$shop->id)->first();
         $maxqty = DeliveryMaxQuantity::where('shop_id',$shop->id)->first();
         $paypal = DeliveryPaypal::where('shop_id',$shop->id)->first();
+        $label_for_ingredients = DeliveryString::where('shop_id',$shop->id)->where('for','ingredients')->first();
+        $label_for_variants = DeliveryString::where('shop_id',$shop->id)->where('for','variants')->first();
+        $label_for_gratis = DeliveryString::where('shop_id',$shop->id)->where('for','gratis')->first();
+        $label_for_omaggio = DeliveryString::where('shop_id',$shop->id)->where('for','omaggio')->first();
 
         $params = [
             'title_page' => 'Configurazioni '.$shop->insegna,
@@ -122,6 +136,11 @@ class ConfigurationsController extends Controller
             'form_maxqty' => 'form_maxqty',
             'paypal'=> $paypal,
             'form_paypal' => 'form_paypal',
+            'label_for_ingredients' => $label_for_ingredients,
+            'label_for_variants' => $label_for_variants,
+            'label_for_gratis' => $label_for_gratis,
+            'label_for_omaggio' => $label_for_omaggio,
+            'form_labels' => 'form_labels'
         ];
 
         return view('cms.configurations.index',$params);
@@ -228,6 +247,97 @@ class ConfigurationsController extends Controller
             $url = url('cms/configurations/shop_config',$shop->id);
         }
         return ['result' => 1,'msg' => 'Max quantità ordinabile aggiornata con successo!','url'=> $url];
+
+    }
+
+    public function update_labels(Request $request,$id)
+    {
+        $shop = Shop::find($id);
+
+        //controllo che l'utente editore non configuri il negozio di un altro
+        $user = \Auth::user('cms');
+        if($user->role_id != 1)
+        {
+            $shop_user = Shop::find($user->shop_id);
+            if($shop_user->id != $shop->id)
+            {
+                return redirect('/cms');
+            }
+        }
+
+        $old_labels = DeliveryString::where('shop_id',$shop->id)->get();
+
+        if($old_labels)
+        {
+            foreach ($old_labels as $item)
+            {
+                $item->delete();
+            }
+        }
+
+        $label_for_ingredients = $request->label_for_ingredients;
+        $label_for_variants = $request->label_for_variants;
+        $label_for_gratis = $request->label_for_gratis;
+        $label_for_omaggio = $request->label_for_omaggio;
+
+        //faccio l'inserimento di ogni label
+        try{
+            $label = New DeliveryString();
+            $label->shop_id = $shop->id;
+            $label->for = 'ingredients';
+            $label->text = $label_for_ingredients;
+            $label->save();
+        }
+        catch(\Exception $e)
+        {
+            return ['result' => 0,'msg' => $e->getMessage()];
+        }
+
+        try{
+            $label = New DeliveryString();
+            $label->shop_id = $shop->id;
+            $label->for = 'variants';
+            $label->text = $label_for_variants;
+            $label->save();
+        }
+        catch(\Exception $e)
+        {
+            return ['result' => 0,'msg' => $e->getMessage()];
+        }
+
+        try{
+            $label = New DeliveryString();
+            $label->shop_id = $shop->id;
+            $label->for = 'gratis';
+            $label->text = $label_for_gratis;
+            $label->save();
+        }
+        catch(\Exception $e)
+        {
+            return ['result' => 0,'msg' => $e->getMessage()];
+        }
+
+        try{
+            $label = New DeliveryString();
+            $label->shop_id = $shop->id;
+            $label->for = 'omaggio';
+            $label->text = $label_for_omaggio;
+            $label->save();
+        }
+        catch(\Exception $e)
+        {
+            return ['result' => 0,'msg' => $e->getMessage()];
+        }
+
+        if($user->role_id != 1)
+        {
+            $url = url('cms/configurations');
+        }
+        else
+        {
+            $url = url('cms/configurations/shop_config',$shop->id);
+        }
+        return ['result' => 1,'msg' => 'Labels aggiornate con successo!','url'=> $url];
 
     }
 

@@ -37,6 +37,8 @@ class Product extends Model implements Sortable
         'desc_fr',
         'desc_es',
         'desc_ru',
+        'pranzo',
+        'cena',
         'visibile',
         'novita',
         'order',

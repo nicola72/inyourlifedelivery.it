@@ -66,6 +66,11 @@ class Shop extends Model
         return $this->hasMany('App\Model\DeliveryMunic');
     }
 
+    public function deliveryStrings()
+    {
+        return $this->hasMany('App\Model\DeliveryString');
+    }
+
     public function deliveryMaxQuantity()
     {
         return $this->hasOne('App\Model\DeliveryMaxQuantity');

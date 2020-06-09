@@ -18,21 +18,20 @@
 
                     @if($cart->variante != '')
                         <p>
-                            Variante:<br/>
                             {{$cart->variante}}
                         </p>
                     @endif
 
                     @if($cart->ingredienti_eliminati != '')
                         <p>
-                            Ingredienti eliminati:<br/>
+                            eliminati:<br/>
                             {{$cart->ingredienti_eliminati}}
                         </p>
                     @endif
 
                     @if($cart->ingredienti_aggiunti != '')
                         <p>
-                            Ingredienti aggiunti:<br/>
+                            aggiunti:<br/>
                             {{$cart->ingredienti_aggiunti}}
                         </p>
                     @endif

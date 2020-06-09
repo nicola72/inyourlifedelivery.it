@@ -84,6 +84,7 @@ Route::group(['prefix' => 'cms'], function ()
         Route::post('/configurations/update_maxqty/{id}', 'Cms\ConfigurationsController@update_maxqty');
         Route::post('/configurations/update_desc/{id}', 'Cms\ConfigurationsController@update_desc');
         Route::post('/configurations/update_paypal/{id}', 'Cms\ConfigurationsController@update_paypal');
+        Route::post('/configurations/update_labels/{id}', 'Cms\ConfigurationsController@update_labels');
 
 
 

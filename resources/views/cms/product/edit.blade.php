@@ -62,6 +62,17 @@
                                     @endforeach
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="d-block">Disponibile per</label>
+                                        <label class="radio-inline"><input type="radio" name="per_quando" value="entrambi" {{($product->pranzo == 1 && $product->cena == 1) ? 'checked':''}}> Pranzo e Cena</label>
+                                        <label class="radio-inline"><input type="radio" name="per_quando" value="solo_pranzo" {{($product->pranzo == 1 && $product->cena == 0) ? 'checked':''}}> Solo Pranzo</label>
+                                        <label class="radio-inline"><input type="radio" name="per_quando" value="solo_cena" {{($product->pranzo == 0 && $product->cena == 1) ? 'checked':''}}> Solo Cena</label>
+                                    </div>
+
+                                </div>
+                            </div>
                             <div id="ingredients_and_variants">
                                 <div class="form-group">
                                     <div class="row">

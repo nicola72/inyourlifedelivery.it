@@ -27,6 +27,13 @@
                     </div>
                 </div>
             </div>
+            @if($prodotti_omaggio->count() > 0 && $label_omaggio)
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <div class="promo">{{$label_omaggio->text}}</div>
+                    </div>
+                </div>
+            @endif
         </div>
     </section>
     <!--  -->
@@ -85,7 +92,7 @@
                     <div class="col-md-12 pt20">
                         <div class="form-group row">
                             <div class="col-sm-4 col-md-2 m-auto">
-                                <h6 class="text-center">PER IL GIORNO</h6>
+                                <h6 class="text-center">PER IL PRANZO</h6>
                                 <div class="input-group input-append">
                                     <input id="timepicker1" name="orario_mattina" type="text" class="form-control pickers" placeholder="Scegli">
                                     <span class="input-group-prepend last add-on">
@@ -106,7 +113,7 @@
                     <div class="col-md-12 pt20">
                         <div class="form-group row">
                             <div class="col-sm-4 col-md-2 m-auto">
-                                <h6 class="text-center">PER LA SERA</h6>
+                                <h6 class="text-center">PER LA CENA</h6>
                                 <div class="input-group input-append">
                                     <input id="timepicker2" name="orario_sera" type="text" class="form-control pickers" placeholder="Scegli" >
                                     <span class="input-group-prepend last add-on">

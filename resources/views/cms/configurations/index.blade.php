@@ -271,6 +271,29 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        LABELS
+                                    </div>
+                                    <div class="panel-body">
+                                        <form action="" method="POST" id="{{ $form_labels }}">
+                                            {{ csrf_field() }}
+                                            <label>Per Ingredienti</label>
+                                            <textarea name="label_for_ingredients" id="label_for_ingredients" class="form-control mb-2">{{($label_for_ingredients)? $label_for_ingredients->text : 'ingredienti'}}</textarea>
+                                            <label>Per Varianti</label>
+                                            <textarea name="label_for_variants" id="label_for_variants" class="form-control mb-2">{{($label_for_variants)? $label_for_variants->text : 'varianti'}}</textarea>
+                                            <label>Per Gratis</label>
+                                            <textarea name="label_for_gratis" id="label_for_gratis" class="form-control mb-2">{{($label_for_gratis)? $label_for_gratis->text : 'gratis'}}</textarea>
+                                            <label>Per Prodotto omaggio</label>
+                                            <textarea name="label_for_omaggio" id="label_for_omaggio" class="form-control mb-2">{{($label_for_omaggio)? $label_for_omaggio->text : 'Per ogni ordinazione potrai scegliere un prodotto omaggio'}}</textarea>
+                                            <button class="btn btn-primary btn-lg w-100" type="submit">
+                                                <i class="fa fa-dot-circle-o"></i> SALVA
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="row mb-2 pb-2 border-bottom">
                             <div class="col-md-4">
@@ -392,6 +415,32 @@
                     type: "POST",
                     url: "{{url('cms/configurations/update_min',[$shop->id])}}",
                     data: $("#{{$form_minimo}}").serialize(),
+                    dataType: "json",
+                    success: function (data)
+                    {
+                        if (data.result === 1)
+                        {
+                            alert(data.msg);
+                            $(location).attr('href', data.url);
+                        }
+                        else{ alert( data.msg ); }
+                    },
+                    error: function (){ alert("Si è verificato un errore! Riprova!"); }
+                });
+            }
+        });
+
+        $("#{{$form_labels}}").validate({
+            rules: {
+            },
+            messages: {
+            },
+            submitHandler: function (form)
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "{{url('cms/configurations/update_labels',[$shop->id])}}",
+                    data: $("#{{$form_labels}}").serialize(),
                     dataType: "json",
                     success: function (data)
                     {

@@ -126,6 +126,17 @@ class ProductController extends Controller
 
         $ingredients = $request->ingredients;
         $variants = $request->variants;
+        $per_quando = $request->per_quando;
+        $per_pranzo = 1;
+        $per_cena = 1;
+        if($per_quando == 'solo_pranzo')
+        {
+            $per_cena = 0;
+        }
+        elseif($per_quando == 'solo_cena')
+        {
+            $per_pranzo = 0;
+        }
 
         try{
             $product = new Product();
@@ -134,6 +145,8 @@ class ProductController extends Controller
             $product->codice = $request->codice;
             $product->prezzo = str_replace(',','.',$request->prezzo);
             $product->prezzo_scontato = str_replace(',','.',$prezzo_scontato);
+            $product->pranzo = $per_pranzo;
+            $product->cena = $per_cena;
             $product->novita = $request->novita;
             $product->visibile = $request->visibile;
             $product->omaggio = $request->omaggio;
@@ -283,6 +296,17 @@ class ProductController extends Controller
 
         $ingredients = $request->ingredients;
         $variants = $request->variants;
+        $per_quando = $request->per_quando;
+        $per_pranzo = 1;
+        $per_cena = 1;
+        if($per_quando == 'solo_pranzo')
+        {
+            $per_cena = 0;
+        }
+        elseif($per_quando == 'solo_cena')
+        {
+            $per_pranzo = 0;
+        }
 
         try{
 
@@ -290,6 +314,8 @@ class ProductController extends Controller
             $product->codice = $request->codice;
             $product->prezzo = str_replace(',','.',$request->prezzo);
             $product->prezzo_scontato = str_replace(',','.',$prezzo_scontato);
+            $product->pranzo = $per_pranzo;
+            $product->cena = $per_cena;
             foreach ($langs as $lang)
             {
                 $product->{'nome_'.$lang} = $request->{'nome_'.$lang};

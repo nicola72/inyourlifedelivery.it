@@ -6,6 +6,7 @@ use App\Mail\OrderMail;
 use App\Model\Cart;
 use App\Model\Category;
 use App\Model\DeliveryMunic;
+use App\Model\DeliveryString;
 use App\Model\Domain;
 use App\Model\File;
 use App\Model\Ingredient;
@@ -15,6 +16,7 @@ use App\Model\OrderShipping;
 use App\Model\Product;
 use App\Model\Shop;
 use App\Model\Variant;
+use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Service\GoogleRecaptcha;
@@ -100,6 +102,12 @@ class PageController extends Controller
             $orario_partenza_sera = $now;
         }
 
+        $label_ingredienti = DeliveryString::where('shop_id',$this->shop->id)->where('for','ingredients')->first();
+        $label_varianti = DeliveryString::where('shop_id',$this->shop->id)->where('for','variants')->first();
+        $label_gratis = DeliveryString::where('shop_id',$this->shop->id)->where('for','gratis')->first();
+        $label_omaggio = DeliveryString::where('shop_id',$this->shop->id)->where('for','omaggio')->first();
+
+
         $params = [
             'shop' => $this->shop,
             'carts' => $carts,
@@ -116,6 +124,10 @@ class PageController extends Controller
             'aperto_la_sera' => $this->aperto_la_sera(),
             'orario_partenza_giorno' => $orario_partenza_giorno,
             'orario_partenza_sera' => $orario_partenza_sera,
+            'label_ingredienti' => $label_ingredienti,
+            'label_varianti' => $label_varianti,
+            'label_gratis' => $label_gratis,
+            'label_omaggio' => $label_omaggio,
         ];
         return view('website.page.index',$params);
     }
@@ -138,6 +150,11 @@ class PageController extends Controller
         $ingredients = Ingredient::where('category_id',$category->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
         $variants = Variant::where('category_id',$category->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
 
+        $label_ingredienti = DeliveryString::where('shop_id',$this->shop->id)->where('for','ingredients')->first();
+        $label_varianti = DeliveryString::where('shop_id',$this->shop->id)->where('for','variants')->first();
+        $label_gratis = DeliveryString::where('shop_id',$this->shop->id)->where('for','gratis')->first();
+        $label_omaggio = DeliveryString::where('shop_id',$this->shop->id)->where('for','omaggio')->first();
+
         $params = [
             'shop' => $this->shop,
             'carts' => $carts,
@@ -146,6 +163,10 @@ class PageController extends Controller
             'category_selected' => $category,
             'ingredients' => $ingredients,
             'variants' => $variants,
+            'label_ingredienti' => $label_ingredienti,
+            'label_varianti' => $label_varianti,
+            'label_gratis' => $label_gratis,
+            'label_omaggio' => $label_omaggio,
         ];
 
         $html = \View::make('website.page.partials.product_list',$params);
@@ -475,6 +496,19 @@ class PageController extends Controller
         if(!$dateObj)
         {
             return back()->with('error','L\'orario specificato non è nel giusto formato');
+        }
+
+        //controllo che i prodotti siano disponibili per la cena o per il pranzo
+        $ora_richiesta = strtotime($orario);
+        $pomeriggio = strtotime('17:00:00');
+        $tipo_ordinazione = ($ora_richiesta < $pomeriggio) ? 'pranzo' : 'cena';
+        foreach ($carts as $cart)
+        {
+            $product = Product::find($cart->product_id);
+            if($product->{$tipo_ordinazione} == 0)
+            {
+                return back()->with('error','Attenzione! Alcuni prodotti nel tuo carrello non sono disponibili per l\'orario richiesto');
+            }
         }
 
         //controllo che la quantità non superi il limite se c'è

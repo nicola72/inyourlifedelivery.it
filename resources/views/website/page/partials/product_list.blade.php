@@ -67,6 +67,16 @@
                                         </div>
                                         <!-- -->
 
+                                        <!-- se solo per cena o solo per pranzo -->
+                                        <div>
+                                            @if($product->pranzo == 0)
+                                                <span class="badge badge-danger">Solo per CENA</span>&nbsp;
+                                            @elseif($product->cena == 0)
+                                                <span class="badge badge-success">Solo per PRANZO</span>&nbsp;
+                                            @endif
+                                        </div>
+                                        <!-- -->
+
                                         <!-- descrizione prodotto -->
                                         <div class="descrizione-piatto pb-2">{{$product->desc_it}}</div>
                                         <!-- -->
@@ -120,7 +130,7 @@
                                     <!-- -->
 
                                     <!-- pulsante collapse x Ingredienti -->
-                                    @if($product->ingredients->count() > 0)
+                                    @if($product->ingredients->count() > 0 || $product->ingredienti_da_aggiungere()->count() > 0)
                                     <div class="col-6 col-md-6 text-center ">
                                         <div class="col-sm-12 col-md-12 testo-bottone btn-light btn-aggiungi" >
                                             <a data-toggle="collapse"
@@ -128,8 +138,14 @@
                                                onclick="$('#collapse2_{{$product->id}}').collapse('hide')"
                                                aria-expanded="false"
                                                aria-controls="collapse"
-                                               style="font-size:90%;">
-                                                GESTIONE<br/> INGREDIENTI
+                                               style="font-size:90%;text-transform: uppercase">
+                                                @if($label_ingredienti)
+                                                    GESTIONE<br/>
+                                                    {{ $label_ingredienti->text }}
+                                                @else
+                                                    GESTIONE<br/> INGREDIENTI
+                                                @endif
+
                                             </a>
                                         </div>
                                     </div>
@@ -147,8 +163,14 @@
                                                onclick="$('#collapse_{{$product->id}}').collapse('hide')"
                                                aria-expanded="false"
                                                aria-controls="collapse"
-                                               style="font-size:90%;" >
-                                                SELEZIONA<br/>VARIANTE
+                                               style="font-size:90%;text-transform: uppercase" >
+
+                                                @if($label_varianti)
+                                                    SELEZIONA<br/>
+                                                    {{ $label_varianti->text }}
+                                                @else
+                                                    SELEZIONA<br/>VARIANTE
+                                                @endif
                                             </a>
                                         </div>
                                     </div>
@@ -166,7 +188,13 @@
                                 <div class="collapse" id="collapse2_{{$product->id}}">
                                     <div class="card card-body" style="color:#000;">
 
-                                        <h4 class="text-center  pt-1 pb-2">SCEGLI UNA VARIANTE</h4>
+                                        <h4 class="text-center  pt-1 pb-2">
+                                            @if($label_varianti)
+                                                SELEZIONA <span class="text-uppercase">{{ $label_varianti->text }}</span>
+                                            @else
+                                                SELEZIONA<br/>VARIANTE
+                                            @endif
+                                        </h4>
                                         <div class="row mb-3">
                                             <div class="col-md-4">
                                                 <input type="radio" name="variante" value="" checked>
@@ -193,13 +221,20 @@
                                 <div class="collapse" id="collapse_{{$product->id}}">
                                     <div class="card card-body" style="color:#000;">
 
-                                        <h4 class="text-center  pt-1 pb-2">SCEGLI GLI INGREDIENTI DA AGGIUNGERE O TOGLIERE</h4>
+                                        <h4 class="text-center  pt-1 pb-2">
+                                            @if($label_ingredienti)
+                                                <span class="text-uppercase">{{ $label_ingredienti->text }}</span>
+                                            @else
+                                                SCEGLI GLI INGREDIENTI DA AGGIUNGERE O TOGLIERE
+                                            @endif
+
+                                        </h4>
                                         <div class="row mb-3">
 
                                             <!-- ingredienti da togliere -->
                                             <div class="col-md-4 pt-3 pb-3">
                                                 @if($product->ingredients->count() > 0)
-                                                    <h4>Togli l'ingrediente</h4>
+                                                    <h4>Togli</h4>
                                                     <div class="row">
                                                         @foreach($product->ingredients as $ing)
 
@@ -215,26 +250,31 @@
                                             <!-- -->
 
                                             <!-- ingredienti da aggiungere -->
+                                            @if($product->ingredienti_da_aggiungere()->count() > 0)
                                             <div class="col-md-8 pt-3 pb-3" style="background-color:#ddd">
-                                                @if($product->ingredienti_da_aggiungere()->count() > 0)
-                                                    <h4>oppure Aggiungi</h4>
-                                                    <div class="row">
-                                                        @foreach($product->ingredienti_da_aggiungere() as $ingredient)
+                                                <h4>oppure Aggiungi</h4>
+                                                <div class="row">
+                                                    @foreach($product->ingredienti_da_aggiungere() as $ingredient)
 
-                                                            <div class="col-md-4">
-                                                                <input type="checkbox" name="ingredient_{{$ingredient->id}}" value="{{$ingredient->id}}">
-                                                                {{$ingredient->nome_it}}
-                                                                @if($ingredient->prezzo == '0.00')
-                                                                    ({{'gratis'}})
+                                                        <div class="col-md-4">
+                                                            <input type="checkbox" name="ingredient_{{$ingredient->id}}" value="{{$ingredient->id}}">
+                                                            {{$ingredient->nome_it}}
+                                                            @if($ingredient->prezzo == '0.00')
+                                                                @if($label_gratis)
+                                                                    {{$label_gratis->text}}
                                                                 @else
-                                                                    (@money($ingredient->prezzo))
+                                                                    ({{'gratis'}})
                                                                 @endif
-                                                                <br/>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @endif
+
+                                                            @else
+                                                                (@money($ingredient->prezzo))
+                                                            @endif
+                                                            <br/>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             </div>
+                                            @endif
                                             <!-- -->
 
                                         </div>

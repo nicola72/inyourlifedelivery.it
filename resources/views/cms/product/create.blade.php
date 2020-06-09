@@ -65,6 +65,17 @@
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
+                                        <label class="d-block">Disponibile per</label>
+                                        <label class="radio-inline"><input type="radio" name="per_quando" value="entrambi" checked> Pranzo e Cena</label>
+                                        <label class="radio-inline"><input type="radio" name="per_quando" value="solo_pranzo" > Solo Pranzo</label>
+                                        <label class="radio-inline"><input type="radio" name="per_quando" value="solo_cena" > Solo Cena</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <label>Prezzo*</label>
                                         <input type="text" name="prezzo" id="prezzo" class="form-control mb-2" />
                                     </div>
