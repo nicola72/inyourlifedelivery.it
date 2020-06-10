@@ -49,9 +49,22 @@
                                 </div>
                             </div>
                         @endif
+
+                        @if($tipo_ordinazione == 'domicilio' && $spese_consegna != '')
+                            <div class="row mt-2 mb-2">
+                                <div class="col-md-12 text-right">
+                                    <h5 style="font-weight: normal">Spese consegna: @money($spese_consegna)</h5>
+                                </div>
+                            </div>
+                        @endif
                         <div class="row mt-2 mb-2">
                             <div class="col-md-12 text-right">
-                                <h4>Tot.: @money($carts->sum('totale'))</h4>
+                                @if($spese_consegna != '')
+                                    <h4>Totale: @money($carts->sum('totale') + $spese_consegna)</h4>
+                                @else
+                                    <h4>Totale: @money($carts->sum('totale'))</h4>
+                                @endif
+
                             </div>
                         </div>
                     </div>

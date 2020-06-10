@@ -26,6 +26,8 @@
                                 <th>Nome</th>
                                 <th>Label</th>
                                 <th>Icon</th>
+                                <th>Ordine</th>
+                                <th data-orderable="false">Sposta</th>
                                 <th data-orderable="false">Stato</th>
                                 <th data-orderable="false">Azioni</th>
                             </tr>
@@ -38,6 +40,22 @@
                                         <td>{{$modulo->label}}</td>
 
                                         <td>{{$modulo->icon}}</td>
+
+                                        <td>{{$modulo->order}}</td>
+
+                                        <td data-orderable="false">
+                                            <!-- Pulsante per ordinare in su -->
+                                            <a class="azioni-table"  href="{{url('/cms/settings/move_up',[$modulo->id])}}">
+                                                <i class="fa fa-arrow-circle-up fa-2x"></i>
+                                            </a>
+                                            <!-- -->
+
+                                            <!-- Pulsante per ordinare in giù -->
+                                            <a class="azioni-table pl-1"  href="{{url('/cms/settings/move_down',[$modulo->id])}}">
+                                                <i class="fa fa-arrow-circle-down fa-2x"></i>
+                                            </a>
+                                            <!-- -->
+                                        </td>
 
                                         <td data-orderable="false">
 
@@ -90,6 +108,7 @@
             $('#table-moduli').DataTable({
                 responsive: true,
                 pageLength: 100,
+                order: [[ 3, "asc" ]], //order in base a order
                 language:{ "url": "/cms_assets/js/plugins/dataTables/dataTable.ita.lang.json" }
             });
 

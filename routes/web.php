@@ -52,6 +52,8 @@ Route::group(['prefix' => 'cms'], function ()
         Route::post('/settings/store_config_module','Cms\SettingsController@store_config_module');
         Route::post('/settings/update_config_module/{id}','Cms\SettingsController@update_config_module');
         Route::post('/settings/store_copy_config_module','Cms\SettingsController@store_copy_config_module');
+        Route::get('/settings/move_up/{id}', 'Cms\SettingsController@move_up');
+        Route::get('/settings/move_down/{id}', 'Cms\SettingsController@move_down');
 
         Route::get('/shops/switch_stato','Cms\ShopsController@switch_stato');
         Route::get('/shops/switch_domicilio','Cms\ShopsController@switch_domicilio');

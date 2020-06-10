@@ -6,6 +6,7 @@ use App\Mail\OrderMail;
 use App\Model\Cart;
 use App\Model\Category;
 use App\Model\DeliveryMunic;
+use App\Model\DeliveryShippingCost;
 use App\Model\DeliveryString;
 use App\Model\Domain;
 use App\Model\File;
@@ -507,7 +508,7 @@ class PageController extends Controller
             $product = Product::find($cart->product_id);
             if($product->{$tipo_ordinazione} == 0)
             {
-                return back()->with('error','Attenzione! Alcuni prodotti nel tuo carrello non sono disponibili per l\'orario richiesto');
+                return back()->with('error','Attenzione! Alcuni prodotti nel tuo carrello non sono disponibili per l\'orario richiesto. Es. '.$product->nome_it);
             }
         }
 
@@ -567,6 +568,25 @@ class PageController extends Controller
         $tipo_pagamento = $request->input('tipo_pagamento','payapal');
         $prodotto_omaggio = $request->input('prodotto_omaggio',null);
 
+        //imposto le spese di consegna se ci sono
+        $impostazioni_spese = DeliveryShippingCost::where('shop_id',$this->shop->id)->first();
+        $spese_consegna = '';
+        if($impostazioni_spese && $tipo_ordinazione == 'domicilio')
+        {
+            $totale_carrello = $carts->sum('totale');
+            if($impostazioni_spese->to != '')
+            {
+                if($totale_carrello < $impostazioni_spese->to)
+                {
+                    $spese_consegna = $impostazioni_spese->cost;
+                }
+            }
+            else
+            {
+                $spese_consegna = $impostazioni_spese->cost;
+            }
+        }
+
         $dati_ordinazione = [
             'nome' => $nome,
             'cognome' => $cognome,
@@ -581,6 +601,7 @@ class PageController extends Controller
             'prodotto_omaggio' => $prodotto_omaggio,
             'orario' => $orario,
             'orario_html' => $orario_html,
+            'spese_consegna' => $spese_consegna,
         ];
 
         \Session::put('dati_ordinazione',$dati_ordinazione);
@@ -627,6 +648,7 @@ class PageController extends Controller
             'tipo_pagamento' => $dati_ordinazione['tipo_pagamento'],
             'orario' => $dati_ordinazione['orario'],
             'orario_html' => $dati_ordinazione['orario_html'],
+            'spese_consegna' => $dati_ordinazione['spese_consegna'],
             'prodotto_omaggio' => $prodotto_omaggio,
             'stripe' => $stripe
         ];
@@ -987,6 +1009,10 @@ class PageController extends Controller
             $order = New Order();
             $order->shop_id = $this->shop->id;
             $order->tipo = $dati['tipo_ordinazione'];
+            if($dati['spese_consegna'] != '')
+            {
+                $order->spese_spedizione = $dati['spese_consegna'];
+            }
             $order->orario = $dati['orario'];
             $order->nome = $dati['nome'];
             $order->cognome = $dati['cognome'];
@@ -998,7 +1024,15 @@ class PageController extends Controller
                 $order->omaggio = $omaggio->nome_it;
             }
             $order->modalita_pagamento = $modalita_pagamento;
-            $order->importo = $carts->sum('totale');
+            if($dati['spese_consegna'] != '')
+            {
+                $order->importo = $carts->sum('totale') + $dati['spese_consegna'];
+            }
+            else
+            {
+                $order->importo = $carts->sum('totale');
+            }
+
             $order->save();
 
             $order_id = $order->id;

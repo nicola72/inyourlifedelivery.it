@@ -119,6 +119,7 @@
             <h3 style="margin-bottom:20px;border-bottom:1px solid #ddd;padding-bottom:20px;">
                 {{ ($order->tipo == 'domicilio') ? 'CONSEGNA A DOMICILIO' : 'ASPORTO' }}
                 <br>
+                <small>per le ore: {{substr($order->orario, 0, -3)}}</small>
             </h3>
         </th>
     </tr>
@@ -155,7 +156,10 @@
             <table width="100%" style="border-bottom:1px solid #ddd;margin-bottom:20px" cellpadding="2" cellspacing="2">
                 <tr>
                     <td style="text-align: right">
-                        <h3>Totale @money($order->importo)</h3>
+                        @if($order->spese_spedizione != '')
+                            <h4>Spese consegna: @money($order->spese_spedizione)</h4>
+                        @endif
+                        <h3>Totale: @money($order->importo)</h3>
                     </td>
                 </tr>
             </table>

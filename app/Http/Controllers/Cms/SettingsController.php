@@ -269,4 +269,18 @@ class SettingsController extends Controller
         return ['result' => 1,'msg' => 'Elemento aggiornato con successo!'];
 
     }
+
+    public function move_up(Request $request,$id)
+    {
+        $modulo = Module::find($id);
+        $modulo->moveOrderUp();
+        return back();
+    }
+
+    public function move_down(Request $request,$id)
+    {
+        $modulo = Module::find($id);
+        $modulo->moveOrderDown();
+        return back();
+    }
 }

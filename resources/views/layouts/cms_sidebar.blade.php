@@ -54,7 +54,7 @@
                 </li>
             @endif
 
-            @foreach($cms_modules as $modulo)
+            @foreach($cms_modules->sortBy('order') as $modulo)
                 @if(($modulo->role_id >= Auth::user()->role->id) && $modulo->stato)
                 <li class="{{ (Route::currentRouteName() == 'cms.'.$modulo->nome) ? "active" : "" }}">
                     <a href="{{route('cms.'.$modulo->nome)}}">

@@ -32,7 +32,12 @@
                     @if($cart->ingredienti_aggiunti != '')
                         <p>
                             aggiunti:<br/>
-                            {{$cart->ingredienti_aggiunti}}
+                            @if(strlen($cart->ingredienti_aggiunti) > 22)
+                                {{substr($cart->ingredienti_aggiunti,0,22)}}...
+                            @else
+                                {{$cart->ingredienti_aggiunti}}
+                            @endif
+
                         </p>
                     @endif
 
