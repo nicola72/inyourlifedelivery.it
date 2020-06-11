@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Website;
 use App\Mail\OrderMail;
 use App\Model\Cart;
 use App\Model\Category;
+use App\Model\DeliveryMin;
 use App\Model\DeliveryMunic;
 use App\Model\DeliveryShippingCost;
 use App\Model\DeliveryString;
@@ -62,6 +63,8 @@ class PageController extends Controller
         $ingredients = Ingredient::where('category_id',$first_cat->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
         $variants = Variant::where('category_id',$first_cat->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
         $prodotti_omaggio = Product::where('visibile',1)->where('omaggio',1)->where('shop_id',$this->shop->id)->get();
+        $minimo_ordine = DeliveryMin::where('shop_id',$this->shop->id)->first();
+        $spese_consegna = DeliveryShippingCost::where('shop_id',$this->shop->id)->first();
 
         $carbon = Carbon::now('Europe/Rome');
         $now = $carbon->toTimeString(); //l'ora di adesso in formato 00:00:00
@@ -129,6 +132,8 @@ class PageController extends Controller
             'label_varianti' => $label_varianti,
             'label_gratis' => $label_gratis,
             'label_omaggio' => $label_omaggio,
+            'minimo_ordine' => $minimo_ordine,
+            'spese_consegna' => $spese_consegna,
         ];
         return view('website.page.index',$params);
     }

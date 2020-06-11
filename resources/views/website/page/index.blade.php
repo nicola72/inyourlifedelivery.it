@@ -34,6 +34,27 @@
                     </div>
                 </div>
             @endif
+
+            @if($minimo_ordine)
+                <div class="row pb-2">
+                    <div class="col-md-12 text-center">
+                        <div class=""><b>Ordine minimo consentito @money($minimo_ordine->min)</b></div>
+                    </div>
+                </div>
+            @endif
+
+            @if($spese_consegna)
+                <div class="row pb-2">
+                    <div class="col-md-12 text-center">
+                        <div class="">
+                            <b>Per la consegna a domicilio è previsto un costo di @money($spese_consegna->cost)</b>
+                            @if($spese_consegna->to != '')
+                                <br><b>per ordini superiore a @money($spese_consegna->to) nessun costo</b>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </section>
     <!--  -->
