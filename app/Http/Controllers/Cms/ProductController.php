@@ -150,6 +150,7 @@ class ProductController extends Controller
             $product->novita = $request->novita;
             $product->visibile = $request->visibile;
             $product->omaggio = $request->omaggio;
+            $product->max_aggiunte = $request->max_aggiunte;
             foreach ($langs as $lang)
             {
                 $product->{'nome_'.$lang} = $request->{'nome_'.$lang};
@@ -316,6 +317,7 @@ class ProductController extends Controller
             $product->prezzo_scontato = str_replace(',','.',$prezzo_scontato);
             $product->pranzo = $per_pranzo;
             $product->cena = $per_cena;
+            $product->max_aggiunte = $request->max_aggiunte;
             foreach ($langs as $lang)
             {
                 $product->{'nome_'.$lang} = $request->{'nome_'.$lang};

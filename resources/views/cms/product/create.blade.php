@@ -73,6 +73,7 @@
 
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -82,6 +83,15 @@
                                     <div class="col-md-6">
                                         <label>Prezzo scontato (lasciare vuoto se non è scontato)</label>
                                         <input type="text" name="prezzo_scontato" id="prezzo_scontato" class="form-control mb-2" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="d-block">Con omaggio</label>
+                                        <label class="radio-inline"><input type="radio" name="con_omaggio" value="1" >Si</label>
+                                        <label class="radio-inline"><input type="radio" name="con_omaggio" value="0" checked >No</label>
                                     </div>
                                 </div>
                             </div>

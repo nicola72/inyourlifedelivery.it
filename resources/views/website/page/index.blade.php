@@ -512,6 +512,7 @@
                         else
                         {
                             hidePreloader();
+
                             alert(data.msg);
                         }
 

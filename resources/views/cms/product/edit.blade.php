@@ -64,6 +64,15 @@
                             </div>
                             <div class="form-group">
                                 <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="d-block">Con omaggio</label>
+                                        <label class="radio-inline"><input type="radio" name="con_omaggio" value="1" {{($product->con_omaggio == 1) ? 'checked':''}}>Si</label>
+                                        <label class="radio-inline"><input type="radio" name="con_omaggio" value="0" {{($product->con_omaggio == 0) ? 'checked':''}}>No</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
                                     <div class="col-md-6">
                                         <label class="d-block">Disponibile per</label>
                                         <label class="radio-inline"><input type="radio" name="per_quando" value="entrambi" {{($product->pranzo == 1 && $product->cena == 1) ? 'checked':''}}> Pranzo e Cena</label>
@@ -77,7 +86,7 @@
                                 <div class="form-group">
                                     <div class="row">
                                         @if($ingredients->count() > 0)
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <label>Ingredienti <small>(quelli già presenti nel prodotto)</small></label>
                                                 <select name="ingredients[]" id="ingredients" class="chosen-select" data-placeholder="Seleziona" multiple style="width:350px;">
                                                     @foreach($ingredients as $ingredient)
@@ -88,6 +97,10 @@
                                                         @endif
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label>Nr max di aggiunte</label>
+                                                <input type="number" name="max_aggiunte" id="max_aggiunte" class="form-control" min="1" value="{{$product->max_aggiunte}}"/>
                                             </div>
                                         @endif
                                         @if($variants->count() > 0)

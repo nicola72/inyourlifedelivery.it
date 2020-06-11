@@ -234,6 +234,8 @@ class PageController extends Controller
         //controllo gli ingredienti aggiunti e modifico il prezzo
         $ingredienti_aggiunti = "";
 
+        $nr_ingredienti_aggiunti = 0;
+
         if($product->ingredienti_da_aggiungere()->count() > 0)
         {
             foreach($product->ingredienti_da_aggiungere() as $ing)
@@ -242,6 +244,7 @@ class PageController extends Controller
                 {
                     $ingredienti_aggiunti .= $ing->nome_it.",";
                     $prezzo = $prezzo + $ing->prezzo;
+                    $nr_ingredienti_aggiunti++;
                 }
             }
             //elimino l'ultima virgola
@@ -249,6 +252,16 @@ class PageController extends Controller
             {
                 $ingredienti_aggiunti = "con " . substr($ingredienti_aggiunti, 0, strlen($ingredienti_aggiunti) - 1);
             }
+        }
+
+        if($product->max_aggiunte != '' && ($product->max_aggiunte < $nr_ingredienti_aggiunti))
+        {
+            $label_ingredienti = DeliveryString::where('shop_id',$this->shop->id)->where('for','ingredients')->first();
+            if($label_ingredienti)
+            {
+                return ['result' => 0, 'msg' => 'Non puo aggiungere più di '.$product->max_aggiunte.' '.$label_ingredienti->text];
+            }
+            return ['result' => 0, 'msg' => 'Non puo aggiungere più di '.$product->max_aggiunte.' ingredienti'];
         }
 
         //controllo se c'è la variante e modifico il prezzo
@@ -385,6 +398,8 @@ class PageController extends Controller
         //controllo gli ingredienti aggiunti
         $ingredienti_aggiunti = "";
 
+        $nr_ingredienti_aggiunti = 0;
+
         if($product->ingredienti_da_aggiungere()->count() > 0)
         {
             foreach($product->ingredienti_da_aggiungere() as $ing)
@@ -393,6 +408,7 @@ class PageController extends Controller
                 {
                     $ingredienti_aggiunti .= $ing->nome_it.",";
                     $prezzo = $prezzo + $ing->prezzo;
+                    $nr_ingredienti_aggiunti++;
                 }
             }
             //elimino l'ultima virgola
@@ -400,6 +416,16 @@ class PageController extends Controller
             {
                 $ingredienti_aggiunti = substr($ingredienti_aggiunti, 0, strlen($ingredienti_aggiunti) - 1);
             }
+        }
+
+        if($product->max_aggiunte != '' && ($product->max_aggiunte < $nr_ingredienti_aggiunti))
+        {
+            $label_ingredienti = DeliveryString::where('shop_id',$this->shop->id)->where('for','ingredients')->first();
+            if($label_ingredienti)
+            {
+                return ['result' => 0, 'msg' => 'Non puo aggiungere più di '.$product->max_aggiunte.' '.$label_ingredienti->text];
+            }
+            return ['result' => 0, 'msg' => 'Non puo aggiungere più di '.$product->max_aggiunte.' ingredienti'];
         }
 
 

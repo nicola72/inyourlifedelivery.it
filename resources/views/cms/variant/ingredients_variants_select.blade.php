@@ -1,13 +1,17 @@
 <div class="form-group">
     <div class="row">
         @if($ingredients->count() > 0)
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label>Ingredienti <small>(quelli già presenti nel prodotto)</small></label>
             <select name="ingredients[]" id="ingredients" class="chosen-select" data-placeholder="Seleziona" multiple style="width:350px;">
                 @foreach($ingredients as $ingredient)
                     <option value="{{$ingredient->id}}">{{$ingredient->nome_it}}</option>
                 @endforeach
             </select>
+        </div>
+        <div class="col-md-2">
+            <label>Nr max di aggiunte</label>
+            <input type="number" name="max_aggiunte" id="max_aggiunte" class="form-control" min="1" value=""/>
         </div>
         @endif
         @if($variants->count() > 0)

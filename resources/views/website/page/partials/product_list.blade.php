@@ -252,7 +252,12 @@
                                             <!-- ingredienti da aggiungere -->
                                             @if($product->ingredienti_da_aggiungere()->count() > 0)
                                             <div class="col-md-8 pt-3 pb-3" style="background-color:#ddd">
-                                                <h4>oppure Aggiungi</h4>
+                                                <h4>
+                                                    Aggiungi
+                                                    @if($product->max_aggiunte != '')
+                                                        (max {{$product->max_aggiunte}})
+                                                    @endif
+                                                </h4>
                                                 <div class="row">
                                                     @foreach($product->ingredienti_da_aggiungere() as $ingredient)
 
