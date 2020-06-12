@@ -155,6 +155,7 @@ class PageController extends Controller
         $products = Product::where('category_id',$category->id)->where('visibile',1)->where('omaggio',0)->where('shop_id',$this->shop->id)->get();
         $ingredients = Ingredient::where('category_id',$category->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
         $variants = Variant::where('category_id',$category->id)->where('shop_id',$this->shop->id)->where('visibile',1)->orderBy('nome_it')->get();
+        $prodotti_omaggio = Product::where('visibile',1)->where('omaggio',1)->where('shop_id',$this->shop->id)->get();
 
         $label_ingredienti = DeliveryString::where('shop_id',$this->shop->id)->where('for','ingredients')->first();
         $label_varianti = DeliveryString::where('shop_id',$this->shop->id)->where('for','variants')->first();
@@ -173,6 +174,7 @@ class PageController extends Controller
             'label_varianti' => $label_varianti,
             'label_gratis' => $label_gratis,
             'label_omaggio' => $label_omaggio,
+            'prodotti_omaggio' => $prodotti_omaggio,
         ];
 
         $html = \View::make('website.page.partials.product_list',$params);
@@ -365,7 +367,16 @@ class PageController extends Controller
 
         $prezzo = $product->prezzo_vendita();
         $qty = $request->input('qty',1);
-
+        $id_prodotto_omaggio = $request->input('prodotto_omaggio',false);
+        $omaggio = '';
+        if($id_prodotto_omaggio)
+        {
+            $prod_omaggio = Product::find($id_prodotto_omaggio);
+            if($prod_omaggio->omaggio == 1)
+            {
+                $omaggio = $prod_omaggio->nome_it;
+            }
+        }
 
         //controllo che la quantità non superi il limite se c'è
         $carts = Cart::where('shop_id',$this->shop->id)->where('session_id',\Session::getId())->get();
@@ -463,6 +474,7 @@ class PageController extends Controller
             $cart->product_id = $product_id;
             $cart->shop_id = $shop_id;
             $cart->nome_prodotto = $product->nome_it;
+            $cart->omaggio = $omaggio;
             $cart->ingredienti_aggiunti = $ingredienti_aggiunti;
             $cart->ingredienti_eliminati = $ingredienti_eliminati;
             $cart->variante = $variante;
@@ -597,7 +609,6 @@ class PageController extends Controller
 
         $note = $request->input('note',null);
         $tipo_pagamento = $request->input('tipo_pagamento','payapal');
-        $prodotto_omaggio = $request->input('prodotto_omaggio',null);
 
         //imposto le spese di consegna se ci sono
         $impostazioni_spese = DeliveryShippingCost::where('shop_id',$this->shop->id)->first();
@@ -629,7 +640,6 @@ class PageController extends Controller
             'comune' => $comune,
             'note' => $note,
             'tipo_pagamento' => $tipo_pagamento,
-            'prodotto_omaggio' => $prodotto_omaggio,
             'orario' => $orario,
             'orario_html' => $orario_html,
             'spese_consegna' => $spese_consegna,
@@ -662,8 +672,6 @@ class PageController extends Controller
         //se c'è stripe
         $stripe = $this->shop->deliveryStripe;
 
-        $prodotto_omaggio = ($dati_ordinazione['prodotto_omaggio'] != null) ? Product::find($dati_ordinazione['prodotto_omaggio']) : false;
-
         $params = [
             'shop' => $this->shop,
             'carts' => $carts,
@@ -680,7 +688,6 @@ class PageController extends Controller
             'orario' => $dati_ordinazione['orario'],
             'orario_html' => $dati_ordinazione['orario_html'],
             'spese_consegna' => $dati_ordinazione['spese_consegna'],
-            'prodotto_omaggio' => $prodotto_omaggio,
             'stripe' => $stripe
         ];
         return view('website.page.cart_resume',$params);
@@ -732,6 +739,8 @@ class PageController extends Controller
 
         //invio l'email dell'ordine
         $this->send_order_email($order);
+        //messaggio telegram
+        $this->send_telegram();
 
         //vado alla pagina esito ordine
         return redirect()->route('website.esito_ordinazione', ['id' => encrypt($order->id)]);
@@ -956,6 +965,7 @@ class PageController extends Controller
 
             //invio l'email dell'ordine
             $this->send_order_email($order);
+            $this->send_telegram();
         }
         else
         {
@@ -1033,8 +1043,6 @@ class PageController extends Controller
 
     protected function add_ordine_to_db($dati, $modalita_pagamento, $carts)
     {
-        //omaggio può essere un oggetto Product oppure null
-        $omaggio = ($dati['prodotto_omaggio'] != null) ? Product::find($dati['prodotto_omaggio']) : '';
 
         try{
             $order = New Order();
@@ -1050,10 +1058,6 @@ class PageController extends Controller
             $order->email = $dati['email'];
             $order->telefono = $dati['tel'];
             $order->note = $dati['note'];
-            if($omaggio != '')
-            {
-                $order->omaggio = $omaggio->nome_it;
-            }
             $order->modalita_pagamento = $modalita_pagamento;
             if($dati['spese_consegna'] != '')
             {
@@ -1075,6 +1079,7 @@ class PageController extends Controller
                 $orderDetail->shop_id = $this->shop->id;
                 $orderDetail->product_id = $cart->product_id;
                 $orderDetail->nome_prodotto = $cart->nome_prodotto;
+                $orderDetail->omaggio = $cart->omaggio;
                 $orderDetail->variante = $cart->variante;
                 $orderDetail->ingredienti_eliminati = $cart->ingredienti_eliminati;
                 $orderDetail->ingredienti_aggiunti = $cart->ingredienti_aggiunti;
@@ -1262,18 +1267,11 @@ class PageController extends Controller
         return $this->shop->deliveryOpenDay->{$oggi_in_italiano[$key].'_sera'};
     }
 
-
-
-
-
     public function send_telegram()
     {
-        $token = "1240310975:AAFHV7YrZRkJWABiOHsqSG0YKSewpVOwN_Q";
-        $chatid = "1071722501";
-        $messaggio = 'nuovo ordine';
         $chat_id = 1071722501;
         // path to the picture,
-        $text = 'nuovo ordine';
+        $text = 'nuovo ordine da delivery';
         // following ones are optional, so could be set as null
         $disable_web_page_preview = null;
         $reply_to_message_id = null;
@@ -1303,7 +1301,8 @@ class PageController extends Controller
         $result = curl_exec($ch);
         //  close connection
         curl_close($ch);
-        print_r($result);
+        //print_r($result);
+        return;
     }
 
 }

@@ -134,6 +134,7 @@
             $('#table-products').DataTable({
                 responsive: true,
                 pageLength: 100,
+                stateSave: true,
                 order: [[ 0, "desc" ]], //order in base a order
                 language:{ "url": "/cms_assets/js/plugins/dataTables/dataTable.ita.lang.json" }
             });

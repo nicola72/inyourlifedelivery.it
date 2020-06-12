@@ -255,19 +255,7 @@
                     </em>
                 </div>
             </div>
-            @if($prodotti_omaggio->count() > 0)
-                <div class="row mb-3">
-                    <div class="col-md-6 mb-3">
-                        <label for="email">Scegli un prodotto omaggio</label>
-                        <select name="prodotto_omaggio" id="prodotto_omaggio" class="form-control" >
-                            <option value="">seleziona</option>
-                            @foreach($prodotti_omaggio as $prod)
-                                <option value="{{$prod->id}}">{{$prod->nome_it}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            @endif
+
             <div class="row mb-3">
                 <div class="col-md-12">
                     <label for="note">Note</label>

@@ -10,6 +10,7 @@ class Cart extends Model
         'shop_id',
         'product_id',
         'nome_prodotto',
+        'omaggio',
         'ingredienti_eliminati',
         'ingredienti_aggiunti',
         'variante',

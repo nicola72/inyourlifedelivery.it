@@ -41,6 +41,12 @@
                         </p>
                     @endif
 
+                    @if($cart->omaggio != '')
+                        <p>omaggio:
+                        {{$cart->omaggio}}
+                        </p>
+                    @endif
+
                     <p class="text-white-gray">
                         <strong>@money($cart->prezzo)</strong> x {{$cart->qta}}
                     </p>

@@ -145,6 +145,7 @@ class ProductController extends Controller
             $product->codice = $request->codice;
             $product->prezzo = str_replace(',','.',$request->prezzo);
             $product->prezzo_scontato = str_replace(',','.',$prezzo_scontato);
+            $product->con_omaggio = $request->con_omaggio;
             $product->pranzo = $per_pranzo;
             $product->cena = $per_cena;
             $product->novita = $request->novita;
@@ -315,6 +316,7 @@ class ProductController extends Controller
             $product->codice = $request->codice;
             $product->prezzo = str_replace(',','.',$request->prezzo);
             $product->prezzo_scontato = str_replace(',','.',$prezzo_scontato);
+            $product->con_omaggio = $request->con_omaggio;
             $product->pranzo = $per_pranzo;
             $product->cena = $per_cena;
             $product->max_aggiunte = $request->max_aggiunte;

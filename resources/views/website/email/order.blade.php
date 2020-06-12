@@ -139,6 +139,9 @@
                             @if($item->ingredienti_aggiunti != '')
                                 con {{$item->ingredienti_aggiunti}}
                             @endif
+                            @if($item->omaggio != '')
+                                omaggio: {{$item->omaggio}}
+                            @endif
                         </td>
                         <td style="border-bottom:1px solid #ddd;padding-bottom: 6px;padding-top: 6px;">
                             {{$item->qta}} x @money($item->prezzo)

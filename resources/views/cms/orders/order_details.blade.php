@@ -49,7 +49,12 @@
                         </tr>
                         @foreach($order->orderDetails as $item)
                             <tr>
-                                <td>{{$item->qta}} x {{$item->nome_prodotto}}</td>
+                                <td>
+                                    {{$item->qta}} x {{$item->nome_prodotto}}
+                                    @if($item->omaggio != '')
+                                        <br>omaggio: {{$item->omaggio}}
+                                    @endif
+                                </td>
                                 <td>{{$item->ingredienti_eliminati}}</td>
                                 <td>{{$item->ingredienti_aggiunti}}</td>
                                 <td>{{$item->variante}}</td>

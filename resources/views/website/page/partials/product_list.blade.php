@@ -100,6 +100,20 @@
                                             @endif
                                         </div>
                                         <!-- -->
+
+                                        <!-- omaggio -->
+                                        @if($prodotti_omaggio->count() > 0 && $product->con_omaggio)
+                                            <div id="prodotto_omaggio" class="mt-1">
+                                                <select name="prodotto_omaggio" id="prodotto_omaggio_{{$product->id}}" class="form-control form-control-sm" >
+                                                    <option value="">seleziona omaggio</option>
+                                                    @foreach($prodotti_omaggio as $prod)
+                                                        <option value="{{$prod->id}}">{{$prod->nome_it}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @endif
+                                        <!-- -->
+
                                     </div>
                                     <!-- -->
                                 </div>

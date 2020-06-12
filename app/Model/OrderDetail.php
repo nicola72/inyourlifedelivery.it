@@ -10,6 +10,7 @@ class OrderDetail extends Model
         'shop_id',
         'product_id',
         'nome_prodotto',
+        'omaggio',
         'variante',
         'ingredienti_eliminati',
         'ingredienti_aggiunti',

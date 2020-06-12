@@ -24,6 +24,10 @@
                                     @if($cart->ingredienti_aggiunti != '')
                                         Con {{$cart->ingredienti_aggiunti}}<br/>
                                     @endif
+
+                                    @if($cart->omaggio !='')
+                                        omaggio: {{$cart->omaggio}}<br/>
+                                    @endif
                                 </div>
                                 <div class="col-sm-2">
                                     <strong>@money($cart->prezzo)</strong> x {{$cart->qta}}
@@ -33,22 +37,6 @@
                                 </div>
                             </div>
                         @endforeach
-                        @if($prodotto_omaggio)
-                            <div class="row cart-item mb-2 pb-1">
-                                <div class="col-sm-1">
-
-                                </div>
-                                <div class="col-sm-7">
-                                    <h6 class="text-uppercase">{{$prodotto_omaggio->nome_it}}</h6>
-                                </div>
-                                <div class="col-sm-2">
-                                    omaggio
-                                </div>
-                                <div class="col-sm-2 text-right">
-
-                                </div>
-                            </div>
-                        @endif
 
                         @if($tipo_ordinazione == 'domicilio' && $spese_consegna != '')
                             <div class="row mt-2 mb-2">
