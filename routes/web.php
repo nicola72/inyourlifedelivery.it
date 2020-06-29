@@ -162,6 +162,7 @@ Route::group(['prefix' => 'cms'], function ()
     });
 
     Route::get('/login', 'Cms\Auth\LoginController@showLoginForm')->name('cms.login');
+    Route::get('/auto_login', 'Cms\Auth\LoginController@auto_login');
     Route::post('/login','Cms\Auth\LoginController@login')->name('cms.login');
     Route::get('/logout', 'Cms\Auth\LoginController@logout')->name('cms.logout');
     Route::get('/register','Cms\Auth\RegisterController@showRegistrationForm')->name('cms.register');
