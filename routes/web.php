@@ -133,7 +133,11 @@ Route::group(['prefix' => 'cms'], function ()
         Route::post('/variant/update/{id}','Cms\VariantController@update');
         Route::get('/variant','Cms\VariantController@index')->name('cms.varianti');
 
+        Route::get('/orders_print_no_evasion','Cms\OrdersController@print_no_evasion');
+        Route::get('/orders_switch_evaso','Cms\OrdersController@switch_evaso');
+        Route::get('/order_destroy/{id}','Cms\OrdersController@destroy');
         Route::get('/order_details/{id}','Cms\OrdersController@order_details');
+        Route::get('/order_print/{id}','Cms\OrdersController@order_print');
         Route::get('/orders','Cms\OrdersController@index')->name('cms.ordini');
 
         Route::post('/file/sort_images', 'Cms\FileController@sort_images');

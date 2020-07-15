@@ -17296,13 +17296,13 @@ select.form-control:not([size]):not([multiple]) {
   box-sizing: border-box;
 }
 .onoffswitch-inner:before {
-  content: "ON";
+  content: "SI";
   padding-left: 7px;
   background-color: #1AB394;
   color: #FFFFFF;
 }
 .onoffswitch-inner:after {
-  content: "OFF";
+  content: "NO";
   padding-right: 7px;
   background-color: #FFFFFF;
   color: #919191;

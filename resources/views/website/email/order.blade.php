@@ -123,6 +123,32 @@
             </h3>
         </th>
     </tr>
+    @if($order->tipo == 'domicilio')
+        <tr>
+            <td>
+                <table width="100%" cellpadding="2" cellspacing="2">
+                    <tr>
+                        <td>
+                            <h3>INDIRIZZO CONSEGNA:</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="100%" cellpadding="2" cellspacing="2">
+                                <tr>
+                                    <td>
+                                        {{$order->orderShipping->indirizzo}}, {{$order->orderShipping->nr_civico}}
+                                        <br>{{$order->orderShipping->comune}}
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    @endif
     <tr>
         <td>
             <table width="100%" cellpadding="2" cellspacing="0">
@@ -134,10 +160,10 @@
                                 {{$item->variante}}
                             @endif
                             @if($item->ingredienti_eliminati != '')
-                                senza {{$item->ingredienti_eliminati}}
+                                Senza {{$item->ingredienti_eliminati}}
                             @endif
                             @if($item->ingredienti_aggiunti != '')
-                                con {{$item->ingredienti_aggiunti}}
+                                Con {{$item->ingredienti_aggiunti}}
                             @endif
                         </td>
                         <td style="border-bottom:1px solid #ddd;padding-bottom: 6px;padding-top: 6px;">
@@ -197,32 +223,7 @@
             </table>
         </td>
     </tr>
-    @if($order->tipo == 'domicilio')
-    <tr>
-        <td>
-            <table width="100%" cellpadding="2" cellspacing="2">
-                <tr>
-                    <td>
-                        <h4>INDIRIZZO CONSEGNA:</h4>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <table width="100%" cellpadding="2" cellspacing="2">
-                            <tr>
-                                <td>
-                                    {{$order->orderShipping->indirizzo}}, {{$order->orderShipping->nr_civico}}
-                                    <br>{{$order->orderShipping->comune}}
-                                </td>
 
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    @endif
     @if($order->note != '')
     <tr>
         <td>

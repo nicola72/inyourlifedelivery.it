@@ -7,13 +7,20 @@
 
                     <!-- header del box -->
                     <div class="ibox-title">
+                        <!-- CREA PDF -->
+                        <a href="{{url('cms/orders_print_no_evasion')}}" target="_blank" class="btn btn-w-m btn-primary">
+                            <i class="fa fa-print"></i> Stampa gli ordini aperti
+                        </a>
+                        <!-- fine pulsante nuovo -->
                         <div class="ibox-tools">
                             <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </div>
                     </div>
+
                     <!-- fine header -->
 
                     <div class="ibox-content">
+
                         <table id="table-orders" style="font-size:12px" class="table table-striped table-bordered">
                             <thead>
                             <tr>
@@ -26,6 +33,7 @@
                                 <th>Tipo</th>
                                 <th>Indirizzo</th>
                                 <th>Importo</th>
+                                <th>Evaso</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -58,9 +66,35 @@
                                     </td>
                                     <td>@money($order->importo)</td>
                                     <td>
-                                        <a href="javascript:void(0)" onclick="get_modal('{{url("cms/order_details",["id"=>$order->id])}}')" title="dettagli">
-                                            <i class="fa fa-search"></i>
+                                        <!-- Pulsante Switch Evaso -->
+                                        <div class="switch">
+                                            <div class="onoffswitch">
+                                                <input type="checkbox" id="switch_{{$order->id}}"
+                                                       data-id="{{$order->id}}"
+                                                       class="onoffswitch-checkbox evaso-check"
+                                                    {{ ($order->evaso == 1) ? "checked" : "" }} />
+                                                <label class="onoffswitch-label" for="switch_{{$order->id}}">
+                                                    <span class="onoffswitch-inner"></span>
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!-- -->
+                                    </td>
+                                    <td>
+                                        <a class="azioni-table" href="javascript:void(0)" onclick="get_modal('{{url("cms/order_details",["id"=>$order->id])}}')" title="dettagli">
+                                            <i class="fa fa-search fa-2x"></i>
                                         </a>
+                                        <a class="azioni-table pl-1" href="{{url("cms/order_print",["id"=>$order->id])}}" target="_blank" title="stampa">
+                                            <i class="fa fa-print fa-2x"></i>
+                                        </a>
+                                        @if($order->evaso == 0)
+                                        <!-- pulsante per eliminare -->
+                                        <a class="azioni-table azione-red elimina pl-1"  href="{{url('/cms/order_destroy',[$order->id])}}" title="elimina">
+                                            <i class="fa fa-trash fa-2x"></i>
+                                        </a>
+                                        <!-- -->
+                                        @endif
                                     </td>
 
                                 </tr>
@@ -111,6 +145,21 @@
             });
         });
         //Fine Pulsante ELIMINA
+
+        //per lo switch visibile
+        $('.evaso-check').change(function ()
+        {
+            let stato = $(this).is(':checked') ? "1" : "0";
+
+            $.ajax({
+                type: "GET",
+                url: "/cms/orders_switch_evaso",
+                data: {id: $(this).attr('data-id'), stato : stato},
+                dataType: "json",
+                success: function (data){ alert(data.msg);},
+                error: function (){ alert("Si è verificato un errore! Riprova!");}
+            });
+        });
 
         setTimeout(function(){
             window.location.reload();
