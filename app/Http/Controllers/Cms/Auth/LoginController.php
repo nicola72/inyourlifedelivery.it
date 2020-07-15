@@ -82,6 +82,27 @@ class LoginController extends Controller
         return $this->sendFailedLoginResponse($request);
     }
 
+    public function auto_login(Request $request)
+    {
+        $password = $request->pass;
+        $request->merge([
+            'password' => base64_decode($password),
+        ]);
+
+        //provo a effettare il login
+        if ($this->attemptLogin($request))
+        {
+            //se andato a buon fine
+            return $this->sendLoginResponse($request);
+        }
+
+        //Se il login non ha avuto successo incrementiamo il numero dei tentativi
+        //e redirect alla pagina di login, se non ha superato il numero max di tentativi altrimenti bloccato
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
     /**
      * Validate the user login request.
      *

@@ -1,0 +1,3 @@
+Abbiamo la tabella su inyourlife3 tb_clienti_delivery
+qui creiamo il record con id cliente, email, dominio del delivery e password IN CHIARO
+a quel punto nel pannello cliente comparirà la voce delivery che chiamera la route autologin passandogli le credenziali in get

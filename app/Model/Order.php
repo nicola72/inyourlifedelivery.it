@@ -24,6 +24,7 @@ class Order extends Model
         'stato_pagamento',
         'idtranspag',
         'importo',
+        'evaso',
         'locale'
     ];
 

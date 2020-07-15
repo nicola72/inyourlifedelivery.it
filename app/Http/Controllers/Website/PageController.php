@@ -725,7 +725,7 @@ class PageController extends Controller
         }
 
         //inserisco l'ordine nel database
-        $order = $this->add_ordine_to_db($dati_ordinazione,'alla_consegna', $carts);
+        $order = $this->add_ordine_to_db($dati_ordinazione,'alla consegna', $carts);
         if(!$order)
         {
             return back()->with('error','Errore! Non è possibile procedere con l\'ordinazione');
