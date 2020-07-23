@@ -24,6 +24,17 @@
 
                 <div class="form-group">
                     <label class="d-block">
+                        Tipo Attività*
+                    </label>
+                    <select name="tipo_attivita" id="tipo_attivita" class="form-control mb-2">
+                        <option value="pizzeria" {{($shop->tipo_attivita == 'pizzeria')? 'selected':''}}>pizzeria</option>
+                        <option value="ristorante" {{($shop->tipo_attivita == 'ristorante')? 'selected':''}}>ristorante</option>
+                        <option value="gelateria" {{($shop->tipo_attivita == 'gelateria')? 'selected':''}}>gelateria</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="d-block">
                         Dominio* <small>(senza il www)</small>
                     </label>
                     <input type="text" name="domain" id="domain" value="{{$shop->domain}}" class="form-control mb-2" />

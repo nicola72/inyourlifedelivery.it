@@ -9,6 +9,7 @@ class Shop extends Model
         'dominio',
         'insegna',
         'ragione_sociale',
+        'tipo_attivita',
         'p_iva',
         'indirizzo',
         'nr_civico',

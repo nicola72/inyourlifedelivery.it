@@ -134,12 +134,12 @@
 
                                     <!-- pulsante Aggiungi al Carrello -->
                                     <div class="col-md-6 text-center pt-2 pb-2">
-                                        <div class="col-md-12  testo-bottone  btn-light btn-aggiungi-carrello " >
-                                            <a href="javascript:void(0)" onclick="addToCart({{$product->id}})" class="link-white">
+                                        <a href="javascript:void(0)" onclick="addToCart({{$product->id}})">
+                                            <div class="col-md-12  testo-bottone  btn-light btn-aggiungi-carrello " >
                                                 <i class="ti-shopping-cart"></i>
                                                 <br/>AGGIUNGI AL CARRELLO
-                                            </a>
-                                        </div>
+                                            </div>
+                                        </a>
                                     </div>
                                     <!-- -->
 
@@ -153,12 +153,21 @@
                                                aria-expanded="false"
                                                aria-controls="collapse"
                                                style="font-size:90%;text-transform: uppercase">
-                                                @if($label_ingredienti)
-                                                    GESTIONE<br/>
-                                                    {{ $label_ingredienti->text }}
+                                                @if($shop->tipo_attivita == 'pizzeria')
+                                                    PERSONALIZZA<br />LA TUA PIZZA
+                                                @elseif($shop->tipo_attivita == 'ristorante')
+                                                    VUOI AGGIUNGERE QUALCOSA ?
+                                                @elseif($shop->tipo_attivita == 'gelateria')
+                                                    SCEGLI I TUOI<br />GUSTI
                                                 @else
-                                                    GESTIONE<br/> INGREDIENTI
+                                                    @if($label_ingredienti)
+                                                        GESTIONE<br/>
+                                                        {{ $label_ingredienti->text }}
+                                                    @else
+                                                        GESTIONE<br/> INGREDIENTI
+                                                    @endif
                                                 @endif
+
 
                                             </a>
                                         </div>

@@ -59,7 +59,13 @@
                 <li class="{{ (Route::currentRouteName() == 'cms.'.$modulo->nome) ? "active" : "" }}">
                     <a href="{{route('cms.'.$modulo->nome)}}">
                         <i class="fa {{$modulo->icon}}"></i>
-                        <span class="nav-label text-uppercase">{{$modulo->label}}</span>
+                        <span class="nav-label text-uppercase">
+                            @if(Auth::user()->role->id == 2)
+                                {{($modulo->{'label_'.Auth::user()->shop->tipo_attivita} != '') ? $modulo->{'label_'.Auth::user()->shop->tipo_attivita} :$modulo->label}}
+                            @else
+                                {{$modulo->label}}
+                            @endif
+                        </span>
                     </a>
                 </li>
                 @endif

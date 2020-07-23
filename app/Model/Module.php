@@ -21,6 +21,9 @@ class Module extends Model implements Sortable
         'nome',
         'icon',
         'label',
+        'label_pizzeria',
+        'label_ristorante',
+        'label_gelateria',
         'order',
         'stato'
     ];

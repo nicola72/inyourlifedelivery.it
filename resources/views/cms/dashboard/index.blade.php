@@ -95,6 +95,8 @@
                         Dopo aver configurato il tuo negozio non ti resta che riempire il tuo menù.
                         Segui la seguente guida interattiva per poter riempire correttamente il tuo negozio.
                     </div>
+
+                    @if(Auth::user()->role->id == 2 && Auth::user()->shop->tipo_attivita == 'pizzeria')
                     <div class="ibox-title">
                         <h3>PIZZERIA</h3>
                     </div>
@@ -150,6 +152,8 @@
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @if(Auth::user()->role->id == 2 && Auth::user()->shop->tipo_attivita == 'gelateria')
                     <div class="ibox-title">
                         <h3>GELATERIA</h3>
                     </div>
@@ -205,6 +209,8 @@
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @if(Auth::user()->role->id == 2 && Auth::user()->shop->tipo_attivita == 'ristorante')
                     <div class="ibox-title">
                         <h3>RISTORANTE</h3>
                     </div>
@@ -248,6 +254,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                     <div class="ibox-title">
                         <h3>Ordini</h3>
                         Dopo aver completato il tuo negozio, non dovrai far altro che controllare l’arrivo dei tuoi

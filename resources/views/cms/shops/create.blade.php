@@ -24,6 +24,17 @@
 
                 <div class="form-group">
                     <label class="d-block">
+                        Tipo Attività*
+                    </label>
+                    <select name="tipo_attivita" id="tipo_attivita" class="form-control mb-2">
+                        <option value="pizzeria">pizzeria</option>
+                        <option value="ristorante">ristorante</option>
+                        <option value="gelateria">gelateria</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="d-block">
                         Dominio* <small>(senza il www)</small>
                     </label>
                     <input type="text" name="domain" id="domain" class="form-control mb-2" />

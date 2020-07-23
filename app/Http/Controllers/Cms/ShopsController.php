@@ -38,6 +38,7 @@ class ShopsController extends Controller
             $shop = new Shop();
             $shop->insegna = $request->insegna;
             $shop->ragione_sociale = $request->rag_soc;
+            $shop->tipo_attivita = $request->tipo_attivita;
             $shop->p_iva = $request->p_iva;
             $shop->domain = $request->domain;
             $shop->citta = $request->citta;
@@ -136,6 +137,7 @@ class ShopsController extends Controller
             $shop = Shop::find($id);
             $shop->insegna = $request->insegna;
             $shop->ragione_sociale = $request->rag_soc;
+            $shop->tipo_attivita = $request->tipo_attivita;
             $shop->p_iva = $request->p_iva;
             $shop->domain = $request->domain;
             $shop->citta = $request->citta;

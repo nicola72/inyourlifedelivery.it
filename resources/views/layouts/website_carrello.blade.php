@@ -3,7 +3,7 @@
     @if($carts->count() > 0)
         @foreach($carts as $cart)
             <li class="clearfix">
-                <a href="{{url('/cart')}}" class="float-left">
+                <a href="javascript:void(0)" class="float-left">
                     <img src="/file/small/{{$cart->product->cover($shop->id)}}" class="img-fluid" alt="" width="60">
                 </a>
                 <div class="oHidden">

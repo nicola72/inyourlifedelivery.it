@@ -335,7 +335,7 @@
 
     </form>
 
-    <div class="navbar-right-elements cart-fixed pull-right">
+    <div class="navbar-right-elements cart-fixed pull-right d-md-none">
         <ul class="list-inline">
             <li class="list-inline-item">
                 <a href="javascript:void(0)" class=" menu-btn ">
